@@ -181,6 +181,61 @@ import {DynamicComponent} from 'angular2-dynamic-component';
 </DynamicComponent>
 ```
 
+## Use case #5. Using the pipes and custom modules inside
+
+**app.ts**
+```typescript
+import {DynamicComponent} from 'angular2-dynamic-component';
+
+@NgModule({
+  bootstrap: [ App ],
+  declarations: [
+    MyDynamicComponent
+  ],
+@Component({
+	...
+	template: `
+    <MyDynamicComponent [currentDate]="date"
+                        [componentTemplate]="template"></MyDynamicComponent>
+  `
+})
+export class App {
+
+	template: string = 'Empty current date';
+	date = new Date();
+
+	ngOnInit() {
+		setTimeout(() => {
+			this.template = 'Current date is: {{ currentDate | date }}<br>';
+		}, 1000);
+	}
+}
+```
+
+**MyDynamicComponent.ts**
+```typescript
+import {DynamicComponent} from 'angular2-dynamic-component';
+
+@Component({
+	selector: 'MyDynamicComponent',
+	template: ''
+})
+export class MyDynamicComponent extends DynamicComponent<any> {
+
+	@Input() currentDate: Date;
+	@Input() componentTemplate: string;
+
+	constructor(...) {
+		super(element, viewContainer, compiler, reflector, http);
+
+		// @NgModule()
+		// class InnerModule {
+		// }
+		// this.componentModules = [InnerModule];  // You can insert your custom module here
+	}
+}
+```
+
 ## Publish
 
 ```sh
