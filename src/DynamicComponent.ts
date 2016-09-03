@@ -166,13 +166,11 @@ export class DynamicComponent<TDynamicComponentType> implements OnChanges {
 	}
 
 	private applyPropertiesToDynamicComponent(instance: TDynamicComponentType) {
-		const placeholderComponentMetaData: {[key: string]: Type<any>[];} = this.reflector.propMetadata(this.constructor as Type<any>),
-			dynamicComponentMetaData: {[key: string]: Type<any>[];} = this.reflector.propMetadata(instance.constructor as Type<any>);
+		const placeholderComponentMetaData: {[key: string]: Type<any>[];} =
+			this.reflector.propMetadata(this.constructor as Type<any>);
 
 		for (let prop of Object.keys(this)) {
-			if (this.hasInputMetadataAnnotation(placeholderComponentMetaData[prop])
-				&& this.hasInputMetadataAnnotation(dynamicComponentMetaData[prop])) {
-
+			if (this.hasInputMetadataAnnotation(placeholderComponentMetaData[prop])) {
 				if (isPresent(instance[prop])) {
 					console.warn('[$DynamicComponent] The property', prop, 'will be overwritten for the component', instance);
 				}
