@@ -49,7 +49,7 @@ export class DynamicComponent<TDynamicComponentType> implements OnChanges {
 	@Input() componentTemplate: string;
 	@Input() componentTemplateUrl: string;
 	@Input() componentRemoteTemplateFactory: IComponentRemoteTemplateFactory;
-	@Input() componentModules:Array<any>;
+	@Input() componentModules: Array<any>;
 
 	private componentInstance: ComponentRef<TDynamicComponentType>;
 
@@ -137,9 +137,10 @@ export class DynamicComponent<TDynamicComponentType> implements OnChanges {
 
 	private makeComponentModule(template: string|ComponentMetadataType, componentType?: {new (): TDynamicComponentType}): Type<any> {
 		componentType = componentType || this.makeComponent(template);
+		const componentModules: Array<any> = this.componentModules;
 		@NgModule({
 			declarations: [componentType],
-			imports: [CommonModule].concat(this.componentModules || [])
+			imports: [CommonModule].concat(componentModules || [])
 		})
 		class dynamicComponentModule {
 		}
