@@ -8,7 +8,8 @@ import {
 	NgModule,
 	ViewContainerRef,
 	ComponentRef,
-	ModuleWithComponentFactories
+	ModuleWithComponentFactories,
+	ComponentFactory
 } from '@angular/core';
 
 import {CommonModule} from "@angular/common";
@@ -75,7 +76,9 @@ export class DynamicComponent<TDynamicComponentType> implements OnChanges {
 					}
 					this.componentInstance = this.viewContainer.createComponent<TDynamicComponentType>(
 						// dynamicComponentClass factory is presented here
-						moduleWithComponentFactories.componentFactories[0]
+						moduleWithComponentFactories.componentFactories.find((componentFactory: ComponentFactory<Type<any>>) => {
+							return componentFactory.selector === DYNAMIC_SELECTOR;
+						})
 					);
 
 					this.applyPropertiesToDynamicComponent(this.componentInstance.instance);
