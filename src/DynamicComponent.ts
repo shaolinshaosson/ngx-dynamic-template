@@ -46,7 +46,6 @@ export class DynamicComponentMetadata implements ComponentMetadataType {
 export class DynamicComponent<TDynamicComponentType> implements OnChanges {
 
 	@Input() componentType: {new (): TDynamicComponentType};
-	@Input() componentMetaData: ComponentMetadataType;
 	@Input() componentTemplate: string;
 	@Input() componentTemplateUrl: string;
 	@Input() componentRemoteTemplateFactory: IComponentRemoteTemplateFactory;
@@ -93,11 +92,7 @@ export class DynamicComponent<TDynamicComponentType> implements OnChanges {
 
 	protected getComponentTypePromise(): Promise<Type<any>> {
 		return new Promise((resolve: (value: Type<any>) => void) => {
-			if (!isBlank(this.componentMetaData)) {
-				resolve(
-					this.makeComponentModule(this.componentMetaData)
-				);
-			} else if (!isBlank(this.componentTemplate)) {
+			if (!isBlank(this.componentTemplate)) {
 				resolve(
 					this.makeComponentModule(this.componentTemplate)
 				);
@@ -138,7 +133,7 @@ export class DynamicComponent<TDynamicComponentType> implements OnChanges {
 			});
 	}
 
-	private makeComponentModule(template: string|ComponentMetadataType, componentType?: {new (): TDynamicComponentType}): Type<any> {
+	private makeComponentModule(template: string, componentType?: {new (): TDynamicComponentType}): Type<any> {
 		componentType = componentType || this.makeComponent(template);
 		const componentModules: Array<any> = this.componentModules;
 		@NgModule({
@@ -150,22 +145,13 @@ export class DynamicComponent<TDynamicComponentType> implements OnChanges {
 		return dynamicComponentModule;
 	}
 
-	private makeComponent(template: string|ComponentMetadataType): Type<TDynamicComponentType> {
-		if (isString(template)) {
-			@Component({selector: DYNAMIC_SELECTOR, template: template})
-			class dynamicComponentClass {
-				constructor() {
-				}
+	private makeComponent(template: string): Type<TDynamicComponentType> {
+		@Component({selector: DYNAMIC_SELECTOR, template: template})
+		class dynamicComponentClass {
+			constructor() {
 			}
-			return dynamicComponentClass as Type<TDynamicComponentType>;
-		} else {
-			@Component(template)
-			class dynamicComponentClass {
-				constructor() {
-				}
-			}
-			return dynamicComponentClass as Type<TDynamicComponentType>;
 		}
+		return dynamicComponentClass as Type<TDynamicComponentType>;
 	}
 
 	private applyPropertiesToDynamicComponent(instance: TDynamicComponentType) {

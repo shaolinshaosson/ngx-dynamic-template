@@ -134,34 +134,7 @@ class App {
 </DynamicComponent>
 ```
 
-## Use case #3. Using the "componentMetaData" attribute
-**app.ts**
-```typescript
-import {DynamicComponent} from 'angular2-dynamic-component';
-
-@NgModule({
-    declarations: [DynamicComponent],
-    ...
-})
-...
-
-@Component(...)
-class App {
-    public getDynamicMetaData():IComponentMetadata {
-        return {
-           ...
-        };
-    }
-}
-```
-
-**app.html**
-```html
-<DynamicComponent [componentMetaData]="getDynamicMetaData()">
-</DynamicComponent>
-```
-
-## Use case #4. Using the "componentTemplateUrl" attribute
+## Use case #3. Using the "componentTemplateUrl" attribute
 
 The main feature is the support of [http 301](https://en.wikipedia.org/wiki/HTTP_301) and [http 302](https://en.wikipedia.org/wiki/HTTP_302) statuses.
 
@@ -181,7 +154,7 @@ import {DynamicComponent} from 'angular2-dynamic-component';
 </DynamicComponent>
 ```
 
-## Use case #5. Using the pipes and custom modules inside
+## Use case #4. Using the pipes and custom modules inside
 
 **app.ts**
 ```typescript
