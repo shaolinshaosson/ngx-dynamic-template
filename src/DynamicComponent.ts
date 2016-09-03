@@ -76,7 +76,8 @@ export class DynamicComponent<TDynamicComponentType> implements OnChanges {
 					this.componentInstance = this.viewContainer.createComponent<TDynamicComponentType>(
 						// dynamicComponentClass factory is presented here
 						moduleWithComponentFactories.componentFactories.find((componentFactory: ComponentFactory<Type<any>>) => {
-							return componentFactory.selector === DYNAMIC_SELECTOR;
+							return componentFactory.selector === DYNAMIC_SELECTOR
+								|| componentFactory.componentType === this.componentType;
 						})
 					);
 

@@ -28,10 +28,7 @@ export interface ButtonType {
 
 @Component({
     selector: 'ButtonsToolbar',
-    template: require('./ButtonsToolbar.html'),
-    directives: [
-        ButtonsToolbarPlaceholder
-    ],
+    template: require('./ButtonsToolbar.html')
 })
 export class ButtonsToolbar {
 
