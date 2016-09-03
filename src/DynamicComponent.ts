@@ -11,6 +11,8 @@ import {
 	ModuleWithComponentFactories
 } from '@angular/core';
 
+import {CommonModule} from "@angular/common";
+
 import {
 	isPresent,
 	isBlank,
@@ -47,6 +49,7 @@ export class DynamicComponent<TDynamicComponentType> implements OnChanges {
 	@Input() componentTemplate: string;
 	@Input() componentTemplateUrl: string;
 	@Input() componentRemoteTemplateFactory: IComponentRemoteTemplateFactory;
+	@Input() componentModules:Array<any>;
 
 	private componentInstance: ComponentRef<TDynamicComponentType>;
 
@@ -135,7 +138,8 @@ export class DynamicComponent<TDynamicComponentType> implements OnChanges {
 	private makeComponentModule(template: string|ComponentMetadataType, componentType?: {new (): TDynamicComponentType}): Type<any> {
 		componentType = componentType || this.makeComponent(template);
 		@NgModule({
-			declarations: [componentType]
+			declarations: [componentType],
+			imports: [CommonModule].concat(this.componentModules || [])
 		})
 		class dynamicComponentModule {
 		}
