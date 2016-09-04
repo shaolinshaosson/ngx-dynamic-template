@@ -17,8 +17,7 @@ import {CommonModule} from "@angular/common";
 import {
 	isPresent,
 	isBlank,
-	isArray,
-	isString
+	isArray
 } from '@angular/core/src/facade/lang';
 
 import {Type} from '@angular/core/src/type';
@@ -42,11 +41,16 @@ export class DynamicComponentMetadata implements ComponentMetadataType {
 	}
 }
 
+export interface IComponentInputData {
+	[index: string]: any;
+}
+
 @Component(new DynamicComponentMetadata())
 export class DynamicComponent<TDynamicComponentType> implements OnChanges {
 
 	@Input() componentType: {new (): TDynamicComponentType};
 	@Input() componentTemplate: string;
+	@Input() componentInputData: IComponentInputData;
 	@Input() componentTemplateUrl: string;
 	@Input() componentRemoteTemplateFactory: IComponentRemoteTemplateFactory;
 	@Input() componentModules: Array<any>;
@@ -161,6 +165,15 @@ export class DynamicComponent<TDynamicComponentType> implements OnChanges {
 
 		for (let prop of Object.keys(this)) {
 			if (this.hasInputMetadataAnnotation(placeholderComponentMetaData[prop])) {
+				if (isPresent(instance[prop])) {
+					console.warn('[$DynamicComponent] The property', prop, 'will be overwritten for the component', instance);
+				}
+				instance[prop] = this[prop];
+			}
+		}
+
+		if (!isBlank(this.componentInputData)) {
+			for (let prop of Object.keys(this.componentInputData)) {
 				if (isPresent(instance[prop])) {
 					console.warn('[$DynamicComponent] The property', prop, 'will be overwritten for the component', instance);
 				}
