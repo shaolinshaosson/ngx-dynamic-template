@@ -157,15 +157,12 @@ import {DynamicComponent} from 'angular2-dynamic-component';
 ```typescript
 import {DynamicComponent} from 'angular2-dynamic-component';
 
-@NgModule()
-class InnerModule {
-}
-
 @NgModule({
-  bootstrap: [ App ],
-  declarations: [
-    DynamicComponent
-  ],
+    declarations: [DynamicComponent],
+    ...
+})
+...
+
 @Component({
 	...
 	template: `
