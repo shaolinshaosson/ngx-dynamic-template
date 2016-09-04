@@ -151,58 +151,61 @@ import {DynamicComponent} from 'angular2-dynamic-component';
 </DynamicComponent>
 ```
 
-## Use case #4. Using the pipes and custom modules inside
+## Use case #4. Using the "componentModules" attribute
 
 **app.ts**
 ```typescript
 import {DynamicComponent} from 'angular2-dynamic-component';
 
+@NgModule()
+class InnerModule {
+}
+
 @NgModule({
   bootstrap: [ App ],
   declarations: [
-    MyDynamicComponent
+    DynamicComponent
   ],
 @Component({
 	...
 	template: `
-    <MyDynamicComponent [currentDate]="date"
-                        [componentTemplate]="template"></MyDynamicComponent>
+    <DynamicComponent [componentModules]="extraModules"
+                      [componentTemplate]="template"></DynamicComponent>
   `
 })
 export class App {
 
 	template: string = 'Empty current date';
-	date = new Date();
+	extraModules:Array<any> = [InnerModule];
 
 	ngOnInit() {
 		setTimeout(() => {
-			this.template = 'Current date is: {{ currentDate | date }}<br>';
+			this.template = 'Current date is: {{ 100500 | date }}<br>Custom pipe value is: {{ "input value" | myPipe }}';
 		}, 1000);
 	}
 }
 ```
 
-**MyDynamicComponent.ts**
+**InnerModule.ts**
 ```typescript
-import {DynamicComponent} from 'angular2-dynamic-component';
+import {NgModule, Pipe} from '@angular/core';
 
-@Component({
-	selector: 'MyDynamicComponent',
-	template: ''
+@Pipe({
+	name: 'myPipe',
 })
-export class MyDynamicComponent extends DynamicComponent<any> {
-
-	@Input() currentDate: Date;
-	@Input() componentTemplate: string;
-
-	constructor(...) {
-		super(element, viewContainer, compiler, reflector, http);
-
-		// @NgModule()
-		// class InnerModule {
-		// }
-		// this.componentModules = [InnerModule];  // You can insert your custom module here
+class MyPipe {
+	transform(value: any): string {
+		return 'transformed value';
 	}
+}
+
+@NgModule({
+	declarations: [MyPipe],
+	exports: [
+		MyPipe
+	]
+})
+export class InnerModule {
 }
 ```
 
