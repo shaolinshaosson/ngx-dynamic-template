@@ -151,7 +151,7 @@ import {DynamicComponent} from 'angular2-dynamic-component';
 </DynamicComponent>
 ```
 
-## Use case #4. Using the "componentModules" attribute
+## Use case #4. Using the "componentModules" and "componentInputData" attribute
 
 **app.ts**
 ```typescript
@@ -163,10 +163,13 @@ import {DynamicComponent} from 'angular2-dynamic-component';
 })
 ...
 
+import {IComponentInputData} from 'angular2-dynamic-component';
+
 @Component({
 	...
 	template: `
     <DynamicComponent [componentModules]="extraModules"
+                      [componentInputData]="inputData"
                       [componentTemplate]="template"></DynamicComponent>
   `
 })
@@ -174,10 +177,11 @@ export class App {
 
 	template: string = 'Empty current date';
 	extraModules:Array<any> = [InnerModule];
+	inputData: IComponentInputData = {currentDate: new Date()};
 
 	ngOnInit() {
 		setTimeout(() => {
-			this.template = 'Current date is: {{ 100500 | date }}<br>Custom pipe value is: {{ "input value" | myPipe }}';
+			this.template = 'Current date is: {{ currentDate | date }}<br>Custom pipe value is: {{ "input value" | myPipe }}';
 		}, 1000);
 	}
 }
