@@ -177,7 +177,7 @@ export class DynamicComponent<TDynamicComponentType> implements OnChanges {
 				if (isPresent(instance[prop])) {
 					console.warn('[$DynamicComponent] The property', prop, 'will be overwritten for the component', instance);
 				}
-				instance[prop] = this[prop];
+				instance[prop] = this.componentInputData[prop];
 			}
 		}
 	}
