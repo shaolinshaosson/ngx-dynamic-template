@@ -119,8 +119,12 @@ export class DynamicComponent<TDynamicComponentType> implements OnChanges {
 			.subscribe((response: Response) => {
 				if (response.status === 301 || response.status === 302) {
 					const chainedUrl: string = response.headers.get('Location');
+
+					console.info('[$DynamicComponent] The URL into the chain is:', chainedUrl);
 					if (!isBlank(chainedUrl)) {
 						this.loadRemoteTemplate(chainedUrl, resolve);
+					} else {
+						console.warn('[$DynamicComponent] The URL into the chain is empty. The process of redirect has stopped.');
 					}
 				} else {
 					resolve(
