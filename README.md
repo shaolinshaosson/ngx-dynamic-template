@@ -111,11 +111,10 @@ export class RedButton implements IButton {
 ## Use case #2. Using the "componentTemplate" attribute
 **app.ts**
 ```typescript
-import {DynamicComponent} from 'angular2-dynamic-component';
+import {DynamicComponentModule} from 'angular2-dynamic-component';
 
 @NgModule({
-    declarations: [DynamicComponent],
-    ...
+    imports: [DynamicComponentModule]
 })
 ...
 
@@ -137,11 +136,10 @@ The main feature is the support of [http 301](https://en.wikipedia.org/wiki/HTTP
 
 **app.ts**
 ```typescript
-import {DynamicComponent} from 'angular2-dynamic-component';
+import {DynamicComponentModule} from 'angular2-dynamic-component';
 
 @NgModule({
-    declarations: [DynamicComponent],
-    ...
+    imports: [DynamicComponentModule]
 })
 ```
 
@@ -155,11 +153,10 @@ import {DynamicComponent} from 'angular2-dynamic-component';
 
 **app.ts**
 ```typescript
-import {DynamicComponent} from 'angular2-dynamic-component';
+import {DynamicComponentModule} from 'angular2-dynamic-component';
 
 @NgModule({
-    declarations: [DynamicComponent],
-    ...
+    imports: [DynamicComponentModule]
 })
 ...
 
