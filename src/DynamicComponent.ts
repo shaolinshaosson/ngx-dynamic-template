@@ -1,3 +1,7 @@
+declare module Reflect {
+	function getMetadata(metadataKey: any, target: Object): any;
+}
+
 import {
 	Component,
 	Input,
@@ -9,18 +13,12 @@ import {
 	ViewContainerRef,
 	ComponentRef,
 	ModuleWithComponentFactories,
-	ComponentFactory
+	ComponentFactory,
+	Type,
+	InputMetadata
 } from '@angular/core';
 
 import {CommonModule} from "@angular/common";
-
-import {
-	isPresent,
-	isBlank,
-	isArray
-} from '@angular/core/src/facade/lang';
-
-import {Type} from '@angular/core/src/type';
 
 import {
 	Http,
@@ -28,11 +26,11 @@ import {
 	RequestOptionsArgs
 } from '@angular/http';
 
-import {InputMetadata} from '@angular/core/src/metadata/directives';
-import {Reflector} from '@angular/core/src/reflection/reflection';
-
-import {BrowserDomAdapter}  from '@angular/platform-browser/src/browser/browser_adapter';
 import {IComponentRemoteTemplateFactory} from './IComponentRemoteTemplateFactory';
+
+function isPresent(obj) {
+	return obj !== undefined && obj !== null;
+}
 
 const DYNAMIC_SELECTOR: string = 'DynamicComponent';
 
@@ -62,7 +60,6 @@ export class DynamicComponent<TDynamicComponentType> implements OnChanges {
 	constructor(protected element: ElementRef,
 	            protected viewContainer: ViewContainerRef,
 	            protected compiler: Compiler,
-	            protected reflector: Reflector,
 	            protected http: Http) {
 	}
 
@@ -89,7 +86,10 @@ export class DynamicComponent<TDynamicComponentType> implements OnChanges {
 
 					// Remove wrapper after render the component
 					if (this.destroyWrapper) {
-						new BrowserDomAdapter().remove(this.element.nativeElement);
+						const el: HTMLElement = this.element.nativeElement;
+						if (isPresent(el.parentNode)) {
+							el.parentNode.removeChild(el);
+						}
 					}
 				});
 		});
@@ -97,11 +97,11 @@ export class DynamicComponent<TDynamicComponentType> implements OnChanges {
 
 	protected getComponentTypePromise(): Promise<Type<any>> {
 		return new Promise((resolve: (value: Type<any>) => void) => {
-			if (!isBlank(this.componentTemplate)) {
+			if (isPresent(this.componentTemplate)) {
 				resolve(
 					this.makeComponentModule(this.componentTemplate)
 				);
-			} else if (!isBlank(this.componentTemplateUrl)) {
+			} else if (isPresent(this.componentTemplateUrl)) {
 				this.loadRemoteTemplate(this.componentTemplateUrl, resolve);
 			} else {
 				resolve(this.makeComponentModule(null, this.componentType));
@@ -111,7 +111,7 @@ export class DynamicComponent<TDynamicComponentType> implements OnChanges {
 
 	private loadRemoteTemplate(url: string, resolve: (value: Type<any>) => void) {
 		let requestArgs: RequestOptionsArgs = {withCredentials: true};
-		if (!isBlank(this.componentRemoteTemplateFactory)) {
+		if (isPresent(this.componentRemoteTemplateFactory)) {
 			requestArgs = this.componentRemoteTemplateFactory.buildRequestOptions();
 		}
 
@@ -121,14 +121,14 @@ export class DynamicComponent<TDynamicComponentType> implements OnChanges {
 					const chainedUrl: string = response.headers.get('Location');
 
 					console.info('[$DynamicComponent] The URL into the chain is:', chainedUrl);
-					if (!isBlank(chainedUrl)) {
+					if (isPresent(chainedUrl)) {
 						this.loadRemoteTemplate(chainedUrl, resolve);
 					} else {
 						console.warn('[$DynamicComponent] The URL into the chain is empty. The process of redirect has stopped.');
 					}
 				} else {
 					resolve(
-						this.makeComponentModule(!isBlank(this.componentRemoteTemplateFactory)
+						this.makeComponentModule(isPresent(this.componentRemoteTemplateFactory)
 							? this.componentRemoteTemplateFactory.parseResponse(response)
 							: response.text())
 					);
@@ -164,8 +164,7 @@ export class DynamicComponent<TDynamicComponentType> implements OnChanges {
 	}
 
 	private applyPropertiesToDynamicComponent(instance: TDynamicComponentType) {
-		const placeholderComponentMetaData: {[key: string]: Type<any>[];} =
-			this.reflector.propMetadata(this.constructor as Type<any>);
+		const placeholderComponentMetaData: {[key: string]: Type<any>[];} = Reflect.getMetadata('propMetadata', this.constructor);
 
 		for (let prop of Object.keys(this)) {
 			if (this.hasInputMetadataAnnotation(placeholderComponentMetaData[prop])) {
@@ -176,7 +175,7 @@ export class DynamicComponent<TDynamicComponentType> implements OnChanges {
 			}
 		}
 
-		if (!isBlank(this.componentInputData)) {
+		if (isPresent(this.componentInputData)) {
 			for (let prop of Object.keys(this.componentInputData)) {
 				if (isPresent(instance[prop])) {
 					console.warn('[$DynamicComponent] The property', prop, 'will be overwritten for the component', instance);
@@ -187,6 +186,6 @@ export class DynamicComponent<TDynamicComponentType> implements OnChanges {
 	}
 
 	private hasInputMetadataAnnotation(metaDataByProperty: Array<Type<any>>): boolean {
-		return isArray(metaDataByProperty) && !!metaDataByProperty.find((decorator: Type<any>) => decorator instanceof InputMetadata);
+		return Array.isArray(metaDataByProperty) && !!metaDataByProperty.find((decorator: Type<any>) => decorator instanceof InputMetadata);
 	}
 }
