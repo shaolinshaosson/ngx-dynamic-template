@@ -120,11 +120,11 @@ export class DynamicComponent<TDynamicComponentType> implements OnChanges {
 				if (response.status === 301 || response.status === 302) {
 					const chainedUrl: string = response.headers.get('Location');
 
-					console.info('[$DynamicComponent] The URL into the chain is:', chainedUrl);
+					console.info('[$DynamicComponent][loadRemoteTemplate] The URL into the chain is:', chainedUrl);
 					if (isPresent(chainedUrl)) {
 						this.loadRemoteTemplate(chainedUrl, resolve);
 					} else {
-						console.warn('[$DynamicComponent] The URL into the chain is empty. The process of redirect has stopped.');
+						console.warn('[$DynamicComponent][loadRemoteTemplate] The URL into the chain is empty. The process of redirect has stopped.');
 					}
 				} else {
 					resolve(
@@ -134,11 +134,9 @@ export class DynamicComponent<TDynamicComponentType> implements OnChanges {
 					);
 				}
 			}, (response: Response) => {
-				console.error('[$DynamicComponent] loadRemoteTemplate error response:', response);
+				console.error('[$DynamicComponent][loadRemoteTemplate] Error response:', response);
 
-				resolve(
-					this.makeComponentModule(['[ERROR]:', response.status].join(''))
-				);
+				resolve(this.makeComponentModule(''));
 			});
 	}
 
@@ -169,7 +167,7 @@ export class DynamicComponent<TDynamicComponentType> implements OnChanges {
 		for (let prop of Object.keys(this)) {
 			if (this.hasInputMetadataAnnotation(placeholderComponentMetaData[prop])) {
 				if (isPresent(instance[prop])) {
-					console.warn('[$DynamicComponent] The property', prop, 'will be overwritten for the component', instance);
+					console.warn('[$DynamicComponent][applyPropertiesToDynamicComponent] The property', prop, 'will be overwritten for the component', instance);
 				}
 				instance[prop] = this[prop];
 			}
@@ -178,7 +176,7 @@ export class DynamicComponent<TDynamicComponentType> implements OnChanges {
 		if (isPresent(this.componentInputData)) {
 			for (let prop of Object.keys(this.componentInputData)) {
 				if (isPresent(instance[prop])) {
-					console.warn('[$DynamicComponent] The property', prop, 'will be overwritten for the component', instance);
+					console.warn('[$DynamicComponent][applyPropertiesToDynamicComponent] The property', prop, 'will be overwritten for the component', instance);
 				}
 				instance[prop] = this.componentInputData[prop];
 			}
