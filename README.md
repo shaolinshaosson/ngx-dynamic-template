@@ -68,7 +68,7 @@ export class ButtonsToolbarPlaceholder extends DynamicComponent<IButton> impleme
     protected destroyWrapper:boolean;
 
     constructor(...) {
-        super(element, viewContainer, compiler, reflector, http);
+        super(element, viewContainer, compiler, http);
         
         this.destroyWrapper = true;  // remove placeholder after,  because the component is not reset, and the data are not changed
     }
