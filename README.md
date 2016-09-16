@@ -1,6 +1,6 @@
 # angular2-dynamic-component
 
-An implementation of dynamic component wrapper at Angular2 (RC6 compatible).
+An implementation of dynamic component wrapper at Angular2 (2.0.0 compatible).
 
 ## Installation
 
