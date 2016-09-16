@@ -1,7 +1,3 @@
-declare module Reflect {
-	function getMetadata(metadataKey: any, target: Object): any;
-}
-
 import {
 	Component,
 	Input,
@@ -25,10 +21,6 @@ import {
 } from '@angular/http';
 
 import {IComponentRemoteTemplateFactory} from './IComponentRemoteTemplateFactory';
-
-function isPresent(obj) {
-	return obj !== undefined && obj !== null;
-}
 
 const DYNAMIC_SELECTOR: string = 'DynamicComponent';
 
@@ -96,9 +88,7 @@ export class DynamicComponent<TDynamicComponentType> implements OnChanges {
 	protected getComponentTypePromise(): Promise<Type<any>> {
 		return new Promise((resolve: (value: Type<any>) => void) => {
 			if (isPresent(this.componentTemplate)) {
-				resolve(
-					this.makeComponentModule(this.componentTemplate)
-				);
+				resolve(this.makeComponentModule(this.componentTemplate));
 			} else if (isPresent(this.componentTemplateUrl)) {
 				this.loadRemoteTemplate(this.componentTemplateUrl, resolve);
 			} else {
@@ -152,10 +142,7 @@ export class DynamicComponent<TDynamicComponentType> implements OnChanges {
 
 	private makeComponent(template: string): Type<TDynamicComponentType> {
 		@Component({selector: DYNAMIC_SELECTOR, template: template})
-		class dynamicComponentClass {
-			constructor() {
-			}
-		}
+		class dynamicComponentClass {}
 		return dynamicComponentClass as Type<TDynamicComponentType>;
 	}
 
@@ -172,7 +159,7 @@ export class DynamicComponent<TDynamicComponentType> implements OnChanges {
 		}
 
 		if (isPresent(this.componentInputData)) {
-			for (let prop of Object.keys(this.componentInputData)) {
+			for (let prop in this.componentInputData) {
 				if (isPresent(instance[prop])) {
 					console.warn('[$DynamicComponent][applyPropertiesToDynamicComponent] The property', prop, 'will be overwritten for the component', instance);
 				}
@@ -184,4 +171,12 @@ export class DynamicComponent<TDynamicComponentType> implements OnChanges {
 	private hasInputMetadataAnnotation(metaDataByProperty: Array<Type<any>>): boolean {
 		return Array.isArray(metaDataByProperty) && !!metaDataByProperty.find((decorator: Type<any>) => decorator instanceof Input);
 	}
+}
+
+function isPresent(obj) {
+	return obj !== undefined && obj !== null;
+}
+
+declare module Reflect {
+	function getMetadata(metadataKey: any, target: Object): any;
 }
