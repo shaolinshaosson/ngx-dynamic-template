@@ -6,7 +6,6 @@ import {
 	Component,
 	Input,
 	Compiler,
-	ComponentMetadataType,
 	ElementRef,
 	OnChanges,
 	NgModule,
@@ -14,8 +13,7 @@ import {
 	ComponentRef,
 	ModuleWithComponentFactories,
 	ComponentFactory,
-	Type,
-	InputMetadata
+	Type
 } from '@angular/core';
 
 import {CommonModule} from "@angular/common";
@@ -34,7 +32,7 @@ function isPresent(obj) {
 
 const DYNAMIC_SELECTOR: string = 'DynamicComponent';
 
-export class DynamicComponentMetadata implements ComponentMetadataType {
+export class DynamicComponentMetadata {
 	constructor(public selector: string = DYNAMIC_SELECTOR, public template: string = '') {
 	}
 }
@@ -184,6 +182,6 @@ export class DynamicComponent<TDynamicComponentType> implements OnChanges {
 	}
 
 	private hasInputMetadataAnnotation(metaDataByProperty: Array<Type<any>>): boolean {
-		return Array.isArray(metaDataByProperty) && !!metaDataByProperty.find((decorator: Type<any>) => decorator instanceof InputMetadata);
+		return Array.isArray(metaDataByProperty) && !!metaDataByProperty.find((decorator: Type<any>) => decorator instanceof Input);
 	}
 }
