@@ -121,12 +121,18 @@ import {DynamicComponentModule} from 'angular2-dynamic-component';
 @Component(...)
 class App {
     private componentTemplate:string = '<input type="text" style="color: green; width: 100px;" [(ngModel)]="model" (ngModelChange)="onChange($event)"/>';
+    private context = {
+        onChange(v) {
+            console.log(v);
+        }
+    };
 }
 ```
 
 **app.html**
 ```html
-<DynamicComponent [componentTemplate]="componentTemplate">
+<DynamicComponent [componentTemplate]="componentTemplate" 
+                  [componentInputData]="context">
 </DynamicComponent>
 ```
 
