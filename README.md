@@ -118,21 +118,27 @@ import {DynamicComponentModule} from 'angular2-dynamic-component';
 })
 ...
 
+class DynamicContext {
+  value:string;
+
+  onChange() {
+    console.log(this.value)
+  }
+}
+
 @Component(...)
 class App {
-    private componentTemplate:string = '<input type="text" style="color: green; width: 100px;" [(ngModel)]="model" (ngModelChange)="onChange($event)"/>';
-    private context = {
-        onChange(v) {
-            console.log(v);
-        }
-    };
+    private componentTemplate:string = '<input type="text" [(ngModel)]="value" (ngModelChange)="onChange($event)"/>';
+    private extraModules = [FormsModule];
+    private context = new DynamicContext();
 }
 ```
 
 **app.html**
 ```html
 <DynamicComponent [componentTemplate]="componentTemplate" 
-                  [componentInputData]="context">
+                  [componentInputData]="context"
+                  [componentModules]="extraModules">
 </DynamicComponent>
 ```
 
