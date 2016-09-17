@@ -129,7 +129,7 @@ export class DynamicComponent<TDynamicComponentType> implements OnChanges {
 	}
 
 	protected makeComponentModule(template: string, componentType?: {new (): TDynamicComponentType}): Type<any> {
-		componentType = componentType || this.makeComponent(template);
+		componentType = this.makeComponent(template, componentType);
 		const componentModules: Array<any> = this.componentModules;
 		@NgModule({
 			declarations: [componentType],
@@ -139,8 +139,20 @@ export class DynamicComponent<TDynamicComponentType> implements OnChanges {
 		return dynamicComponentModule;
 	}
 
-	protected makeComponent(template: string): Type<TDynamicComponentType> {
-		@Component({selector: DYNAMIC_SELECTOR, template: template})
+	protected makeComponent(template: string, componentType?: {new (): TDynamicComponentType}): Type<TDynamicComponentType> {
+		let annotationsArray,
+			componentDecorator;
+		if (isPresent(componentType)) {
+			annotationsArray = Reflect.getMetadata('annotations', componentType);
+			if (Array.isArray(annotationsArray)) {
+				componentDecorator = annotationsArray.find((decorator) => decorator instanceof Component);
+				if (isPresent(componentDecorator)) {
+					componentDecorator.selector = DYNAMIC_SELECTOR;
+				}
+			}
+		}
+
+		@Component(componentDecorator || {selector: DYNAMIC_SELECTOR, template: template})
 		class dynamicComponentClass {}
 		return dynamicComponentClass as Type<TDynamicComponentType>;
 	}
