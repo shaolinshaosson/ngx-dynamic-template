@@ -97,7 +97,7 @@ export class DynamicComponent<TDynamicComponentType> implements OnChanges {
 		});
 	}
 
-	private loadRemoteTemplate(url: string, resolve: (value: Type<any>) => void) {
+	protected loadRemoteTemplate(url: string, resolve: (value: Type<any>) => void) {
 		let requestArgs: RequestOptionsArgs = {withCredentials: true};
 		if (isPresent(this.componentRemoteTemplateFactory)) {
 			requestArgs = this.componentRemoteTemplateFactory.buildRequestOptions();
@@ -128,25 +128,24 @@ export class DynamicComponent<TDynamicComponentType> implements OnChanges {
 			});
 	}
 
-	private makeComponentModule(template: string, componentType?: {new (): TDynamicComponentType}): Type<any> {
+	protected makeComponentModule(template: string, componentType?: {new (): TDynamicComponentType}): Type<any> {
 		componentType = componentType || this.makeComponent(template);
 		const componentModules: Array<any> = this.componentModules;
 		@NgModule({
 			declarations: [componentType],
 			imports: [CommonModule].concat(componentModules || [])
 		})
-		class dynamicComponentModule {
-		}
+		class dynamicComponentModule {}
 		return dynamicComponentModule;
 	}
 
-	private makeComponent(template: string): Type<TDynamicComponentType> {
+	protected makeComponent(template: string): Type<TDynamicComponentType> {
 		@Component({selector: DYNAMIC_SELECTOR, template: template})
 		class dynamicComponentClass {}
 		return dynamicComponentClass as Type<TDynamicComponentType>;
 	}
 
-	private applyPropertiesToDynamicComponent(instance: TDynamicComponentType) {
+	protected applyPropertiesToDynamicComponent(instance: TDynamicComponentType) {
 		const placeholderComponentMetaData: {[key: string]: Type<any>[];} = Reflect.getMetadata('propMetadata', this.constructor);
 
 		for (let property of Object.keys(this)) {
@@ -177,7 +176,7 @@ export class DynamicComponent<TDynamicComponentType> implements OnChanges {
 		}
 	}
 
-	private hasInputMetadataAnnotation(metaDataByProperty: Array<Type<any>>): boolean {
+	protected hasInputMetadataAnnotation(metaDataByProperty: Array<Type<any>>): boolean {
 		return Array.isArray(metaDataByProperty) && !!metaDataByProperty.find((decorator: Type<any>) => decorator instanceof Input);
 	}
 }
