@@ -2,7 +2,6 @@
 .git
 .npmignore
 
-demo
 typings
 node_modules
 

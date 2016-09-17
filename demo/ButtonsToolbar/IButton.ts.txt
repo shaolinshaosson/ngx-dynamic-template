@@ -1,6 +1,0 @@
-import {ButtonType} from './ButtonsToolbar';
-
-export interface IButton {
-
-    buttonName:string;
-}

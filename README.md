@@ -11,7 +11,12 @@ npm install angular2-dynamic-component --save
 
 ## Use case #1
 
-**ButtonsToolbar.html**
+**app.html**
+```html
+<ButtonsToolbar></ButtonsToolbar><br>
+<ButtonsToolbar></ButtonsToolbar>
+```
+
 ```html
 <template ngFor let-button [ngForOf]="buttons">
   <ButtonsToolbarPlaceholder [componentType]="button.type" [buttonName]="button.name">
@@ -19,7 +24,6 @@ npm install angular2-dynamic-component --save
 </template>
 ```
 
-**ButtonsToolbar.ts**
 ```typescript
 export interface ButtonType {
     name:string;
@@ -45,12 +49,8 @@ export class ButtonsToolbar {
 }
 ```
 
-**ButtonsToolbarPlaceholder.ts**
 ```typescript
 import {DynamicComponent, DynamicComponentMetadata} from 'angular2-dynamic-component';
-
-import {IButton} from './IButton';
-import {ButtonType} from './ButtonsToolbar';
 
 class ButtonsToolbarComponent extends DynamicComponentMetadata {
 
@@ -75,15 +75,11 @@ export class ButtonsToolbarPlaceholder extends DynamicComponent<IButton> impleme
 }
 ```
 
-**IButton.ts**
 ```typescript
 export interface IButton {
     buttonName:string;
 }
-```
 
-**GreenButton.ts**
-```typescript
 @Component({
     selector: 'GreenButton',
     template: '<span style="color: green; width: 50px; border: 1px solid black; padding: 6px; margin: 6px;">The first button with name: {{ buttonName }}</span>',
@@ -92,10 +88,7 @@ export class GreenButton implements IButton {
 
     @Input() public buttonName:string;
 }
-```
 
-**RedButton.ts**
-```typescript
 @Component({
     selector: 'RedButton',
     template: '<span style="color: red; width: 50px; border: 1px solid black; padding: 6px; margin: 6px;">The second button with name: {{ buttonName }}</span>',
@@ -105,8 +98,7 @@ export class RedButton implements IButton {
 }
 ```
 
-**Preview**
-![Preview](demo/preview.png)
+![Preview](preview.png)
 
 ## Use case #2. Using the "componentTemplate" attribute
 **app.ts**
