@@ -149,21 +149,30 @@ export class DynamicComponent<TDynamicComponentType> implements OnChanges {
 	private applyPropertiesToDynamicComponent(instance: TDynamicComponentType) {
 		const placeholderComponentMetaData: {[key: string]: Type<any>[];} = Reflect.getMetadata('propMetadata', this.constructor);
 
-		for (let prop of Object.keys(this)) {
-			if (this.hasInputMetadataAnnotation(placeholderComponentMetaData[prop])) {
-				if (isPresent(instance[prop])) {
-					console.warn('[$DynamicComponent][applyPropertiesToDynamicComponent] The property', prop, 'will be overwritten for the component', instance);
+		for (let property of Object.keys(this)) {
+			if (this.hasInputMetadataAnnotation(placeholderComponentMetaData[property])) {
+				if (Reflect.has(instance, property)) {
+					console.warn('[$DynamicComponent][applyPropertiesToDynamicComponent] The property', property, 'will be overwritten for the component', instance);
 				}
-				instance[prop] = this[prop];
+				Reflect.set(instance, property, Reflect.get(this, property));
 			}
 		}
 
 		if (isPresent(this.componentInputData)) {
-			for (let prop in this.componentInputData) {
-				if (isPresent(instance[prop])) {
-					console.warn('[$DynamicComponent][applyPropertiesToDynamicComponent] The property', prop, 'will be overwritten for the component', instance);
+			for (let property in this.componentInputData) {
+				if (Reflect.has(instance, property)) {
+					console.warn('[$DynamicComponent][applyPropertiesToDynamicComponent] The property', property, 'will be overwritten for the component', instance);
 				}
-				instance[prop] = this.componentInputData[prop];
+
+				const propValue = Reflect.get(this.componentInputData, property);
+				const attributes:PropertyDescriptor = {} as PropertyDescriptor;
+
+				if (typeof propValue !== 'function') {
+					attributes.set = (v) => Reflect.set(this.componentInputData, property, v);
+				}
+				attributes.get = () => Reflect.get(this.componentInputData, property);
+
+				Reflect.defineProperty(instance, property, attributes);
 			}
 		}
 	}
@@ -178,5 +187,9 @@ function isPresent(obj) {
 }
 
 declare module Reflect {
+	function defineProperty(target: any, propertyKey: PropertyKey, attributes: PropertyDescriptor): boolean;
 	function getMetadata(metadataKey: any, target: Object): any;
+	function has(target: any, propertyKey: string): boolean;
+	function set(target: any, propertyKey: PropertyKey, value: any, receiver?: any): boolean;
+	function get(target: any, propertyKey: PropertyKey, receiver?: any): any;
 }
