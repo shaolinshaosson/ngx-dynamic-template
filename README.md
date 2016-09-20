@@ -50,7 +50,7 @@ export class ButtonsToolbar {
 ```
 
 ```typescript
-import {DynamicComponent, DynamicComponentMetadata} from 'angular2-dynamic-component';
+import {DynamicComponent, DynamicComponentMetadata} from 'angular2-dynamic-component/index';
 
 class ButtonsToolbarComponent extends DynamicComponentMetadata {
 
@@ -103,7 +103,7 @@ export class RedButton implements IButton {
 ## Use case #2. Using the "componentTemplate" attribute
 **app.ts**
 ```typescript
-import {DynamicComponentModule} from 'angular2-dynamic-component';
+import {DynamicComponentModule} from 'angular2-dynamic-component/index';
 
 @NgModule({
     imports: [DynamicComponentModule]
@@ -140,7 +140,7 @@ The main feature is the support of [http 301](https://en.wikipedia.org/wiki/HTTP
 
 **app.ts**
 ```typescript
-import {DynamicComponentModule} from 'angular2-dynamic-component';
+import {DynamicComponentModule} from 'angular2-dynamic-component/index';
 
 @NgModule({
     imports: [DynamicComponentModule]
@@ -157,14 +157,14 @@ import {DynamicComponentModule} from 'angular2-dynamic-component';
 
 **app.ts**
 ```typescript
-import {DynamicComponentModule} from 'angular2-dynamic-component';
+import {DynamicComponentModule} from 'angular2-dynamic-component/index';
 
 @NgModule({
     imports: [DynamicComponentModule]
 })
 ...
 
-import {IComponentInputData} from 'angular2-dynamic-component';
+import {IComponentInputData} from 'angular2-dynamic-component/index';
 
 @Component({
 	...
