@@ -22,7 +22,8 @@ import {
 
 import {
 	MetadataHelper,
-	IAnnotationMetadataHolder
+	IAnnotationMetadataHolder,
+	DecoratorType
 } from 'ts-metadata-helper/index';
 
 import {IComponentRemoteTemplateFactory} from './IComponentRemoteTemplateFactory';
@@ -145,21 +146,19 @@ export class DynamicComponent<TDynamicComponentType> implements OnChanges {
 		return dynamicComponentModule;
 	}
 
-	protected makeComponent(template: string, componentType?: {new (): TDynamicComponentType}): Type<TDynamicComponentType> {
-		let annotationsArray,
+	protected makeComponent(template:string, componentType?:{new ():TDynamicComponentType}):Type<TDynamicComponentType> {
+		let annotationsArray:Array<DecoratorType>,
 			componentDecorator;
 		if (Utils.isPresent(componentType)) {
-			annotationsArray = Reflect.getMetadata('annotations', componentType);
-			if (Utils.isArray(annotationsArray)) {
-				componentDecorator = annotationsArray.find((decorator) => decorator instanceof Component);
-				if (Utils.isPresent(componentDecorator)) {
-					componentDecorator.selector = DYNAMIC_SELECTOR;
-				}
+			annotationsArray = MetadataHelper.findAnnotationsMetaData(componentType, Component);
+			if (annotationsArray.length) {
+				Reflect.set(annotationsArray[0], 'selector', DYNAMIC_SELECTOR);
 			}
 		}
 
 		@Component(componentDecorator || {selector: DYNAMIC_SELECTOR, template: template})
-		class dynamicComponentClass {}
+		class dynamicComponentClass {
+		}
 		return dynamicComponentClass as Type<TDynamicComponentType>;
 	}
 
@@ -193,12 +192,4 @@ export class DynamicComponent<TDynamicComponentType> implements OnChanges {
 			}
 		}
 	}
-}
-
-declare module Reflect {
-	function defineProperty(target: any, propertyKey: PropertyKey, attributes: PropertyDescriptor): boolean;
-	function getMetadata(metadataKey: any, target: Object): any;
-	function has(target: any, propertyKey: string): boolean;
-	function set(target: any, propertyKey: PropertyKey, value: any, receiver?: any): boolean;
-	function get(target: any, propertyKey: PropertyKey, receiver?: any): any;
 }
