@@ -148,11 +148,13 @@ export class DynamicComponent<TDynamicComponentType> implements OnChanges {
 
 	protected makeComponent(template:string, componentType?:{new ():TDynamicComponentType}):Type<TDynamicComponentType> {
 		let annotationsArray:Array<DecoratorType>,
-			componentDecorator;
+			componentDecorator:DecoratorType;
+
 		if (Utils.isPresent(componentType)) {
 			annotationsArray = MetadataHelper.findAnnotationsMetaData(componentType, Component);
 			if (annotationsArray.length) {
-				Reflect.set(annotationsArray[0], 'selector', DYNAMIC_SELECTOR);
+				componentDecorator = annotationsArray[0];
+				Reflect.set(componentDecorator, 'selector', DYNAMIC_SELECTOR);
 			}
 		}
 
