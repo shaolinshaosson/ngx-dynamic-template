@@ -4,7 +4,12 @@ An implementation of dynamic component wrapper at Angular2 (2.0.0 compatible).
 
 ## Installation
 
-First you need to install the npm module:
+1. At first, you need to install the [core-js](https://www.npmjs.com/package/core-js) npm module.  
+2. Then you need to install the [ts-metadata-helper](https://www.npmjs.com/package/ts-metadata-helper) dependency package (don't worry, it's very small and simple, I like "reusable" approach):  
+```sh
+npm install ts-metadata-helper --save
+```
+3. And after that, you have to install the target package:  
 ```sh
 npm install angular2-dynamic-component --save
 ```
