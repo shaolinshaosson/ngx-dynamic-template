@@ -4,8 +4,8 @@
   "license": "MIT",
   "scripts": {
     "clean": "npm cache clean",
-    "tsc-build": "node \"node_modules/typescript/bin/tsc\"",
-    "deploy": "npm install && npm run tsc-build && npm publish ./"
+    "ngc-build": "node_modules/.bin/ngc -p tsconfig.json",
+    "deploy": "npm install && ngc-build && npm publish ./"
   },
   "peerDependencies": {
     "@angular/core": "^2.1.0",

@@ -40,7 +40,10 @@ export interface IComponentInputData {
 	[index: string]: any;
 }
 
-@Component(new DynamicComponentMetadata())
+@Component({
+	selector: DYNAMIC_SELECTOR,
+	template: ''
+})
 export class DynamicComponent<TDynamicComponentType> implements OnChanges {
 
 	@Input() componentType: {new (): TDynamicComponentType};
