@@ -21,7 +21,7 @@ var renderType_DynamicComponent_Host:import0.RenderComponentType = (null as any)
 class _View_DynamicComponent_Host0 extends import1.AppView<any> {
   _el_0:any;
   /*private*/ _appEl_0:import2.AppElement;
-  _DynamicComponent_0_5:import3.DynamicComponent;
+  _DynamicComponent_0_5:import3.DynamicComponent<any>;
   constructor(viewUtils:import4.ViewUtils,parentInjector:import5.Injector,declarationEl:import2.AppElement) {
     super(_View_DynamicComponent_Host0,renderType_DynamicComponent_Host,import6.ViewType.HOST,viewUtils,parentInjector,declarationEl,import7.ChangeDetectorStatus.CheckAlways);
   }
@@ -44,10 +44,10 @@ function viewFactory_DynamicComponent_Host0(viewUtils:import4.ViewUtils,parentIn
   if ((renderType_DynamicComponent_Host === (null as any))) { (renderType_DynamicComponent_Host = viewUtils.createRenderComponentType('',0,import11.ViewEncapsulation.None,([] as any[]),{})); }
   return new _View_DynamicComponent_Host0(viewUtils,parentInjector,declarationEl);
 }
-export const DynamicComponentNgFactory:import12.ComponentFactory<import3.DynamicComponent> = new import12.ComponentFactory<import3.DynamicComponent>('DynamicComponent',viewFactory_DynamicComponent_Host0,import3.DynamicComponent);
+export const DynamicComponentNgFactory:import12.ComponentFactory<import3.DynamicComponent<any>> = new import12.ComponentFactory<import3.DynamicComponent<any>>('DynamicComponent',viewFactory_DynamicComponent_Host0,import3.DynamicComponent);
 const styles_DynamicComponent:any[] = ([] as any[]);
 var renderType_DynamicComponent:import0.RenderComponentType = (null as any);
-class _View_DynamicComponent0 extends import1.AppView<import3.DynamicComponent> {
+class _View_DynamicComponent0 extends import1.AppView<import3.DynamicComponent<any>> {
   constructor(viewUtils:import4.ViewUtils,parentInjector:import5.Injector,declarationEl:import2.AppElement) {
     super(_View_DynamicComponent0,renderType_DynamicComponent,import6.ViewType.COMPONENT,viewUtils,parentInjector,declarationEl,import7.ChangeDetectorStatus.CheckAlways);
   }
@@ -57,7 +57,7 @@ class _View_DynamicComponent0 extends import1.AppView<import3.DynamicComponent> 
     return (null as any);
   }
 }
-export function viewFactory_DynamicComponent0(viewUtils:import4.ViewUtils,parentInjector:import5.Injector,declarationEl:import2.AppElement):import1.AppView<import3.DynamicComponent> {
+export function viewFactory_DynamicComponent0(viewUtils:import4.ViewUtils,parentInjector:import5.Injector,declarationEl:import2.AppElement):import1.AppView<import3.DynamicComponent<any>> {
   if ((renderType_DynamicComponent === (null as any))) { (renderType_DynamicComponent = viewUtils.createRenderComponentType('',0,import11.ViewEncapsulation.None,styles_DynamicComponent,{})); }
   return new _View_DynamicComponent0(viewUtils,parentInjector,declarationEl);
 }
