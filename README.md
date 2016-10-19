@@ -65,7 +65,7 @@ class ButtonsToolbarComponent extends DynamicComponentMetadata {
 }
 
 @Component(new ButtonsToolbarComponent())
-export class ButtonsToolbarPlaceholder extends DynamicComponent<IButton> implements IButton {
+export class ButtonsToolbarPlaceholder extends DynamicComponent implements IButton {
 
     @Input() buttonName:string;
     @Input() componentType:{new ():IButton};
