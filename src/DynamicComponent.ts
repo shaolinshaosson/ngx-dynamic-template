@@ -40,11 +40,13 @@ export interface IComponentInputData {
 	[index: string]: any;
 }
 
+export type TDynamicComponentType = Function;
+
 @Component({
 	selector: DYNAMIC_SELECTOR,
 	template: ''
 })
-export class DynamicComponent<TDynamicComponentType> implements OnChanges {
+export class DynamicComponent implements OnChanges {
 
 	@Input() componentType: {new (): TDynamicComponentType};
 	@Input() componentTemplate: string;
