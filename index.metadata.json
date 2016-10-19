@@ -1,1 +1,0 @@
-{"__symbolic":"module","version":1,"metadata":{},"exports":[{"from":"./DynamicComponent","export":["DynamicComponent","DynamicComponentMetadata","IComponentInputData"]},{"from":"./IComponentRemoteTemplateFactory","export":["IComponentRemoteTemplateFactory"]},{"from":"./DynamicComponentModule","export":["DynamicComponentModule"]}]}
