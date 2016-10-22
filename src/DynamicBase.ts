@@ -46,6 +46,9 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	@Input() componentModules: Array<any>;
 
 	private injector:ReflectiveInjector;
+
+	private cachedDynamicModule:Type<any>;
+	private cachedDynamicComponent:Type<TDynamicComponentType>;
 	private componentInstance: ComponentRef<TDynamicComponentType>;
 
 	constructor(protected viewContainer: ViewContainerRef,
@@ -59,7 +62,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	 * @override
 	 */
 	public ngOnChanges() {
-		this.getComponentTypePromise().then((module: Type<any>) =>
+		this.getDynamicModule().then((module: Type<any>) =>
 			this.compiler.compileModuleAndAllComponentsAsync<any>(module)
 				.then((moduleWithComponentFactories: ModuleWithComponentFactories<any>) => {
 					this.componentInstance = this.viewContainer.createComponent<TDynamicComponentType>(
@@ -80,12 +83,18 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	 * @override
 	 */
 	public ngOnDestroy() {
-		if (this.componentInstance) {
+		if (Utils.isPresent(this.componentInstance)) {
 			this.componentInstance.destroy();
+		}
+		if (Utils.isPresent(this.cachedDynamicModule)) {
+			this.compiler.clearCacheFor(this.cachedDynamicModule);
+		}
+		if (Utils.isPresent(this.cachedDynamicComponent)) {
+			this.compiler.clearCacheFor(this.cachedDynamicComponent);
 		}
 	}
 
-	protected getComponentTypePromise(): Promise<Type<any>> {
+	protected getDynamicModule(): Promise<Type<any>> {
 		return new Promise((resolve: (value: Type<any>) => void) => {
 			if (Utils.isPresent(this.componentTemplate)) {
 				resolve(this.makeComponentModule(this.componentTemplate));
@@ -129,15 +138,16 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	}
 
 	protected makeComponentModule(template: string, componentType?: {new (): TDynamicComponentType}): Type<any> {
-		componentType = this.makeComponent(template, componentType);
+		const dynamicComponentType: Type<TDynamicComponentType> = this.cachedDynamicComponent = this.makeComponent(template, componentType);
 		const componentModules: Array<any> = this.componentModules;
 
 		@NgModule({
-			declarations: [componentType],
+			declarations: [dynamicComponentType],
 			imports: [CommonModule].concat(componentModules || [])
 		})
-		class dynamicComponentModule {}
-		return dynamicComponentModule;
+		class dynamicComponentModule {
+		}
+		return this.cachedDynamicModule = dynamicComponentModule;
 	}
 
 	protected makeComponent(template:string, componentType?:{new ():TDynamicComponentType}):Type<TDynamicComponentType> {
