@@ -126,7 +126,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 
 		this.http.get(url, requestArgs)
 			.subscribe((response: Response) => {
-				if (response.status === 301 || response.status === 302) {
+				if ([301, 302, 307, 308].indexOf(response.status) > -1) {
 					const chainedUrl: string = response.headers.get('Location');
 
 					console.debug('[$DynamicBase][loadRemoteTemplate] The URL into the chain is:', chainedUrl);

@@ -27,19 +27,19 @@ import {DynamicComponentModule} from 'angular2-dynamic-component/index';
 
 **1** Support of **dynamicComponentReady** & **dynamicComponentBeforeReady** output events.  
 **2** Support of **dynamic-component** directive.  
-**3** Support of **componentTemplateUrl** attribute.  
-**4** Support of **componentContext** attribute. This attribute can refer to owner component (via self = this) or any other object.  
-
-## Use case #0
-The module provides "dynamic-component" directive:  
-
-**app.html**
-```html
-<template dynamic-component
-          [componentTemplate]="dynamicTemplate"></template>
-```
+**3** Support of **DynamicComponent** component.  
+**4** Support of **componentTemplateUrl** attribute. This attribute allows getting resource via Angular2 HTTP/Ajax. 
+Also, 301, 302, 307, 308 HTTP statuses are supported (recursive redirection).  
+**5** Support of **componentContext** attribute. This attribute can refer to owner component (via self = this) or any other object.  
 
 ## Use case #1
+The module provides "dynamic-component" directive:  
+
+```html
+<template dynamic-component [componentTemplate]="dynamicTemplate"></template>
+```
+
+## Use case #2
 
 **app.html**
 ```html
