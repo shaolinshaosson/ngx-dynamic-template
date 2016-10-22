@@ -1,9 +1,11 @@
 import {
 	Component,
 	Input,
+	Output,
 	Compiler,
 	OnChanges,
 	OnDestroy,
+	EventEmitter,
 	NgModule,
 	ViewContainerRef,
 	ComponentRef,
@@ -38,6 +40,9 @@ export type TDynamicComponentType = Function;
 
 export class DynamicBase implements OnChanges, OnDestroy {
 
+	@Output() dynamicComponentReady:EventEmitter<void> = new EventEmitter<void>(false);
+	@Output() dynamicComponentBeforeReady:EventEmitter<void> = new EventEmitter<void>(false);
+
 	@Input() componentType: {new (): TDynamicComponentType};
 	@Input() componentTemplate: string;
 	@Input() componentInputData: IComponentInputData;
@@ -62,6 +67,8 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	 * @override
 	 */
 	public ngOnChanges() {
+		this.dynamicComponentBeforeReady.emit(null);
+
 		this.getDynamicModule().then((module: Type<any>) =>
 			this.compiler.compileModuleAndAllComponentsAsync<any>(module)
 				.then((moduleWithComponentFactories: ModuleWithComponentFactories<any>) => {
@@ -75,6 +82,8 @@ export class DynamicBase implements OnChanges, OnDestroy {
 					);
 
 					this.applyPropertiesToDynamicComponent(this.componentInstance.instance);
+
+					this.dynamicComponentReady.emit(null);
 				})
 		);
 	}
