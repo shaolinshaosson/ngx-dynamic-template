@@ -4,23 +4,34 @@ An implementation of dynamic component wrapper at Angular2 (2.1.0 & AOT compatib
 
 ## Installation
 
-1) At first, you need to install the [core-js](https://www.npmjs.com/package/core-js) npm module.  
-2) Then you need to install the [ts-metadata-helper](https://www.npmjs.com/package/ts-metadata-helper) dependency package (don't worry, it's very small and simple, I like "reusable" approach)  
+1 At first, you need to install the [core-js](https://www.npmjs.com/package/core-js) npm module.  
+2 Then you need to install the [ts-metadata-helper](https://www.npmjs.com/package/ts-metadata-helper) dependency package (don't worry, it's very small and simple, I like "reusable" approach)  
 ```sh
 npm install ts-metadata-helper --save
 ```  
-3) And after that, you have to install the target package  
+3 And after that, you have to install the target package  
 ```sh
 npm install angular2-dynamic-component --save
 ```
+4 Then you must apply the **DynamicComponentModule**  
+
+```typescript
+import {DynamicComponentModule} from 'angular2-dynamic-component/index';
+
+@NgModule({
+    imports: [DynamicComponentModule]
+})
+```
 
 ## Use case #0
+The module provides "dynamic-component" directive:  
+
 **app.html**
 ```html
 <template dynamic-component
-          [componentModules]="extraModules"
-          [componentInputData]="componentInputData"
-          [componentTemplate]="componentTemplate"></template>
+          [componentModules]="dynamicModules"
+          [componentInputData]="dynamicContext"
+          [componentTemplate]="dynamicTemplate"></template>
 ```
 
 ## Use case #1
@@ -113,13 +124,6 @@ export class RedButton implements IButton {
 ## Use case #2. Using the "componentTemplate" attribute
 **app.ts**
 ```typescript
-import {DynamicComponentModule} from 'angular2-dynamic-component/index';
-
-@NgModule({
-    imports: [DynamicComponentModule]
-})
-...
-
 class DynamicContext {
   value:string;
 
@@ -148,15 +152,6 @@ class App {
 
 The main feature is the support of [http 301](https://en.wikipedia.org/wiki/HTTP_301) and [http 302](https://en.wikipedia.org/wiki/HTTP_302) statuses.
 
-**app.ts**
-```typescript
-import {DynamicComponentModule} from 'angular2-dynamic-component/index';
-
-@NgModule({
-    imports: [DynamicComponentModule]
-})
-```
-
 **app.html**
 ```html
 <DynamicComponent [componentTemplateUrl]="'http://www.yandex.ru'">
@@ -167,13 +162,6 @@ import {DynamicComponentModule} from 'angular2-dynamic-component/index';
 
 **app.ts**
 ```typescript
-import {DynamicComponentModule} from 'angular2-dynamic-component/index';
-
-@NgModule({
-    imports: [DynamicComponentModule]
-})
-...
-
 import {IComponentInputData} from 'angular2-dynamic-component/index';
 
 @Component({
