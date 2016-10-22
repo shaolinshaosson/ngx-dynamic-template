@@ -59,23 +59,21 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	 * @override
 	 */
 	public ngOnChanges() {
-		this.getComponentTypePromise().then((module: Type<any>) => {
-
+		this.getComponentTypePromise().then((module: Type<any>) =>
 			this.compiler.compileModuleAndAllComponentsAsync<any>(module)
 				.then((moduleWithComponentFactories: ModuleWithComponentFactories<any>) => {
 					this.componentInstance = this.viewContainer.createComponent<TDynamicComponentType>(
-						// dynamicComponentClass factory is presented here
-						moduleWithComponentFactories.componentFactories.find((componentFactory: ComponentFactory<Type<any>>) => {
-							return componentFactory.selector === this.dynamicSelector
-								|| componentFactory.componentType === this.componentType;
-						}),
+						moduleWithComponentFactories.componentFactories.find((componentFactory: ComponentFactory<Type<any>>) =>
+							componentFactory.selector === this.dynamicSelector
+							|| componentFactory.componentType === this.componentType
+						),
 						0,
 						this.injector
 					);
 
 					this.applyPropertiesToDynamicComponent(this.componentInstance.instance);
-				});
-		});
+				})
+		);
 	}
 
 	/**
@@ -155,8 +153,10 @@ export class DynamicBase implements OnChanges, OnDestroy {
 			}
 		}
 
+		const dynamicComponentParentClass = componentType || class {};
+
 		@Component(componentDecorator || {selector: dynamicSelector, template: template})
-		class dynamicComponentClass {
+		class dynamicComponentClass extends dynamicComponentParentClass {
 		}
 		return dynamicComponentClass as Type<TDynamicComponentType>;
 	}
