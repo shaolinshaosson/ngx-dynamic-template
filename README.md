@@ -36,8 +36,6 @@ The module provides "dynamic-component" directive:
 **app.html**
 ```html
 <template dynamic-component
-          [componentModules]="dynamicModules"
-          [componentInputData]="dynamicContext"
           [componentTemplate]="dynamicTemplate"></template>
 ```
 
@@ -150,7 +148,7 @@ class App {
 **app.html**
 ```html
 <DynamicComponent [componentTemplate]="componentTemplate" 
-                  [componentInputData]="context"
+                  [componentContext]="context"
                   [componentModules]="extraModules">
 </DynamicComponent>
 ```
@@ -165,17 +163,15 @@ The main feature is the support of [http 301](https://en.wikipedia.org/wiki/HTTP
 </DynamicComponent>
 ```
 
-## Use case #4. Using the "componentModules" and "componentInputData" attribute
+## Use case #4. Using the "componentModules" and "componentContext" attribute
 
 **app.ts**
 ```typescript
-import {IComponentInputData} from 'angular2-dynamic-component/index';
-
 @Component({
 	...
 	template: `
     <DynamicComponent [componentModules]="extraModules"
-                      [componentInputData]="inputData"
+                      [componentContext]="dynamicContext"
                       [componentTemplate]="template"></DynamicComponent>
   `
 })
@@ -183,7 +179,7 @@ export class App {
 
 	template: string = 'Empty current date';
 	extraModules:Array<any> = [InnerModule];
-	inputData: IComponentInputData = {currentDate: new Date()};
+	dynamicContext = {currentDate: new Date()};
 
 	ngOnInit() {
 		setTimeout(() => {
