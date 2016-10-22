@@ -1,8 +1,10 @@
 import {
 	Component,
 	Input,
+	Output,
 	Compiler,
-	ViewContainerRef
+	ViewContainerRef,
+	EventEmitter
 } from '@angular/core';
 
 import {Http} from '@angular/http';
@@ -10,8 +12,8 @@ import {Http} from '@angular/http';
 import {IComponentRemoteTemplateFactory} from './IComponentRemoteTemplateFactory';
 import {
 	TDynamicComponentType,
-	IComponentInputData,
-	DynamicBase
+	DynamicBase,
+	IComponentContext
 } from "./DynamicBase";
 
 const DYNAMIC_SELECTOR: string = 'DynamicComponent';
@@ -27,9 +29,12 @@ export class DynamicComponentMetadata {
 })
 export class DynamicComponent extends DynamicBase {
 
+	@Output() dynamicComponentReady:EventEmitter<void>;
+	@Output() dynamicComponentBeforeReady:EventEmitter<void>;
+
 	@Input() componentType: {new (): TDynamicComponentType};
 	@Input() componentTemplate: string;
-	@Input() componentInputData: IComponentInputData;
+	@Input() componentContext: IComponentContext;
 	@Input() componentTemplateUrl: string;
 	@Input() componentRemoteTemplateFactory: IComponentRemoteTemplateFactory;
 	@Input() componentModules: Array<any>;

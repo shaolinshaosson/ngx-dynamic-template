@@ -27,7 +27,8 @@ import {DynamicComponentModule} from 'angular2-dynamic-component/index';
 
 **1** Support of **dynamicComponentReady** & **dynamicComponentBeforeReady** output events.  
 **2** Support of **dynamic-component** directive.  
-**3** Support of **componentTemplateUrl** option.  
+**3** Support of **componentTemplateUrl** attribute.  
+**4** Support of **componentContext** attribute. This attribute can refer to owner component (via self = this) or any other object.  
 
 ## Use case #0
 The module provides "dynamic-component" directive:  

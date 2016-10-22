@@ -32,7 +32,7 @@ import {
 import {IComponentRemoteTemplateFactory} from './IComponentRemoteTemplateFactory';
 import {Utils} from './Utils';
 
-export interface IComponentInputData {
+export interface IComponentContext {
 	[index: string]: any;
 }
 
@@ -40,12 +40,12 @@ export type TDynamicComponentType = Function;
 
 export class DynamicBase implements OnChanges, OnDestroy {
 
-	@Output() dynamicComponentReady:EventEmitter<void> = new EventEmitter<void>(false);
-	@Output() dynamicComponentBeforeReady:EventEmitter<void> = new EventEmitter<void>(false);
+	@Output() dynamicComponentReady:EventEmitter<void>;
+	@Output() dynamicComponentBeforeReady:EventEmitter<void>;
 
 	@Input() componentType: {new (): TDynamicComponentType};
 	@Input() componentTemplate: string;
-	@Input() componentInputData: IComponentInputData;
+	@Input() componentContext: IComponentContext;
 	@Input() componentTemplateUrl: string;
 	@Input() componentRemoteTemplateFactory: IComponentRemoteTemplateFactory;
 	@Input() componentModules: Array<any>;
@@ -60,6 +60,9 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	            protected compiler: Compiler,
 	            protected http: Http,
 				protected dynamicSelector:string) {
+		this.dynamicComponentReady = new EventEmitter<void>(false);
+		this.dynamicComponentBeforeReady = new EventEmitter<void>(false);
+
 		this.injector = ReflectiveInjector.fromResolvedProviders([], this.viewContainer.parentInjector);
 	}
 
@@ -192,19 +195,19 @@ export class DynamicBase implements OnChanges, OnDestroy {
 			}
 		}
 
-		if (Utils.isPresent(this.componentInputData)) {
-			for (let property in this.componentInputData) {
+		if (Utils.isPresent(this.componentContext)) {
+			for (let property in this.componentContext) {
 				if (Reflect.has(instance, property)) {
 					console.warn('[$DynamicBase][applyPropertiesToDynamicComponent] The property', property, 'will be overwritten for the component', instance);
 				}
 
-				const propValue = Reflect.get(this.componentInputData, property);
+				const propValue = Reflect.get(this.componentContext, property);
 				const attributes:PropertyDescriptor = {} as PropertyDescriptor;
 
 				if (!Utils.isFunction(propValue)) {
-					attributes.set = (v) => Reflect.set(this.componentInputData, property, v);
+					attributes.set = (v) => Reflect.set(this.componentContext, property, v);
 				}
-				attributes.get = () => Reflect.get(this.componentInputData, property);
+				attributes.get = () => Reflect.get(this.componentContext, property);
 
 				Reflect.defineProperty(instance, property, attributes);
 			}
