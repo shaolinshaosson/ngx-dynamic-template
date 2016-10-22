@@ -4,12 +4,14 @@ import {
 	Compiler,
 	ElementRef,
 	OnChanges,
+	OnDestroy,
 	NgModule,
 	ViewContainerRef,
 	ComponentRef,
 	ModuleWithComponentFactories,
 	ComponentFactory,
-	Type
+	Type,
+	ReflectiveInjector
 } from '@angular/core';
 
 import {CommonModule} from "@angular/common";
@@ -46,7 +48,7 @@ export type TDynamicComponentType = Function;
 	selector: DYNAMIC_SELECTOR,
 	template: ''
 })
-export class DynamicComponent implements OnChanges {
+export class DynamicComponent implements OnChanges, OnDestroy {
 
 	@Input() componentType: {new (): TDynamicComponentType};
 	@Input() componentTemplate: string;
@@ -55,6 +57,7 @@ export class DynamicComponent implements OnChanges {
 	@Input() componentRemoteTemplateFactory: IComponentRemoteTemplateFactory;
 	@Input() componentModules: Array<any>;
 
+	private injector:ReflectiveInjector;
 	private componentInstance: ComponentRef<TDynamicComponentType>;
 
 	protected destroyWrapper: boolean = false;
@@ -63,6 +66,7 @@ export class DynamicComponent implements OnChanges {
 	            protected viewContainer: ViewContainerRef,
 	            protected compiler: Compiler,
 	            protected http: Http) {
+		this.injector = ReflectiveInjector.fromResolvedProviders([], this.viewContainer.parentInjector);
 	}
 
 	/**
@@ -73,15 +77,14 @@ export class DynamicComponent implements OnChanges {
 
 			this.compiler.compileModuleAndAllComponentsAsync<any>(module)
 				.then((moduleWithComponentFactories: ModuleWithComponentFactories<any>) => {
-					if (this.componentInstance) {
-						this.componentInstance.destroy();
-					}
 					this.componentInstance = this.viewContainer.createComponent<TDynamicComponentType>(
 						// dynamicComponentClass factory is presented here
 						moduleWithComponentFactories.componentFactories.find((componentFactory: ComponentFactory<Type<any>>) => {
 							return componentFactory.selector === DYNAMIC_SELECTOR
 								|| componentFactory.componentType === this.componentType;
-						})
+						}),
+						0,
+						this.injector
 					);
 
 					this.applyPropertiesToDynamicComponent(this.componentInstance.instance);
@@ -95,6 +98,15 @@ export class DynamicComponent implements OnChanges {
 					}
 				});
 		});
+	}
+
+	/**
+	 * @override
+	 */
+	public ngOnDestroy() {
+		if (this.componentInstance) {
+			this.componentInstance.destroy();
+		}
 	}
 
 	protected getComponentTypePromise(): Promise<Type<any>> {
