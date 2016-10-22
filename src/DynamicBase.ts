@@ -110,11 +110,11 @@ export class DynamicBase implements OnChanges, OnDestroy {
 				if (response.status === 301 || response.status === 302) {
 					const chainedUrl: string = response.headers.get('Location');
 
-					console.info('[$DynamicComponent][loadRemoteTemplate] The URL into the chain is:', chainedUrl);
+					console.debug('[$DynamicBase][loadRemoteTemplate] The URL into the chain is:', chainedUrl);
 					if (Utils.isPresent(chainedUrl)) {
 						this.loadRemoteTemplate(chainedUrl, resolve);
 					} else {
-						console.warn('[$DynamicComponent][loadRemoteTemplate] The URL into the chain is empty. The process of redirect has stopped.');
+						console.warn('[$DynamicBase][loadRemoteTemplate] The URL into the chain is empty. The process of redirect has stopped.');
 					}
 				} else {
 					resolve(
@@ -124,7 +124,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 					);
 				}
 			}, (response: Response) => {
-				console.error('[$DynamicComponent][loadRemoteTemplate] Error response:', response);
+				console.warn('[$DynamicBase][loadRemoteTemplate] Error response:', response);
 
 				resolve(this.makeComponentModule(''));
 			});
@@ -133,6 +133,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	protected makeComponentModule(template: string, componentType?: {new (): TDynamicComponentType}): Type<any> {
 		componentType = this.makeComponent(template, componentType);
 		const componentModules: Array<any> = this.componentModules;
+
 		@NgModule({
 			declarations: [componentType],
 			imports: [CommonModule].concat(componentModules || [])
@@ -143,17 +144,18 @@ export class DynamicBase implements OnChanges, OnDestroy {
 
 	protected makeComponent(template:string, componentType?:{new ():TDynamicComponentType}):Type<TDynamicComponentType> {
 		let annotationsArray:Array<DecoratorType>,
-			componentDecorator:DecoratorType;
+			componentDecorator:DecoratorType,
+			dynamicSelector = this.dynamicSelector;
 
 		if (Utils.isPresent(componentType)) {
 			annotationsArray = MetadataHelper.findAnnotationsMetaData(componentType, Component);
 			if (annotationsArray.length) {
 				componentDecorator = annotationsArray[0];
-				Reflect.set(componentDecorator, 'selector', this.dynamicSelector);
+				Reflect.set(componentDecorator, 'selector', dynamicSelector);
 			}
 		}
 
-		@Component(componentDecorator || {selector: this.dynamicSelector, template: template})
+		@Component(componentDecorator || {selector: dynamicSelector, template: template})
 		class dynamicComponentClass {
 		}
 		return dynamicComponentClass as Type<TDynamicComponentType>;
@@ -165,7 +167,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 		for (let property of Object.keys(this)) {
 			if (Reflect.has(metadataHolder, property)) {
 				if (Reflect.has(instance, property)) {
-					console.warn('[$DynamicComponent][applyPropertiesToDynamicComponent] The property', property, 'will be overwritten for the component', instance);
+					console.warn('[$DynamicBase][applyPropertiesToDynamicComponent] The property', property, 'will be overwritten for the component', instance);
 				}
 				Reflect.set(instance, property, Reflect.get(this, property));
 			}
@@ -174,7 +176,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 		if (Utils.isPresent(this.componentInputData)) {
 			for (let property in this.componentInputData) {
 				if (Reflect.has(instance, property)) {
-					console.warn('[$DynamicComponent][applyPropertiesToDynamicComponent] The property', property, 'will be overwritten for the component', instance);
+					console.warn('[$DynamicBase][applyPropertiesToDynamicComponent] The property', property, 'will be overwritten for the component', instance);
 				}
 
 				const propValue = Reflect.get(this.componentInputData, property);
