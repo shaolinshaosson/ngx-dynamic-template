@@ -1,4 +1,4 @@
-# angular2-dynamic-component
+# angular2-dynamic-component & angular2-dynamic-directive
 
 An implementation of dynamic component wrapper at Angular2 (2.1.0 & AOT compatible).
 
@@ -12,6 +12,15 @@ npm install ts-metadata-helper --save
 3) And after that, you have to install the target package  
 ```sh
 npm install angular2-dynamic-component --save
+```
+
+## Use case #0
+**app.html**
+```html
+<template dynamic-component
+          [componentModules]="extraModules"
+          [componentInputData]="componentInputData"
+          [componentTemplate]="componentTemplate"></template>
 ```
 
 ## Use case #1
@@ -69,13 +78,9 @@ export class ButtonsToolbarPlaceholder extends DynamicComponent implements IButt
 
     @Input() buttonName:string;
     @Input() componentType:{new ():IButton};
-    
-    protected destroyWrapper:boolean;
 
     constructor(...) {
         super(element, viewContainer, compiler, http);
-        
-        this.destroyWrapper = true;  // remove placeholder after,  because the component is not reset, and the data are not changed
     }
 }
 ```

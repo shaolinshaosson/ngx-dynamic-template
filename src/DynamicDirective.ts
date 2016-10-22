@@ -1,5 +1,5 @@
 import {
-	Component,
+	Directive,
 	Input,
 	Compiler,
 	ViewContainerRef
@@ -14,18 +14,12 @@ import {
 	DynamicBase
 } from "./DynamicBase";
 
-const DYNAMIC_SELECTOR: string = 'DynamicComponent';
+const DYNAMIC_SELECTOR: string = '[dynamic-component]';
 
-export class DynamicComponentMetadata {
-	constructor(public selector: string = DYNAMIC_SELECTOR, public template: string = '') {
-	}
-}
-
-@Component({
+@Directive({
 	selector: DYNAMIC_SELECTOR,
-	template: ''
 })
-export class DynamicComponent extends DynamicBase {
+export class DynamicDirective extends DynamicBase {
 
 	@Input() componentType: {new (): TDynamicComponentType};
 	@Input() componentTemplate: string;
