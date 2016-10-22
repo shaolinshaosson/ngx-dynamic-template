@@ -1,13 +1,16 @@
 import {NgModule} from '@angular/core';
 
 import {DynamicComponent} from './DynamicComponent';
+import {DynamicDirective} from "./DynamicDirective";
 
 @NgModule({
     declarations: [
-        DynamicComponent
+        DynamicComponent,
+        DynamicDirective
     ],
     exports: [
-        DynamicComponent
+        DynamicComponent,
+        DynamicDirective
     ]
 })
 export class DynamicComponentModule {
