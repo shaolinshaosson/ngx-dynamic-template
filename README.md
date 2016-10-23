@@ -26,12 +26,32 @@ import {DynamicComponentModule} from 'angular2-dynamic-component/index';
 ## Features
 
 **1** Support of **dynamicComponentReady** & **dynamicComponentBeforeReady** output events.  
+
 **2** Support of **dynamic-component** directive.  
+
 **3** Support of **DynamicComponent** component.  
+
 **4** Support of **componentTemplateUrl** attribute. This attribute allows getting resource via Angular2 HTTP/Ajax. 
 Also, 301, 302, 307, 308 HTTP statuses are supported (recursive redirection).  
+
 **5** Support of **componentContext** attribute. This attribute can refer to owner component (via self = this) or any other object.  
+
 **6** Support of dynamic injected modules via the **DynamicComponentModuleFactory**.  
+```typescript
+import {DynamicComponentModuleFactory} from "angular2-dynamic-component/index";
+@NgModule({
+	imports: [..., DynamicComponentModuleFactory.buildModule([FormsModule])],
+	...
+	bootstrap: [AppComponent]
+})
+export class AppModule {
+}
+```
+```html
+<template dynamic-component
+          [componentContext]="{dynamicContextValue: 100500, changedValue: 0}"
+          [componentTemplate]='"<span [innerHTML]=\"changedValue\"></span><input type=\"text\" [(ngModel)]=\"dynamicContextValue\" (ngModelChange)=\"changedValue = $event\">"'></template>
+```
 
 ## Use case #1
 The module provides "dynamic-component" directive:  
