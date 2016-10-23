@@ -1,6 +1,9 @@
 # angular2-dynamic-component & angular2-dynamic-directive
 
 An implementation of dynamic component wrapper at Angular2 [2.1.0 & AOT compatible].  
+
+## Description
+
 Date of creation: 18 Jun [starting with 2.0.0-rc.2].  
 Although, there is another solution out of the box and we are waiting for completion of the [**NgComponentOutlet**](https://github.com/angular/angular/issues/9599)  
 
@@ -35,6 +38,22 @@ import {DynamicComponentModule} from 'angular2-dynamic-component/index';
 
 **4** Support of **componentTemplateUrl** attribute. This attribute allows getting resource via Angular2 HTTP/Ajax. 
 Also, 301, 302, 307, 308 HTTP statuses are supported (recursive redirection).  
+The **componentRemoteTemplateFactory** (IComponentRemoteTemplateFactory) attribute allows prepare http response before rendering.  
+
+```typescript
+@Component(...)
+export class AppComponent {
+	dynamicCallback(dynamicComponentInstance) {
+		console.log('Hi there!');
+	}
+}
+```
+```html
+<template dynamic-component
+          (dynamicComponentReady)="dynamicCallback($event)"
+          [componentDefaultTemplate]='"<span style=\"color: red\">This is fallback template</span>"'
+          [componentTemplateUrl]='"https://test-cors.appspot.com"'></template>
+```          
 
 **5** Support of **componentContext** attribute. This attribute can refer to owner component (via self = this) or any other object.  
 

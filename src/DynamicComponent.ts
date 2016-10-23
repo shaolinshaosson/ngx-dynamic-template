@@ -32,7 +32,7 @@ export class DynamicComponentMetadata {
 })
 export class DynamicComponent extends DynamicBase {
 
-	@Output() dynamicComponentReady: EventEmitter<void>;
+	@Output() dynamicComponentReady: EventEmitter<TDynamicComponentType>;
 	@Output() dynamicComponentBeforeReady: EventEmitter<void>;
 
 	@Input() componentType: {new (): TDynamicComponentType};

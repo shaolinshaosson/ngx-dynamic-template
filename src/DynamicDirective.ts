@@ -25,7 +25,7 @@ const DYNAMIC_SELECTOR: string = '[dynamic-component]';
 })
 export class DynamicDirective extends DynamicBase {
 
-	@Output() dynamicComponentReady: EventEmitter<void>;
+	@Output() dynamicComponentReady: EventEmitter<TDynamicComponentType>;
 	@Output() dynamicComponentBeforeReady: EventEmitter<void>;
 
 	@Input() componentType: {new (): TDynamicComponentType};

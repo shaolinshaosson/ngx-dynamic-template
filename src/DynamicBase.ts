@@ -37,7 +37,8 @@ export interface IComponentContext {
 	[index: string]: any;
 }
 
-export type TDynamicComponentType = Function;
+export interface TDynamicComponentType {
+}
 
 export const DYNAMIC_TYPES = {
 	DynamicExtraModules: 'DynamicExtraModules'  // AoT workaround Symbol(..)
@@ -45,7 +46,7 @@ export const DYNAMIC_TYPES = {
 
 export class DynamicBase implements OnChanges, OnDestroy {
 
-	@Output() dynamicComponentReady:EventEmitter<void>;
+	@Output() dynamicComponentReady:EventEmitter<TDynamicComponentType>;
 	@Output() dynamicComponentBeforeReady:EventEmitter<void>;
 
 	@Input() componentType: {new (): TDynamicComponentType};
@@ -67,7 +68,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	            protected compiler: Compiler,
 	            protected http: Http,
 				protected dynamicSelector:string) {
-		this.dynamicComponentReady = new EventEmitter<void>(false);
+		this.dynamicComponentReady = new EventEmitter<TDynamicComponentType>(false);
 		this.dynamicComponentBeforeReady = new EventEmitter<void>(false);
 
 		this.injector = ReflectiveInjector.fromResolvedProviders([], this.viewContainer.parentInjector);
@@ -93,7 +94,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 
 					this.applyPropertiesToDynamicComponent(this.componentInstance.instance);
 
-					this.dynamicComponentReady.emit(null);
+					this.dynamicComponentReady.emit(this.componentInstance.instance);
 				})
 		);
 	}
