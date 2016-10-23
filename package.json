@@ -2,6 +2,16 @@
   "name": "angular2-dynamic-component",
   "version": "0.2.9",
   "license": "MIT",
+  "keywords": [
+    "angular",
+    "angular2",
+    "dynamic",
+    "dynamic-component",
+    "angular2-dynamic-component",
+    "ng2-dynamic",
+    "ng2-dynamic-component"
+  ],
+  "author": "Alexander Poterenko",
   "scripts": {
     "clean": "npm cache clean",
     "ngc-build": "node_modules/.bin/ngc -p tsconfig.json",
