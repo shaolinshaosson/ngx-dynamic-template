@@ -30,32 +30,36 @@ import {DynamicComponentModule} from 'angular2-dynamic-component/index';
 
 ## Features
 
-**1** Support of **dynamicComponentReady** & **dynamicComponentBeforeReady** output events.  
+##### **1** Support of **dynamicComponentReady** & **dynamicComponentBeforeReady** output events. See below.  
 
-**2** Support of **dynamic-component** directive.  
+##### **2** Support of **dynamic-component** directive.  
 
-**3** Support of **DynamicComponent** component.  
+##### **3** Support of **DynamicComponent** component.  
 
-**4** Support of **componentTemplateUrl** attribute. This attribute allows getting resource via Angular2 HTTP/Ajax. 
-Also, 301, 302, 307, 308 HTTP statuses are supported (recursive redirection).  
-The **componentRemoteTemplateFactory** (IComponentRemoteTemplateFactory) attribute allows prepare http response before rendering.  
+##### **4** Support of **componentTemplateUrl** attribute. This attribute allows getting resource via Angular2 HTTP/Ajax.  
+
+Also, 301, 302, 307, 308 HTTP statuses are supported (recursive redirection). The **componentRemoteTemplateFactory** (IComponentRemoteTemplateFactory)
+ attribute allows prepare http response before rendering.  
 
 ```typescript
 @Component(...)
 export class AppComponent {
-	dynamicCallback(dynamicComponentInstance) {
-		console.log('Hi there!');
+	dynamicCallback(scope) {
+		console.log('Hi there! Context value is:', scope.contextValue); // Hi there! Context value is: 100500
 	}
 }
 ```
 ```html
 <template dynamic-component
           (dynamicComponentReady)="dynamicCallback($event)"
+          [componentContext]="{contextValue: 100500}"
           [componentDefaultTemplate]='"<span style=\"color: red\">This is fallback template</span>"'
           [componentTemplateUrl]='"https://test-cors.appspot.com"'></template>
 ```          
 
-**5** Support of **componentContext** attribute. This attribute can refer to owner component (via self = this) or any other object.  
+##### **5** Support of **componentContext** attribute.  
+
+This attribute can refer to owner component (via self = this) or any other object.  
 
 ```typescript
 @Component(...)
@@ -73,7 +77,7 @@ export class AppComponent {
           [componentTemplate]='"<span [innerHTML]=\"changedValue\"></span><input type=\"text\" [(ngModel)]=\"dynamicContextValue\" (ngModelChange)=\"changedValue = $event\">"'></template>
 ```
 
-**6** Support of dynamic injected modules via the **DynamicComponentModuleFactory**.  
+##### **6** Support of dynamic injected modules via the **DynamicComponentModuleFactory**.  
 
 The **CommonModule** module is imported by default.
 
@@ -104,7 +108,6 @@ export class AppComponent {
 	dynamicExtraModules = [FormsModule];
 }
 ```
-
 ```html
 <template dynamic-component
           [componentModules]="dynamicExtraModules"
