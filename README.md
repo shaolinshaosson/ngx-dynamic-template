@@ -116,13 +116,6 @@ export class AppComponent {
 ```
 
 ## Use case #1
-The module provides "dynamic-component" directive:  
-
-```html
-<template dynamic-component [componentTemplate]="dynamicTemplate"></template>
-```
-
-## Use case #2
 
 **app.html**
 ```html
@@ -205,63 +198,6 @@ export class GreenButton implements IButton {
 export class RedButton implements IButton {
     @Input() public buttonName:string;
 }
-```
-
-![Preview](preview.png)
-
-## Use case #3. Using the "componentModules" and "componentContext" attribute
-
-**app.ts**
-```typescript
-@Component({
-	...
-	template: `
-    <DynamicComponent [componentModules]="extraModules"
-                      [componentContext]="dynamicContext"
-                      [componentTemplate]="template"></DynamicComponent>
-  `
-})
-export class App {
-
-	template: string = 'Empty current date';
-	extraModules:Array<any> = [InnerModule];
-	dynamicContext = {currentDate: new Date()};
-
-	ngOnInit() {
-		setTimeout(() => {
-			this.template = 'Current date is: {{ currentDate | date }}<br>Custom pipe value is: {{ "input value" | myPipe }}';
-		}, 1000);
-	}
-}
-```
-
-**InnerModule.ts**
-```typescript
-import {NgModule, Pipe} from '@angular/core';
-
-@Pipe({
-	name: 'myPipe',
-})
-class MyPipe {
-	transform(value: any): string {
-		return 'transformed value';
-	}
-}
-
-@NgModule({
-	declarations: [MyPipe],
-	exports: [
-		MyPipe
-	]
-})
-export class InnerModule {
-}
-```
-
-## Publish
-
-```sh
-npm run deploy
 ```
 
 ## License
