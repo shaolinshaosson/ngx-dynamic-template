@@ -34,7 +34,7 @@ import {DynamicComponentModule} from 'angular2-dynamic-component/index';
 
 ##### **2** Support of **dynamic-component** directive. See below.  
 
-##### **3** Support of **DynamicComponent** component.  
+##### **3** Support of **DynamicComponent** component. See below.  
 
 ##### **4** Support of **componentTemplateUrl** attribute. This attribute allows getting resource via Angular2 HTTP/Ajax.  
 
@@ -153,7 +153,7 @@ import {
 } from '@angular/core';
 
 @Component({
-	selector: 'TextField',
+	selector: 'DynamicTextField',       // Can be absent => selector === "TextField"
 	template: `<input name="{{fieldName}}" type="text" [value]="value">`,
 })
 export class TextField {
@@ -170,7 +170,7 @@ export class TextField {
 }
 
 @Component({
-	selector: 'CheckboxField',
+	selector: 'DynamicCheckboxField',       // Can be absent => selector === "CheckboxField"
 	template: `<input name="{{fieldName}}" type="checkbox" [checked]="value">`,
 })
 export class CheckboxField {

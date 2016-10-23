@@ -84,9 +84,18 @@ export class DynamicBase implements OnChanges, OnDestroy {
 			this.compiler.compileModuleAndAllComponentsAsync<any>(module)
 				.then((moduleWithComponentFactories: ModuleWithComponentFactories<any>) => {
 					this.componentInstance = this.viewContainer.createComponent<TDynamicComponentType>(
-						moduleWithComponentFactories.componentFactories.find((componentFactory: ComponentFactory<Type<any>>) =>
-							componentFactory.selector === this.dynamicSelector
-							|| componentFactory.componentType === this.componentType
+						moduleWithComponentFactories.componentFactories.find((componentFactory: ComponentFactory<Type<any>>) => {
+
+								let bufferedSelector: string = null;
+								const builtComponentDecorator: DecoratorType = this.findComponentDecoratorByComponentType(this.componentType);
+								if (Utils.isPresent(builtComponentDecorator)
+									&& Utils.isPresent(bufferedSelector = Reflect.get(builtComponentDecorator, 'selector'))
+									&& componentFactory.selector === bufferedSelector) {
+									return true;
+								}
+
+								return componentFactory.selector === this.dynamicSelector;
+							}
 						),
 						0,
 						this.injector
@@ -174,16 +183,12 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	}
 
 	protected makeComponent(template:string, componentType?:{new ():TDynamicComponentType}):Type<TDynamicComponentType> {
-		let annotationsArray:Array<DecoratorType>,
-			componentDecorator:DecoratorType,
-			dynamicSelector = this.dynamicSelector;
+		const dynamicSelector: string = this.dynamicSelector;
+		const componentDecorator: DecoratorType = this.findComponentDecoratorByComponentType(componentType);
 
-		if (Utils.isPresent(componentType)) {
-			annotationsArray = MetadataHelper.findAnnotationsMetaData(componentType, Component);
-			if (annotationsArray.length) {
-				componentDecorator = annotationsArray[0];
-				Reflect.set(componentDecorator, 'selector', dynamicSelector);
-			}
+		if (Utils.isPresent(componentDecorator)
+			&& Utils.isUndefined(Reflect.get(componentDecorator, 'selector'))) {
+			Reflect.set(componentDecorator, 'selector', componentType.name);
 		}
 
 		const dynamicComponentParentClass = componentType || class {};
@@ -223,5 +228,15 @@ export class DynamicBase implements OnChanges, OnDestroy {
 				Reflect.defineProperty(instance, property, attributes);
 			}
 		}
+	}
+
+	private findComponentDecoratorByComponentType(componentType?: {new (): TDynamicComponentType}): DecoratorType {
+		if (Utils.isPresent(componentType)) {
+			const annotationsArray: Array<DecoratorType> = MetadataHelper.findAnnotationsMetaData(componentType, Component);
+			if (annotationsArray.length) {
+				return annotationsArray[0];
+			}
+		}
+		return null;
 	}
 }
