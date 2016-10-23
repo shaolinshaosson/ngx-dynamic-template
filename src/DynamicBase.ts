@@ -103,12 +103,15 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	public ngOnDestroy() {
 		if (Utils.isPresent(this.componentInstance)) {
 			this.componentInstance.destroy();
+			this.componentInstance = null;
 		}
 		if (Utils.isPresent(this.cachedDynamicModule)) {
 			this.compiler.clearCacheFor(this.cachedDynamicModule);
+			this.cachedDynamicModule = null;
 		}
 		if (Utils.isPresent(this.cachedDynamicComponent)) {
 			this.compiler.clearCacheFor(this.cachedDynamicComponent);
+			this.cachedDynamicComponent = null;
 		}
 	}
 
