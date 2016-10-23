@@ -32,7 +32,7 @@ import {DynamicComponentModule} from 'angular2-dynamic-component/index';
 
 ##### **1** Support of **dynamicComponentReady** & **dynamicComponentBeforeReady** output events. See below.  
 
-##### **2** Support of **dynamic-component** directive.  
+##### **2** Support of **dynamic-component** directive. See below.  
 
 ##### **3** Support of **DynamicComponent** component.  
 
@@ -115,88 +115,75 @@ export class AppComponent {
           [componentTemplate]='"<span [innerHTML]=\"changedValue\"></span><input type=\"text\" [(ngModel)]=\"dynamicContextValue\" (ngModelChange)=\"changedValue = $event\">"'></template>
 ```
 
-## Use case #1
-
-**app.html**
-```html
-<ButtonsToolbar></ButtonsToolbar><br>
-<ButtonsToolbar></ButtonsToolbar>
-```
+##### **8** Support of **componentType** attribute.  
 
 ```html
-<template ngFor let-button [ngForOf]="buttons">
-  <ButtonsToolbarPlaceholder [componentType]="button.type" [buttonName]="button.name">
-  </ButtonsToolbarPlaceholder>
+<template dynamic-component
+          *ngFor="let field of columns"
+          [componentType]="field.type"
+          [componentContext]="field.context">
 </template>
 ```
-
 ```typescript
-export interface ButtonType {
-    name:string;
-    type:{new ():IButton};
-}
-
-@Component({
-    selector: 'ButtonsToolbar',
-    template: require('./ButtonsToolbar.html')
-})
-export class ButtonsToolbar {
-
-    buttons:Array<ButtonType> = [
-        {
-            name: 'GreenButtonName',
-            type: GreenButton
-        },
-        {
-            name: 'RedButtonName',
-            type: RedButton
-        }
-    ];
-}
+@Component(...)
+export class AppComponent {
+	columns = [{
+		type: TextField,
+		context: {
+			name: 'description',
+			value: 'Test description'
+		}
+	}, {
+		type: CheckboxField,
+		context: {
+			name: 'expired',
+			value: true
+		}
+	}];
+	ngOnInit() {
+		setTimeout(() => {
+			console.log(JSON.stringify(this.columns));  // [{"context":{"name":"description","value":"Next value"}},{"context":{"name":"expired","value":false}}]
+		}, 3000);
+	}
 ```
-
 ```typescript
-import {DynamicComponent, DynamicComponentMetadata} from 'angular2-dynamic-component/index';
+import {
+	Component,
+	Input,
+} from '@angular/core';
 
-class ButtonsToolbarComponent extends DynamicComponentMetadata {
+@Component({
+	selector: 'TextField',
+	template: `<input name="{{fieldName}}" type="text" [value]="value">`,
+})
+export class TextField {
+	@Input() fieldName: string;
+	@Input() value: string;
 
-    constructor(public selector:string = 'ButtonsToolbarPlaceholder') {
-        super();
-    }
-}
+	constructor() {
+		console.log('The constructor of TextField is called');  // The constructor of TextField is called
+	}
 
-@Component(new ButtonsToolbarComponent())
-export class ButtonsToolbarPlaceholder extends DynamicComponent implements IButton {
-
-    @Input() buttonName:string;
-    @Input() componentType:{new ():IButton};
-
-    constructor(...) {
-        super(element, viewContainer, compiler, http);
-    }
-}
-```
-
-```typescript
-export interface IButton {
-    buttonName:string;
+	ngOnInit() {
+		setTimeout(() => this.value = 'Next value', 2000);
+	}
 }
 
 @Component({
-    selector: 'GreenButton',
-    template: '<span style="color: green; width: 50px; border: 1px solid black; padding: 6px; margin: 6px;">The first button with name: {{ buttonName }}</span>',
+	selector: 'CheckboxField',
+	template: `<input name="{{fieldName}}" type="checkbox" [checked]="value">`,
 })
-export class GreenButton implements IButton {
+export class CheckboxField {
+	@Input() fieldName: string;
+	@Input() value: boolean;
 
-    @Input() public buttonName:string;
-}
+	constructor() {
+		console.log('The constructor of CheckboxField is called');  // The constructor of CheckboxField is called
+	}
 
-@Component({
-    selector: 'RedButton',
-    template: '<span style="color: red; width: 50px; border: 1px solid black; padding: 6px; margin: 6px;">The second button with name: {{ buttonName }}</span>',
-})
-export class RedButton implements IButton {
-    @Input() public buttonName:string;
+	ngOnInit() {
+		setTimeout(() => this.value = !this.value, 1000);
+	}
 }
 ```
 
