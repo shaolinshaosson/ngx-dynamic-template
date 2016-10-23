@@ -52,6 +52,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	@Input() componentTemplate: string;
 	@Input() componentContext: IComponentContext;
 	@Input() componentTemplateUrl: string;
+	@Input() componentDefaultTemplate: string;
 	@Input() componentRemoteTemplateFactory: IComponentRemoteTemplateFactory;
 	@Input() componentModules: Array<any>;
 
@@ -154,7 +155,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 			}, (response: Response) => {
 				console.warn('[$DynamicBase][loadRemoteTemplate] Error response:', response);
 
-				resolve(this.makeComponentModule(''));
+				resolve(this.makeComponentModule(this.componentDefaultTemplate || ''));
 			});
 	}
 

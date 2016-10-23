@@ -39,6 +39,7 @@ export class DynamicComponent extends DynamicBase {
 	@Input() componentTemplate: string;
 	@Input() componentContext: IComponentContext;
 	@Input() componentTemplateUrl: string;
+	@Input() componentDefaultTemplate: string;
 	@Input() componentRemoteTemplateFactory: IComponentRemoteTemplateFactory;
 	@Input() componentModules: Array<any>;
 
