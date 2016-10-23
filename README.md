@@ -37,15 +37,21 @@ Also, 301, 302, 307, 308 HTTP statuses are supported (recursive redirection).
 **5** Support of **componentContext** attribute. This attribute can refer to owner component (via self = this) or any other object.  
 
 **6** Support of dynamic injected modules via the **DynamicComponentModuleFactory**.  
+
+The **CommonModule** module is imported by default.
+
 ```typescript
 import {DynamicComponentModuleFactory} from "angular2-dynamic-component/index";
 @NgModule({
-	imports: [..., DynamicComponentModuleFactory.buildModule([FormsModule])],
+	imports: [..., 
+		DynamicComponentModuleFactory.buildModule([
+			FormsModule
+		])
+	],
 	...
 	bootstrap: [AppComponent]
 })
-export class AppModule {
-}
+export class AppModule {}
 ```
 ```html
 <template dynamic-component
