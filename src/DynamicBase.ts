@@ -40,7 +40,7 @@ export interface IComponentContext {
 export type TDynamicComponentType = Function;
 
 export const DYNAMIC_TYPES = {
-	DynamicExtraModules: Symbol('DynamicExtraModules')
+	DynamicExtraModules: 'DynamicExtraModules'  // AoT workaround Symbol(..)
 };
 
 export class DynamicBase implements OnChanges, OnDestroy {
