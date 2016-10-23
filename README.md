@@ -206,44 +206,7 @@ export class RedButton implements IButton {
 
 ![Preview](preview.png)
 
-## Use case #2. Using the "componentTemplate" attribute
-**app.ts**
-```typescript
-class DynamicContext {
-  value:string;
-
-  onChange() {
-    console.log(this.value)
-  }
-}
-
-@Component(...)
-class App {
-    private componentTemplate:string = '<input type="text" [(ngModel)]="value" (ngModelChange)="onChange($event)"/>';
-    private extraModules = [FormsModule];
-    private context = new DynamicContext();
-}
-```
-
-**app.html**
-```html
-<DynamicComponent [componentTemplate]="componentTemplate" 
-                  [componentContext]="context"
-                  [componentModules]="extraModules">
-</DynamicComponent>
-```
-
-## Use case #3. Using the "componentTemplateUrl" attribute
-
-The main feature is the support of [http 301](https://en.wikipedia.org/wiki/HTTP_301) and [http 302](https://en.wikipedia.org/wiki/HTTP_302) statuses.
-
-**app.html**
-```html
-<DynamicComponent [componentTemplateUrl]="'http://www.yandex.ru'">
-</DynamicComponent>
-```
-
-## Use case #4. Using the "componentModules" and "componentContext" attribute
+## Use case #3. Using the "componentModules" and "componentContext" attribute
 
 **app.ts**
 ```typescript
