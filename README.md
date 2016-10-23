@@ -36,7 +36,23 @@ import {DynamicComponentModule} from 'angular2-dynamic-component/index';
 
 ##### **3** Support of **DynamicComponent** component. See below.  
 
-##### **4** Support of **componentTemplateUrl** attribute. This attribute allows getting resource via Angular2 HTTP/Ajax.  
+##### **4** Support of **Dynamic within Dynamic** strategy.  
+
+```typescript
+@Component(...)
+export class AppComponent {
+	extraTemplate = `<DynamicComponent [componentTemplate]='"<span>Dynamic inside dynamic!</span>"'></DynamicComponent>`;
+	extraModules = [DynamicComponentModule];
+	...
+}
+```
+```html
+<template dynamic-component
+          [componentModules]="extraModules"
+          [componentTemplate]='extraTemplate'></template>
+``` 
+
+##### **5** Support of **componentTemplateUrl** attribute. This attribute allows getting resource via Angular2 HTTP/Ajax.  
 
 Also, 301, 302, 307, 308 HTTP statuses are supported (recursive redirection). The **componentRemoteTemplateFactory** (IComponentRemoteTemplateFactory)
  attribute allows prepare http response before rendering.  
@@ -57,7 +73,7 @@ export class AppComponent {
           [componentTemplateUrl]='"https://test-cors.appspot.com"'></template>
 ```          
 
-##### **5** Support of **componentContext** attribute.  
+##### **6** Support of **componentContext** attribute.  
 
 This attribute can refer to owner component (via self = this) or any other object.  
 
@@ -77,7 +93,7 @@ export class AppComponent {
           [componentTemplate]='"<span [innerHTML]=\"changedValue\"></span><input type=\"text\" [(ngModel)]=\"dynamicContextValue\" (ngModelChange)=\"changedValue = $event\">"'></template>
 ```
 
-##### **6** Support of dynamic injected modules via the **DynamicComponentModuleFactory**.  
+##### **7** Support of dynamic injected modules via the **DynamicComponentModuleFactory**.  
 
 The **CommonModule** module is imported by default.
 
@@ -100,7 +116,7 @@ export class AppModule {}
           [componentTemplate]='"<span [innerHTML]=\"changedValue\"></span><input type=\"text\" [(ngModel)]=\"dynamicContextValue\" (ngModelChange)=\"changedValue = $event\">"'></template>
 ```
 
-##### **7** Support of **componentModules** attribute.  
+##### **8** Support of **componentModules** attribute.  
 
 ```typescript
 @Component(...)
@@ -115,7 +131,7 @@ export class AppComponent {
           [componentTemplate]='"<span [innerHTML]=\"changedValue\"></span><input type=\"text\" [(ngModel)]=\"dynamicContextValue\" (ngModelChange)=\"changedValue = $event\">"'></template>
 ```
 
-##### **8** Support of **componentType** attribute.  
+##### **9** Support of **componentType** attribute.  
 
 ```html
 <template dynamic-component
