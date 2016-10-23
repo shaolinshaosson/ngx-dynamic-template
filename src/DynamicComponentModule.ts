@@ -17,7 +17,9 @@ import {DYNAMIC_TYPES} from "./DynamicBase";
 		DynamicDirective
 	],
 	providers: [
-		{provide: DYNAMIC_TYPES.DynamicExtraModules, useFactory: () => []}
+		{provide: DYNAMIC_TYPES.DynamicExtraModules, useFactory: function () {
+			return [];
+		}}
 	]
 })
 export class DynamicComponentModule {
