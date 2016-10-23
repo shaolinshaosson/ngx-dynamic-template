@@ -59,6 +59,21 @@ export class AppModule {}
           [componentTemplate]='"<span [innerHTML]=\"changedValue\"></span><input type=\"text\" [(ngModel)]=\"dynamicContextValue\" (ngModelChange)=\"changedValue = $event\">"'></template>
 ```
 
+**7** Support of **componentModules** attribute.  
+
+```typescript
+@Component(...)
+export class AppComponent {
+	dynamicExtraModules = [FormsModule];
+```
+
+```html
+<template dynamic-component
+          [componentModules]="dynamicExtraModules"
+          [componentContext]="{dynamicContextValue: 100500, changedValue: 0}"
+          [componentTemplate]='"<span [innerHTML]=\"changedValue\"></span><input type=\"text\" [(ngModel)]=\"dynamicContextValue\" (ngModelChange)=\"changedValue = $event\">"'></template>
+```
+
 ## Use case #1
 The module provides "dynamic-component" directive:  
 
