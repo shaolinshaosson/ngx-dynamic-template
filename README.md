@@ -100,7 +100,7 @@ export class AppModule {}
           [componentTemplate]='"<span [innerHTML]=\"changedValue\"></span><input type=\"text\" [(ngModel)]=\"dynamicContextValue\" (ngModelChange)=\"changedValue = $event\">"'></template>
 ```
 
-**7** Support of **componentModules** attribute.  
+##### **7** Support of **componentModules** attribute.  
 
 ```typescript
 @Component(...)
