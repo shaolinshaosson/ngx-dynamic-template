@@ -31,6 +31,7 @@ import {DynamicComponentModule} from 'angular2-dynamic-component/index';
 **4** Support of **componentTemplateUrl** attribute. This attribute allows getting resource via Angular2 HTTP/Ajax. 
 Also, 301, 302, 307, 308 HTTP statuses are supported (recursive redirection).  
 **5** Support of **componentContext** attribute. This attribute can refer to owner component (via self = this) or any other object.  
+**6** Support of dynamic injected modules via the **DynamicComponentModuleFactory**.  
 
 ## Use case #1
 The module provides "dynamic-component" directive:  
