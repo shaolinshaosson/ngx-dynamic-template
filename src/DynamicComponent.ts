@@ -4,7 +4,8 @@ import {
 	Output,
 	Compiler,
 	ViewContainerRef,
-	EventEmitter
+	EventEmitter,
+	Inject
 } from '@angular/core';
 
 import {Http} from '@angular/http';
@@ -13,24 +14,26 @@ import {IComponentRemoteTemplateFactory} from './IComponentRemoteTemplateFactory
 import {
 	TDynamicComponentType,
 	DynamicBase,
-	IComponentContext
+	IComponentContext,
+	DYNAMIC_TYPES
 } from "./DynamicBase";
 
 const DYNAMIC_SELECTOR: string = 'DynamicComponent';
+const DYNAMIC_DEFAULT_TEMPLATE: string = '';
 
 export class DynamicComponentMetadata {
-	constructor(public selector: string = DYNAMIC_SELECTOR, public template: string = '') {
+	constructor(public selector: string = DYNAMIC_SELECTOR, public template: string = DYNAMIC_DEFAULT_TEMPLATE) {
 	}
 }
 
 @Component({
 	selector: DYNAMIC_SELECTOR,
-	template: ''
+	template: DYNAMIC_DEFAULT_TEMPLATE
 })
 export class DynamicComponent extends DynamicBase {
 
-	@Output() dynamicComponentReady:EventEmitter<void>;
-	@Output() dynamicComponentBeforeReady:EventEmitter<void>;
+	@Output() dynamicComponentReady: EventEmitter<void>;
+	@Output() dynamicComponentBeforeReady: EventEmitter<void>;
 
 	@Input() componentType: {new (): TDynamicComponentType};
 	@Input() componentTemplate: string;
@@ -39,9 +42,10 @@ export class DynamicComponent extends DynamicBase {
 	@Input() componentRemoteTemplateFactory: IComponentRemoteTemplateFactory;
 	@Input() componentModules: Array<any>;
 
-	constructor(protected viewContainer: ViewContainerRef,
-	            protected compiler: Compiler,
-	            protected http: Http) {
-		super(viewContainer, compiler, http, DYNAMIC_SELECTOR);
+	constructor(@Inject(DYNAMIC_TYPES.DynamicExtraModules) dynamicExtraModules: Array<any>,
+	            viewContainer: ViewContainerRef,
+	            compiler: Compiler,
+	            http: Http) {
+		super(dynamicExtraModules, viewContainer, compiler, http, DYNAMIC_SELECTOR);
 	}
 }

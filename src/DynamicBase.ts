@@ -1,6 +1,7 @@
 import {
 	Component,
 	Input,
+	Inject,
 	Output,
 	Compiler,
 	OnChanges,
@@ -38,6 +39,10 @@ export interface IComponentContext {
 
 export type TDynamicComponentType = Function;
 
+export const DYNAMIC_TYPES = {
+	DynamicExtraModules: Symbol('DynamicExtraModules')
+};
+
 export class DynamicBase implements OnChanges, OnDestroy {
 
 	@Output() dynamicComponentReady:EventEmitter<void>;
@@ -56,7 +61,8 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	private cachedDynamicComponent:Type<TDynamicComponentType>;
 	private componentInstance: ComponentRef<TDynamicComponentType>;
 
-	constructor(protected viewContainer: ViewContainerRef,
+	constructor(@Inject(DYNAMIC_TYPES.DynamicExtraModules) protected dynamicExtraModules: Array<any>,
+	            protected viewContainer: ViewContainerRef,
 	            protected compiler: Compiler,
 	            protected http: Http,
 				protected dynamicSelector:string) {
@@ -151,11 +157,11 @@ export class DynamicBase implements OnChanges, OnDestroy {
 
 	protected makeComponentModule(template: string, componentType?: {new (): TDynamicComponentType}): Type<any> {
 		const dynamicComponentType: Type<TDynamicComponentType> = this.cachedDynamicComponent = this.makeComponent(template, componentType);
-		const componentModules: Array<any> = this.componentModules;
+		const componentModules: Array<any> = this.dynamicExtraModules.concat(this.componentModules || []);
 
 		@NgModule({
 			declarations: [dynamicComponentType],
-			imports: [CommonModule].concat(componentModules || [])
+			imports: [CommonModule].concat(componentModules)
 		})
 		class dynamicComponentModule {
 		}

@@ -1,6 +1,7 @@
 import {
 	Directive,
 	Input,
+	Inject,
 	Output,
 	EventEmitter,
 	Compiler,
@@ -13,7 +14,8 @@ import {IComponentRemoteTemplateFactory} from './IComponentRemoteTemplateFactory
 import {
 	TDynamicComponentType,
 	DynamicBase,
-	IComponentContext
+	IComponentContext,
+	DYNAMIC_TYPES
 } from "./DynamicBase";
 
 const DYNAMIC_SELECTOR: string = '[dynamic-component]';
@@ -23,8 +25,8 @@ const DYNAMIC_SELECTOR: string = '[dynamic-component]';
 })
 export class DynamicDirective extends DynamicBase {
 
-	@Output() dynamicComponentReady:EventEmitter<void>;
-	@Output() dynamicComponentBeforeReady:EventEmitter<void>;
+	@Output() dynamicComponentReady: EventEmitter<void>;
+	@Output() dynamicComponentBeforeReady: EventEmitter<void>;
 
 	@Input() componentType: {new (): TDynamicComponentType};
 	@Input() componentTemplate: string;
@@ -33,9 +35,10 @@ export class DynamicDirective extends DynamicBase {
 	@Input() componentRemoteTemplateFactory: IComponentRemoteTemplateFactory;
 	@Input() componentModules: Array<any>;
 
-	constructor(protected viewContainer: ViewContainerRef,
-	            protected compiler: Compiler,
-	            protected http: Http) {
-		super(viewContainer, compiler, http, DYNAMIC_SELECTOR);
+	constructor(@Inject(DYNAMIC_TYPES.DynamicExtraModules) dynamicExtraModules: Array<any>,
+	            viewContainer: ViewContainerRef,
+	            compiler: Compiler,
+	            http: Http) {
+		super(dynamicExtraModules, viewContainer, compiler, http, DYNAMIC_SELECTOR);
 	}
 }
