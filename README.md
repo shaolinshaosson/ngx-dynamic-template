@@ -30,10 +30,10 @@ import {DynamicComponentModule} from 'angular2-dynamic-component/index';
 
 ## Demo
 
-**1** git clone --progress -v "git@github.com:apoterenko/angular2-dynamic-component.git" "D:\sources"
-**2** cd D:\sources\angular2-dynamic-component\demo
-**3** npm install
-**4** npm start
+**1** git clone --progress -v "git@github.com:apoterenko/angular2-dynamic-component.git" "D:\sources"  
+**2** cd D:\sources\angular2-dynamic-component\demo  
+**3** npm install  
+**4** npm start  
 
 ## Features
 
