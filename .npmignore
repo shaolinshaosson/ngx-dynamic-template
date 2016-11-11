@@ -2,7 +2,7 @@
 .git
 .npmignore
 
-typings
+demo
 node_modules
 
 *.log
