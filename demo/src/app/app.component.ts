@@ -2,6 +2,7 @@
  * Angular 2 decorators and services
  */
 import { Component, ViewEncapsulation } from '@angular/core';
+import {DynamicComponentModule} from 'angular2-dynamic-component/index';
 
 import { AppState } from './app.service';
 
@@ -16,46 +17,17 @@ import { AppState } from './app.service';
     './app.component.css'
   ],
   template: `
-    <nav>
-      <span>
-        <a [routerLink]=" ['./'] ">
-          Index
-        </a>
-      </span>
-      |
-      <span>
-        <a [routerLink]=" ['./home'] ">
-          Home
-        </a>
-      </span>
-      |
-      <span>
-        <a [routerLink]=" ['./detail'] ">
-          Detail
-        </a>
-      </span>
-      |
-      <span>
-        <a [routerLink]=" ['./about'] ">
-          About
-        </a>
-      </span>
-    </nav>
 
     <main>
       <router-outlet></router-outlet>
     </main>
 
-    <pre class="app-state">this.appState.state = {{ appState.state | json }}</pre>
-
-    <footer>
-      <span>WebPack Angular 2 Starter by <a [href]="url">@AngularClass</a></span>
-      <div>
-        <a [href]="url">
-          <img [src]="angularclassLogo" width="25%">
-        </a>
-      </div>
-    </footer>
+    <template dynamic-component
+              [componentModules]="extraModules"
+              [componentTemplate]="extraTemplate"></template>
+              
+    <DynamicComponent [componentTemplate]="extraTemplate2"
+                      [componentContext]="context2"></DynamicComponent>
   `
 })
 export class AppComponent {
@@ -63,6 +35,11 @@ export class AppComponent {
   name = 'Angular 2 Webpack Starter';
   url = 'https://twitter.com/AngularClass';
 
+  extraTemplate = `<DynamicComponent [componentTemplate]='"<span>Dynamic inside dynamic!</span>"'></DynamicComponent>`;
+  extraTemplate2 = `<span>{{ user }}</span>`;
+  context2 = {user: 'test user name'};
+  extraModules = [DynamicComponentModule];
+  
   constructor(
     public appState: AppState) {
 
