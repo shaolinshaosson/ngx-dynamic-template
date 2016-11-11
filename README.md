@@ -1,6 +1,6 @@
 # angular2-dynamic-component & angular2-dynamic-directive
 
-An implementation of dynamic component wrapper at Angular2 [2.1.0 & AOT compatible].  
+An implementation of dynamic component wrapper at Angular2 [2.1.2 & AOT compatible].  
 
 ## Description
 
@@ -27,6 +27,13 @@ import {DynamicComponentModule} from 'angular2-dynamic-component/index';
     imports: [DynamicComponentModule]
 })
 ```
+
+## Demo
+
+**1** git clone --progress -v "git@github.com:apoterenko/angular2-dynamic-component.git" "D:\sources"
+**2** cd D:\sources\angular2-dynamic-component\demo
+**3** npm install
+**4** npm start
 
 ## Features
 
