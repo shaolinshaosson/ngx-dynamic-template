@@ -11,7 +11,7 @@
     "ng2-dynamic",
     "ng2-dynamic-component"
   ],
-  "author": "Alexander Poterenko",
+  "author": "Alex Poter",
   "scripts": {
     "clean": "npm cache clean",
     "ngc-build": "node_modules/.bin/ngc -p tsconfig.json",
