@@ -6,6 +6,8 @@ import {DynamicComponentModule} from 'angular2-dynamic-component/index';
 
 import { AppState } from './app.service';
 
+import {FormsModule} from '@angular/forms';
+
 /*
  * App Component
  * Top Level Component
@@ -23,8 +25,11 @@ import { AppState } from './app.service';
     </main>
 
     <template dynamic-component
-              [componentModules]="extraModules"
-              [componentTemplate]="extraTemplate"></template>
+              [componentContext]="outerDynamicContext"
+              [componentModules]="outerDynamicModules"
+              [componentTemplate]="outerDynamicTemplate"></template><br>
+              
+    Inner dynamic value (root level): {{ outerDynamicContext.innerDynamicContext.innerContextValue }}<br>
               
     <DynamicComponent [componentTemplate]="extraTemplate2"
                       [componentContext]="context2"></DynamicComponent>
@@ -35,10 +40,26 @@ export class AppComponent {
   name = 'Angular 2 Webpack Starter';
   url = 'https://twitter.com/AngularClass';
 
-  extraTemplate = `<DynamicComponent [componentTemplate]='"<span>Dynamic inside dynamic!</span>"'></DynamicComponent>`;
+  outerDynamicModules = [DynamicComponentModule];
+  outerDynamicContext = {
+    innerDynamicContext: {
+      innerContextValue: 'inner value'
+    },
+    innerDynamicTemplate: `<input type=\"text\" [(ngModel)]=\"innerContextValue\" (ngModelChange)=\"innerContextValue = $event\">`,
+    innerDynamicModules: [
+      FormsModule
+    ]
+  };
+  outerDynamicTemplate = `
+        <DynamicComponent [componentContext]='innerDynamicContext' 
+                          [componentModules]='innerDynamicModules'
+                          [componentTemplate]='innerDynamicTemplate'>         
+        </DynamicComponent><br>
+        Inner dynamic value (second level): {{ innerDynamicContext.innerContextValue }}
+   `;
+
   extraTemplate2 = `<span>{{ user }}</span>`;
   context2 = {user: 'test user name'};
-  extraModules = [DynamicComponentModule];
   
   constructor(
     public appState: AppState) {
