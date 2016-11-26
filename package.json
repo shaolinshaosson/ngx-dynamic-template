@@ -15,10 +15,10 @@
   "scripts": {
     "clean": "npm cache clean",
     "bundle": "npm run compile && npm run rollup && npm run rollup:min",
-    "compile": "node_modules/.bin/ngc -p tsconfig-build.json",
+    "compile": "node_modules/.bin/ngc -p tsconfig.json",
     "rollup": "rollup -c rollup.conf.js",
     "rollup:min": "rollup -c rollup-uglify.conf.js",
-    "deploy": "npm install && npm run bundle && npm publish ./"
+    "deploy": "npm install && npm run compile && npm publish ./"
   },
   "peerDependencies": {
     "@angular/core": "~2.2.2",

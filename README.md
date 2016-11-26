@@ -21,7 +21,7 @@ npm install angular2-dynamic-component --save
 **4** Then you must apply the **DynamicComponentModule**  
 
 ```typescript
-import {DynamicComponentModule} from 'angular2-dynamic-component';
+import {DynamicComponentModule} from 'angular2-dynamic-component/index';
 
 @NgModule({
     imports: [DynamicComponentModule]
@@ -105,7 +105,7 @@ export class AppComponent {
 The **CommonModule** module is imported by default.
 
 ```typescript
-import {DynamicComponentModuleFactory} from "angular2-dynamic-component";
+import {DynamicComponentModuleFactory} from "angular2-dynamic-component/index";
 @NgModule({
 	imports: [..., 
 		DynamicComponentModuleFactory.buildModule([
