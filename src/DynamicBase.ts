@@ -78,6 +78,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	 * @override
 	 */
 	public ngOnChanges() {
+		this.ngOnDestroy();
 		this.dynamicComponentBeforeReady.emit(null);
 
 		this.getDynamicModule().then((module: Type<any>) =>
