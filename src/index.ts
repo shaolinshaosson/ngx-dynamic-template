@@ -1,5 +1,5 @@
-export {DynamicComponent, DynamicComponentMetadata} from './DynamicComponent';
-export {DynamicDirective} from './DynamicDirective';
-export {DynamicBase, IComponentContext, DYNAMIC_TYPES} from './DynamicBase';
-export {IComponentRemoteTemplateFactory} from './IComponentRemoteTemplateFactory';
-export {DynamicComponentModule, DynamicComponentModuleFactory} from './DynamicComponentModule';
+export * from './DynamicComponent';
+export * from './DynamicDirective';
+export * from './DynamicBase';
+export * from './IComponentRemoteTemplateFactory';
+export * from './DynamicComponentModule';
