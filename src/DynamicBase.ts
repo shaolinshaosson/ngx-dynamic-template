@@ -195,7 +195,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 
 		const dynamicComponentParentClass = componentType || class {};
 
-		@Component(componentDecorator || {selector: dynamicSelector, template: template})
+		@Component(componentDecorator || {selector: dynamicSelector, template: template, styles: styles})
 		class dynamicComponentClass extends dynamicComponentParentClass {
 		}
 		return dynamicComponentClass as Type<TDynamicComponentType>;
