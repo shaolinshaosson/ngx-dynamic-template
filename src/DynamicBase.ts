@@ -51,6 +51,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 
 	@Input() componentType: {new (): TDynamicComponentType};
 	@Input() componentTemplate: string;
+	@Input() componentStyles: string[];
 	@Input() componentContext: IComponentContext;
 	@Input() componentTemplateUrl: string;
 	@Input() componentDefaultTemplate: string;
@@ -171,7 +172,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	}
 
 	protected makeComponentModule(template: string, componentType?: {new (): TDynamicComponentType}): Type<any> {
-		const dynamicComponentType: Type<TDynamicComponentType> = this.cachedDynamicComponent = this.makeComponent(template, componentType);
+		const dynamicComponentType: Type<TDynamicComponentType> = this.cachedDynamicComponent = this.makeComponent(template, this.componentStyles, componentType);
 		const componentModules: Array<any> = this.dynamicExtraModules.concat(this.componentModules || []);
 
 		@NgModule({
@@ -183,7 +184,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 		return this.cachedDynamicModule = dynamicComponentModule;
 	}
 
-	protected makeComponent(template:string, componentType?:{new ():TDynamicComponentType}):Type<TDynamicComponentType> {
+	protected makeComponent(template:string, styles?: string[], componentType?:{new ():TDynamicComponentType}):Type<TDynamicComponentType> {
 		const dynamicSelector: string = this.dynamicSelector;
 		const componentDecorator: DecoratorType = this.findComponentDecoratorByComponentType(componentType);
 

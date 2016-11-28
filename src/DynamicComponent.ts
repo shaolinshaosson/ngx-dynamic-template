@@ -37,6 +37,7 @@ export class DynamicComponent extends DynamicBase {
 
 	@Input() componentType: {new (): TDynamicComponentType};
 	@Input() componentTemplate: string;
+	@Input() componentStyles: string[];
 	@Input() componentContext: IComponentContext;
 	@Input() componentTemplateUrl: string;
 	@Input() componentDefaultTemplate: string;
