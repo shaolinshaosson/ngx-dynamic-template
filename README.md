@@ -210,6 +210,8 @@ export class CheckboxField {
 }
 ```
 
+##### **10** Support of **componentTemplatePath** attribute. This analogue of **templateUrl** parameter for **@Component**.  
+
 ## License
 
 Licensed under MIT.
