@@ -33,7 +33,7 @@ import {
 import {IComponentRemoteTemplateFactory} from './IComponentRemoteTemplateFactory';
 import {Utils} from './Utils';
 
-export interface IComponentContext {
+export interface ComponentContext {
 	[index: string]: any;
 }
 
@@ -69,7 +69,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	@Input() componentType: DynamicComponentType;
 	@Input() componentTemplate: string;
 	@Input() componentStyles: string[];
-	@Input() componentContext: IComponentContext;
+	@Input() componentContext: ComponentContext;
 	@Input() componentTemplateUrl: string;
 	@Input() componentTemplatePath: string;
 	@Input() componentDefaultTemplate: string;
@@ -100,7 +100,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 		this.ngOnDestroy();
 		this.dynamicComponentBeforeReady.emit(null);
 
-		this.getDynamicModule().then((module: Type<any>) =>
+		this.buildModule().then((module: Type<any>) =>
 			this.compiler.compileModuleAndAllComponentsAsync<any>(module)
 				.then((moduleWithComponentFactories: ModuleWithComponentFactories<any>) => {
 					this.componentInstance = this.viewContainer.createComponent<IDynamicComponent>(
@@ -146,22 +146,21 @@ export class DynamicBase implements OnChanges, OnDestroy {
 		}
 	}
 
-	protected getDynamicModule():Promise<Type<any>> {
+	/**
+	 * Build module wrapper for dynamic component asynchronously
+	 *
+	 * @returns {Promise<Type<any>>}
+     */
+	protected buildModule():Promise<Type<any>> {
 		return new Promise((resolve:(value:Type<any>) => void) => {
 			if (Utils.isPresent(this.componentTemplate)) {
-				resolve(this.makeComponentModule({
-					template: this.componentTemplate
-				}));
+				resolve(this.makeComponentModule({template: this.componentTemplate}));
 			} else if (Utils.isPresent(this.componentTemplatePath)) {
-				resolve(this.makeComponentModule({
-					templatePath: this.componentTemplatePath
-				}));
+				resolve(this.makeComponentModule({templatePath: this.componentTemplatePath}));
 			} else if (Utils.isPresent(this.componentTemplateUrl)) {
 				this.loadRemoteTemplate(this.componentTemplateUrl, resolve);
 			} else {
-				resolve(this.makeComponentModule({
-					componentType: this.componentType
-				}));
+				resolve(this.makeComponentModule({componentType: this.componentType}));
 			}
 		});
 	}
@@ -177,6 +176,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 				if ([301, 302, 307, 308].indexOf(response.status) > -1) {
 					const chainedUrl: string = response.headers.get('Location');
 
+					// TODO Inject logger
 					console.debug('[$DynamicBase][loadRemoteTemplate] The URL into the chain is:', chainedUrl);
 					if (Utils.isPresent(chainedUrl)) {
 						this.loadRemoteTemplate(chainedUrl, resolve);
@@ -184,22 +184,17 @@ export class DynamicBase implements OnChanges, OnDestroy {
 						console.warn('[$DynamicBase][loadRemoteTemplate] The URL into the chain is empty. The process of redirect has stopped.');
 					}
 				} else {
-					resolve(
-						this.makeComponentModule({
-							template: Utils.isPresent(this.componentRemoteTemplateFactory)
-								? this.componentRemoteTemplateFactory.parseResponse(response)
-								: response.text()
-						})
-					);
+					const loadedTemplate:string = Utils.isPresent(this.componentRemoteTemplateFactory)
+						? this.componentRemoteTemplateFactory.parseResponse(response)
+						: response.text();
+
+					resolve(this.makeComponentModule({template: loadedTemplate}));
 				}
 			}, (response: Response) => {
 				console.warn('[$DynamicBase][loadRemoteTemplate] Error response:', response);
 
-				resolve(
-					this.makeComponentModule({
-						template: this.componentDefaultTemplate || ''
-					})
-				);
+				const template:string = this.componentDefaultTemplate || '';
+				resolve(this.makeComponentModule({template: template}));
 			});
 	}
 
@@ -226,7 +221,6 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	 * @returns {Type<IDynamicComponent>}
 	 */
 	protected makeComponent(componentConfig: DynamicComponentConfig):Type<IDynamicComponent> {
-		const componentMetadataSelector: string = this.dynamicSelector;
 		const componentType: DynamicComponentType = componentConfig.componentType;
 		const componentParentClass = componentType || class {};
 
@@ -239,7 +233,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 		let componentMetadata: DynamicMetadata;
 		if (!Utils.isPresent(componentDecorator)) {
 			componentMetadata = {
-				selector: componentMetadataSelector,
+				selector: this.dynamicSelector,
 				styles: this.componentStyles
 			};
 

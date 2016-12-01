@@ -15,7 +15,7 @@ import {
 	IDynamicComponent,
 	DynamicComponentType,
 	DynamicBase,
-	IComponentContext,
+	ComponentContext,
 	DYNAMIC_TYPES
 } from "./DynamicBase";
 
@@ -39,7 +39,7 @@ export class DynamicComponent extends DynamicBase {
 	@Input() componentType: DynamicComponentType;
 	@Input() componentTemplate: string;
 	@Input() componentStyles: string[];
-	@Input() componentContext: IComponentContext;
+	@Input() componentContext: ComponentContext;
 	@Input() componentTemplateUrl: string;
 	@Input() componentTemplatePath: string;
 	@Input() componentDefaultTemplate: string;
