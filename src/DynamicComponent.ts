@@ -12,7 +12,8 @@ import {Http} from '@angular/http';
 
 import {IComponentRemoteTemplateFactory} from './IComponentRemoteTemplateFactory';
 import {
-	TDynamicComponentType,
+	IDynamicComponent,
+	DynamicComponentType,
 	DynamicBase,
 	IComponentContext,
 	DYNAMIC_TYPES
@@ -32,14 +33,15 @@ export class DynamicComponentMetadata {
 })
 export class DynamicComponent extends DynamicBase {
 
-	@Output() dynamicComponentReady: EventEmitter<TDynamicComponentType>;
+	@Output() dynamicComponentReady: EventEmitter<IDynamicComponent>;
 	@Output() dynamicComponentBeforeReady: EventEmitter<void>;
 
-	@Input() componentType: {new (): TDynamicComponentType};
+	@Input() componentType: DynamicComponentType;
 	@Input() componentTemplate: string;
 	@Input() componentStyles: string[];
 	@Input() componentContext: IComponentContext;
 	@Input() componentTemplateUrl: string;
+	@Input() componentTemplatePath: string;
 	@Input() componentDefaultTemplate: string;
 	@Input() componentRemoteTemplateFactory: IComponentRemoteTemplateFactory;
 	@Input() componentModules: Array<any>;

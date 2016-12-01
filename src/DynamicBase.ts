@@ -37,7 +37,11 @@ export interface IComponentContext {
 	[index: string]: any;
 }
 
-export interface TDynamicComponentType {
+export interface IDynamicComponent {
+}
+
+export interface DynamicComponentType {
+	new (): IDynamicComponent
 }
 
 export const DYNAMIC_TYPES = {
@@ -46,14 +50,15 @@ export const DYNAMIC_TYPES = {
 
 export class DynamicBase implements OnChanges, OnDestroy {
 
-	@Output() dynamicComponentReady:EventEmitter<TDynamicComponentType>;
+	@Output() dynamicComponentReady:EventEmitter<IDynamicComponent>;
 	@Output() dynamicComponentBeforeReady:EventEmitter<void>;
 
-	@Input() componentType: {new (): TDynamicComponentType};
+	@Input() componentType: DynamicComponentType;
 	@Input() componentTemplate: string;
 	@Input() componentStyles: string[];
 	@Input() componentContext: IComponentContext;
 	@Input() componentTemplateUrl: string;
+	@Input() componentTemplatePath: string;
 	@Input() componentDefaultTemplate: string;
 	@Input() componentRemoteTemplateFactory: IComponentRemoteTemplateFactory;
 	@Input() componentModules: Array<any>;
@@ -61,15 +66,15 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	private injector:ReflectiveInjector;
 
 	private cachedDynamicModule:Type<any>;
-	private cachedDynamicComponent:Type<TDynamicComponentType>;
-	private componentInstance: ComponentRef<TDynamicComponentType>;
+	private cachedDynamicComponent:Type<IDynamicComponent>;
+	private componentInstance: ComponentRef<IDynamicComponent>;
 
 	constructor(@Inject(DYNAMIC_TYPES.DynamicExtraModules) protected dynamicExtraModules: Array<any>,
 	            protected viewContainer: ViewContainerRef,
 	            protected compiler: Compiler,
 	            protected http: Http,
 				protected dynamicSelector:string) {
-		this.dynamicComponentReady = new EventEmitter<TDynamicComponentType>(false);
+		this.dynamicComponentReady = new EventEmitter<IDynamicComponent>(false);
 		this.dynamicComponentBeforeReady = new EventEmitter<void>(false);
 
 		this.injector = ReflectiveInjector.fromResolvedProviders([], this.viewContainer.parentInjector);
@@ -85,7 +90,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 		this.getDynamicModule().then((module: Type<any>) =>
 			this.compiler.compileModuleAndAllComponentsAsync<any>(module)
 				.then((moduleWithComponentFactories: ModuleWithComponentFactories<any>) => {
-					this.componentInstance = this.viewContainer.createComponent<TDynamicComponentType>(
+					this.componentInstance = this.viewContainer.createComponent<IDynamicComponent>(
 						moduleWithComponentFactories.componentFactories.find((componentFactory: ComponentFactory<Type<any>>) => {
 
 								let bufferedSelector: string = null;
@@ -171,8 +176,11 @@ export class DynamicBase implements OnChanges, OnDestroy {
 			});
 	}
 
-	protected makeComponentModule(template: string, componentType?: {new (): TDynamicComponentType}): Type<any> {
-		const dynamicComponentType: Type<TDynamicComponentType> = this.cachedDynamicComponent = this.makeComponent(template, this.componentStyles, componentType);
+	protected makeComponentModule(template: string, componentType?: DynamicComponentType): Type<any> {
+		const dynamicComponentType: Type<IDynamicComponent> 
+			= this.cachedDynamicComponent
+			= this.makeComponent(template, this.componentStyles, componentType);
+
 		const componentModules: Array<any> = this.dynamicExtraModules.concat(this.componentModules || []);
 
 		@NgModule({
@@ -184,7 +192,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 		return this.cachedDynamicModule = dynamicComponentModule;
 	}
 
-	protected makeComponent(template:string, styles?: string[], componentType?:{new ():TDynamicComponentType}):Type<TDynamicComponentType> {
+	protected makeComponent(template:string, styles?: string[], componentType?:DynamicComponentType):Type<IDynamicComponent> {
 		const dynamicSelector: string = this.dynamicSelector;
 		const componentDecorator: DecoratorType = this.findComponentDecoratorByComponentType(componentType);
 
@@ -198,10 +206,10 @@ export class DynamicBase implements OnChanges, OnDestroy {
 		@Component(componentDecorator || {selector: dynamicSelector, template: template, styles: styles})
 		class dynamicComponentClass extends dynamicComponentParentClass {
 		}
-		return dynamicComponentClass as Type<TDynamicComponentType>;
+		return dynamicComponentClass as Type<IDynamicComponent>;
 	}
 
-	protected applyPropertiesToDynamicComponent(instance:TDynamicComponentType) {
+	protected applyPropertiesToDynamicComponent(instance:IDynamicComponent) {
 		const metadataHolder:IAnnotationMetadataHolder = MetadataHelper.findPropertyMetadata(this, Input);
 
 		for (let property of Object.keys(this)) {
@@ -232,7 +240,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 		}
 	}
 
-	private findComponentDecoratorByComponentType(componentType?: {new (): TDynamicComponentType}): DecoratorType {
+	private findComponentDecoratorByComponentType(componentType?: DynamicComponentType): DecoratorType {
 		if (Utils.isPresent(componentType)) {
 			const annotationsArray: Array<DecoratorType> = MetadataHelper.findAnnotationsMetaData(componentType, Component);
 			if (annotationsArray.length) {
