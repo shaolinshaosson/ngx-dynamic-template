@@ -44,6 +44,13 @@ export interface DynamicComponentType {
 	new (): IDynamicComponent
 }
 
+export interface DynamicMetadata {
+	selector: string;
+	styles?: Array<string>;
+	template?: string;
+	templateUrl?: string;
+}
+
 export interface DynamicComponentConfig {
 	template?: string;
 	templatePath?: string;
@@ -212,33 +219,39 @@ export class DynamicBase implements OnChanges, OnDestroy {
 		return this.cachedDynamicModule = dynamicComponentModule;
 	}
 
-	protected makeComponent(dynamicConfig: DynamicComponentConfig):Type<IDynamicComponent> {
-		const dynamicSelector: string = this.dynamicSelector;
-		const dynamicComponentParentClass = dynamicConfig.componentType || class {};
+	/**
+	 * Build dynamic component class
+	 *
+	 * @param componentConfig
+	 * @returns {Type<IDynamicComponent>}
+     */
+	protected makeComponent(componentConfig: DynamicComponentConfig):Type<IDynamicComponent> {
+		const componentMetadataSelector: string = this.dynamicSelector;
+		const componentType: DynamicComponentType = componentConfig.componentType;
+		const componentParentClass = componentType || class {};
 
-		let componentDecorator: DecoratorType = this.findComponentDecoratorByComponentType(dynamicConfig.componentType);
-
-		if (Utils.isPresent(componentDecorator)
-			&& Utils.isUndefined(Reflect.get(componentDecorator, 'selector'))) {
-			Reflect.set(componentDecorator, 'selector', dynamicConfig.componentType.name);
+		let componentDecorator: DecoratorType = this.findComponentDecoratorByComponentType(componentType);
+		if (Utils.isPresent(componentDecorator) && !Reflect.has(componentDecorator, 'selector')) {
+			// Set selector if it is not present at Component metadata
+			Reflect.set(componentDecorator, 'selector', componentType.name);
 		}
 
-		let componentMetadata;
+		let componentMetadata: DynamicMetadata;
 		if (!Utils.isPresent(componentDecorator)) {
 			componentMetadata = {
-				selector: dynamicSelector,
+				selector: componentMetadataSelector,
 				styles: this.componentStyles
 			};
 
-			if (Utils.isPresent(dynamicConfig.template)) {
-				componentMetadata.template = dynamicConfig.template;
-			} else if (Utils.isPresent(dynamicConfig.templatePath)) {
-				componentMetadata.templateUrl = dynamicConfig.templatePath;
+			if (Utils.isPresent(componentConfig.template)) {
+				componentMetadata.template = componentConfig.template;
+			} else if (Utils.isPresent(componentConfig.templatePath)) {
+				componentMetadata.templateUrl = componentConfig.templatePath;
 			}
 		}
 
 		@Component(componentDecorator || componentMetadata)
-		class dynamicComponentClass extends dynamicComponentParentClass {
+		class dynamicComponentClass extends componentParentClass {
 		}
 		return dynamicComponentClass as Type<IDynamicComponent>;
 	}
