@@ -173,6 +173,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 
 		this.http.get(url, requestArgs)
 			.subscribe((response: Response) => {
+				// TODO Inject response statuses
 				if ([301, 302, 307, 308].indexOf(response.status) > -1) {
 					const chainedUrl: string = response.headers.get('Location');
 
