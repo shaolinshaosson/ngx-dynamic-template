@@ -224,7 +224,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	 *
 	 * @param componentConfig
 	 * @returns {Type<IDynamicComponent>}
-     */
+	 */
 	protected makeComponent(componentConfig: DynamicComponentConfig):Type<IDynamicComponent> {
 		const componentMetadataSelector: string = this.dynamicSelector;
 		const componentType: DynamicComponentType = componentConfig.componentType;
