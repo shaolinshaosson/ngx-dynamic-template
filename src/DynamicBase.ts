@@ -57,6 +57,8 @@ export interface DynamicComponentConfig {
 	componentType?: DynamicComponentType;
 }
 
+export type AnyT = Type<any>;
+
 export const DYNAMIC_TYPES = {
 	DynamicExtraModules: 'DynamicExtraModules'  // AoT workaround Symbol(..)
 };
@@ -78,7 +80,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 
 	private injector:ReflectiveInjector;
 
-	private cachedDynamicModule:Type<any>;
+	private cachedDynamicModule:AnyT;
 	private cachedDynamicComponent:Type<IDynamicComponent>;
 	private componentInstance: ComponentRef<IDynamicComponent>;
 
@@ -100,11 +102,11 @@ export class DynamicBase implements OnChanges, OnDestroy {
 		this.ngOnDestroy();
 		this.dynamicComponentBeforeReady.emit(null);
 
-		this.buildModule().then((module: Type<any>) =>
+		this.buildModule().then((module: AnyT) =>
 			this.compiler.compileModuleAndAllComponentsAsync<any>(module)
 				.then((moduleWithComponentFactories: ModuleWithComponentFactories<any>) => {
 					this.componentInstance = this.viewContainer.createComponent<IDynamicComponent>(
-						moduleWithComponentFactories.componentFactories.find((componentFactory: ComponentFactory<Type<any>>) => {
+						moduleWithComponentFactories.componentFactories.find((componentFactory: ComponentFactory<AnyT>) => {
 
 								let bufferedSelector: string = null;
 								const builtComponentDecorator: DecoratorType = this.findComponentDecoratorByComponentType(this.componentType);
@@ -149,10 +151,10 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	/**
 	 * Build module wrapper for dynamic component asynchronously
 	 *
-	 * @returns {Promise<Type<any>>}
-     */
-	protected buildModule():Promise<Type<any>> {
-		return new Promise((resolve:(value:Type<any>) => void) => {
+	 * @returns {Promise<AnyT>}
+	 */
+	protected buildModule():Promise<AnyT> {
+		return new Promise((resolve:(value:AnyT) => void) => {
 			if (Utils.isPresent(this.componentTemplate)) {
 				resolve(this.makeComponentModule({template: this.componentTemplate}));
 			} else if (Utils.isPresent(this.componentTemplatePath)) {
@@ -165,7 +167,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 		});
 	}
 
-	protected loadRemoteTemplate(url: string, resolve: (value: Type<any>) => void) {
+	protected loadRemoteTemplate(url: string, resolve: (value: AnyT) => void) {
 		let requestArgs: RequestOptionsArgs = {withCredentials: true};
 		if (Utils.isPresent(this.componentRemoteTemplateFactory)) {
 			requestArgs = this.componentRemoteTemplateFactory.buildRequestOptions();
@@ -199,7 +201,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 			});
 	}
 
-	protected makeComponentModule(dynamicConfig: DynamicComponentConfig): Type<any> {
+	protected makeComponentModule(dynamicConfig: DynamicComponentConfig): AnyT {
 		const dynamicComponentType: Type<IDynamicComponent>
 			= this.cachedDynamicComponent
 			= this.makeComponent(dynamicConfig);
