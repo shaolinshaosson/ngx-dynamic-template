@@ -44,6 +44,12 @@ export interface DynamicComponentType {
 	new (): IDynamicComponent
 }
 
+export interface DynamicComponentConfig {
+	template?: string;
+	templatePath?: string;
+	componentType?: DynamicComponentType;
+}
+
 export const DYNAMIC_TYPES = {
 	DynamicExtraModules: 'DynamicExtraModules'  // AoT workaround Symbol(..)
 };
@@ -133,14 +139,22 @@ export class DynamicBase implements OnChanges, OnDestroy {
 		}
 	}
 
-	protected getDynamicModule(): Promise<Type<any>> {
-		return new Promise((resolve: (value: Type<any>) => void) => {
+	protected getDynamicModule():Promise<Type<any>> {
+		return new Promise((resolve:(value:Type<any>) => void) => {
 			if (Utils.isPresent(this.componentTemplate)) {
-				resolve(this.makeComponentModule(this.componentTemplate));
+				resolve(this.makeComponentModule({
+					template: this.componentTemplate
+				}));
+			} else if (Utils.isPresent(this.componentTemplatePath)) {
+				resolve(this.makeComponentModule({
+					templatePath: this.componentTemplatePath
+				}));
 			} else if (Utils.isPresent(this.componentTemplateUrl)) {
 				this.loadRemoteTemplate(this.componentTemplateUrl, resolve);
 			} else {
-				resolve(this.makeComponentModule(null, this.componentType));
+				resolve(this.makeComponentModule({
+					componentType: this.componentType
+				}));
 			}
 		});
 	}
@@ -164,22 +178,28 @@ export class DynamicBase implements OnChanges, OnDestroy {
 					}
 				} else {
 					resolve(
-						this.makeComponentModule(Utils.isPresent(this.componentRemoteTemplateFactory)
-							? this.componentRemoteTemplateFactory.parseResponse(response)
-							: response.text())
+						this.makeComponentModule({
+							template: Utils.isPresent(this.componentRemoteTemplateFactory)
+								? this.componentRemoteTemplateFactory.parseResponse(response)
+								: response.text()
+						})
 					);
 				}
 			}, (response: Response) => {
 				console.warn('[$DynamicBase][loadRemoteTemplate] Error response:', response);
 
-				resolve(this.makeComponentModule(this.componentDefaultTemplate || ''));
+				resolve(
+					this.makeComponentModule({
+						template: this.componentDefaultTemplate || ''
+					})
+				);
 			});
 	}
 
-	protected makeComponentModule(template: string, componentType?: DynamicComponentType): Type<any> {
-		const dynamicComponentType: Type<IDynamicComponent> 
+	protected makeComponentModule(dynamicConfig: DynamicComponentConfig): Type<any> {
+		const dynamicComponentType: Type<IDynamicComponent>
 			= this.cachedDynamicComponent
-			= this.makeComponent(template, this.componentStyles, componentType);
+			= this.makeComponent(dynamicConfig);
 
 		const componentModules: Array<any> = this.dynamicExtraModules.concat(this.componentModules || []);
 
@@ -192,18 +212,32 @@ export class DynamicBase implements OnChanges, OnDestroy {
 		return this.cachedDynamicModule = dynamicComponentModule;
 	}
 
-	protected makeComponent(template:string, styles?: string[], componentType?:DynamicComponentType):Type<IDynamicComponent> {
+	protected makeComponent(dynamicConfig: DynamicComponentConfig):Type<IDynamicComponent> {
 		const dynamicSelector: string = this.dynamicSelector;
-		const componentDecorator: DecoratorType = this.findComponentDecoratorByComponentType(componentType);
+		const dynamicComponentParentClass = dynamicConfig.componentType || class {};
+
+		let componentDecorator: DecoratorType = this.findComponentDecoratorByComponentType(dynamicConfig.componentType);
 
 		if (Utils.isPresent(componentDecorator)
 			&& Utils.isUndefined(Reflect.get(componentDecorator, 'selector'))) {
-			Reflect.set(componentDecorator, 'selector', componentType.name);
+			Reflect.set(componentDecorator, 'selector', dynamicConfig.componentType.name);
 		}
 
-		const dynamicComponentParentClass = componentType || class {};
+		let componentMetadata;
+		if (!Utils.isPresent(componentDecorator)) {
+			componentMetadata = {
+				selector: dynamicSelector,
+				styles: this.componentStyles
+			};
 
-		@Component(componentDecorator || {selector: dynamicSelector, template: template, styles: styles})
+			if (Utils.isPresent(dynamicConfig.template)) {
+				componentMetadata.template = dynamicConfig.template;
+			} else if (Utils.isPresent(dynamicConfig.templatePath)) {
+				componentMetadata.templateUrl = dynamicConfig.templatePath;
+			}
+		}
+
+		@Component(componentDecorator || componentMetadata)
 		class dynamicComponentClass extends dynamicComponentParentClass {
 		}
 		return dynamicComponentClass as Type<IDynamicComponent>;
