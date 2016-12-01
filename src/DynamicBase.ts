@@ -54,7 +54,6 @@ export interface DynamicMetadata {
 export interface DynamicComponentConfig {
 	template?: string;
 	templatePath?: string;
-	componentType?: DynamicComponentType;
 }
 
 export type AnyT = Type<any>;
@@ -108,11 +107,11 @@ export class DynamicBase implements OnChanges, OnDestroy {
 					this.componentInstance = this.viewContainer.createComponent<IDynamicComponent>(
 						moduleWithComponentFactories.componentFactories.find((componentFactory: ComponentFactory<AnyT>) => {
 
-								let bufferedSelector: string = null;
-								const builtComponentDecorator: DecoratorType = this.findComponentDecoratorByComponentType(this.componentType);
+								let currentSelector: string = null;
+								const builtComponentDecorator: DecoratorType = Utils.findComponentDecoratorByComponentType(this.componentType);
 								if (Utils.isPresent(builtComponentDecorator)
-									&& Utils.isPresent(bufferedSelector = Reflect.get(builtComponentDecorator, 'selector'))
-									&& componentFactory.selector === bufferedSelector) {
+									&& Utils.isPresent(currentSelector = Reflect.get(builtComponentDecorator, 'selector'))
+									&& componentFactory.selector === currentSelector) {
 									return true;
 								}
 
@@ -162,7 +161,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 			} else if (Utils.isPresent(this.componentTemplateUrl)) {
 				this.loadRemoteTemplate(this.componentTemplateUrl, resolve);
 			} else {
-				resolve(this.makeComponentModule({componentType: this.componentType}));
+				resolve(this.makeComponentModule());
 			}
 		});
 	}
@@ -201,7 +200,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 			});
 	}
 
-	protected makeComponentModule(dynamicConfig: DynamicComponentConfig): AnyT {
+	protected makeComponentModule(dynamicConfig?: DynamicComponentConfig): AnyT {
 		const dynamicComponentType: Type<IDynamicComponent>
 			= this.cachedDynamicComponent
 			= this.makeComponent(dynamicConfig);
@@ -223,14 +222,13 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	 * @param componentConfig
 	 * @returns {Type<IDynamicComponent>}
 	 */
-	protected makeComponent(componentConfig: DynamicComponentConfig):Type<IDynamicComponent> {
-		const componentType: DynamicComponentType = componentConfig.componentType;
-		const componentParentClass = componentType || class {};
+	protected makeComponent(componentConfig?: DynamicComponentConfig):Type<IDynamicComponent> {
+		const componentParentClass = this.componentType || class {};
 
-		let componentDecorator: DecoratorType = this.findComponentDecoratorByComponentType(componentType);
+		let componentDecorator: DecoratorType = Utils.findComponentDecoratorByComponentType(this.componentType);
 		if (Utils.isPresent(componentDecorator) && !Reflect.has(componentDecorator, 'selector')) {
 			// Set selector if it is not present at Component metadata
-			Reflect.set(componentDecorator, 'selector', componentType.name);
+			Reflect.set(componentDecorator, 'selector', this.componentType.name);
 		}
 
 		let componentMetadata: DynamicMetadata;
@@ -240,10 +238,12 @@ export class DynamicBase implements OnChanges, OnDestroy {
 				styles: this.componentStyles
 			};
 
-			if (Utils.isPresent(componentConfig.template)) {
-				componentMetadata.template = componentConfig.template;
-			} else if (Utils.isPresent(componentConfig.templatePath)) {
-				componentMetadata.templateUrl = componentConfig.templatePath;
+			if (Utils.isPresent(componentConfig)) {
+				if (Utils.isPresent(componentConfig.template)) {
+					componentMetadata.template = componentConfig.template;
+				} else if (Utils.isPresent(componentConfig.templatePath)) {
+					componentMetadata.templateUrl = componentConfig.templatePath;
+				}
 			}
 		}
 
@@ -282,15 +282,5 @@ export class DynamicBase implements OnChanges, OnDestroy {
 				Reflect.defineProperty(instance, property, attributes);
 			}
 		}
-	}
-
-	private findComponentDecoratorByComponentType(componentType?: DynamicComponentType): DecoratorType {
-		if (Utils.isPresent(componentType)) {
-			const annotationsArray: Array<DecoratorType> = MetadataHelper.findAnnotationsMetaData(componentType, Component);
-			if (annotationsArray.length) {
-				return annotationsArray[0];
-			}
-		}
-		return null;
 	}
 }
