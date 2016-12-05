@@ -62,6 +62,9 @@ export const DYNAMIC_TYPES = {
 	DynamicExtraModules: 'DynamicExtraModules'  // AoT workaround Symbol(..)
 };
 
+const HASH_FIELD:string = '__hashValue';
+const modulesCache:Map<string, Promise<ModuleWithComponentFactories<any>>> = new Map<string, Promise<ModuleWithComponentFactories<any>>>();
+
 export class DynamicBase implements OnChanges, OnDestroy {
 
 	@Output() dynamicComponentReady:EventEmitter<IDynamicComponent>;
@@ -101,14 +104,26 @@ export class DynamicBase implements OnChanges, OnDestroy {
 		this.ngOnDestroy();
 		this.dynamicComponentBeforeReady.emit(null);
 
-		this.buildModule().then((module: AnyT) =>
-			this.compiler.compileModuleAndAllComponentsAsync<any>(module)
-				.then((moduleWithComponentFactories: ModuleWithComponentFactories<any>) => {
-					this.componentInstance = this.viewContainer.createComponent<IDynamicComponent>(
-						moduleWithComponentFactories.componentFactories.find((componentFactory: ComponentFactory<AnyT>) => {
+		this.buildModule().then((module:AnyT) => {
+			let compiledModule:Promise<ModuleWithComponentFactories<any>>;
+			const currentModuleHash:string = Reflect.get(module, HASH_FIELD);
 
-								let currentSelector: string = null;
-								const builtComponentDecorator: DecoratorType = Utils.findComponentDecoratorByComponentType(this.componentType);
+			if (Utils.isPresent(currentModuleHash)) {
+				compiledModule = modulesCache.get(currentModuleHash);
+				if (!Utils.isPresent(compiledModule)) {
+					modulesCache.set(currentModuleHash, compiledModule = this.compiler.compileModuleAndAllComponentsAsync<any>(module));
+				}
+			} else {
+				compiledModule = this.compiler.compileModuleAndAllComponentsAsync<any>(module);
+			}
+
+			compiledModule
+				.then((moduleWithComponentFactories:ModuleWithComponentFactories<any>) => {
+					this.componentInstance = this.viewContainer.createComponent<IDynamicComponent>(
+						moduleWithComponentFactories.componentFactories.find((componentFactory:ComponentFactory<AnyT>) => {
+
+								let currentSelector:string = null;
+								const builtComponentDecorator:DecoratorType = Utils.findComponentDecoratorByComponentType(this.componentType);
 								if (Utils.isPresent(builtComponentDecorator)
 									&& Utils.isPresent(currentSelector = Reflect.get(builtComponentDecorator, 'selector'))
 									&& componentFactory.selector === currentSelector) {
@@ -126,6 +141,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 
 					this.dynamicComponentReady.emit(this.componentInstance.instance);
 				})
+			}
 		);
 	}
 
@@ -213,6 +229,12 @@ export class DynamicBase implements OnChanges, OnDestroy {
 		})
 		class dynamicComponentModule {
 		}
+
+		const dynamicComponentTypeHash:string = Reflect.get(dynamicComponentType, HASH_FIELD);
+		if (Utils.isPresent(dynamicComponentTypeHash)) {
+			Reflect.set(dynamicComponentModule, HASH_FIELD, dynamicComponentTypeHash);
+		}
+
 		return this.cachedDynamicModule = dynamicComponentModule;
 	}
 
@@ -249,6 +271,10 @@ export class DynamicBase implements OnChanges, OnDestroy {
 
 		@Component(componentDecorator || componentMetadata)
 		class dynamicComponentClass extends componentParentClass {
+		}
+
+		if (Utils.isPresent(componentMetadata) && Utils.isPresent(componentMetadata.template)) {
+			Reflect.set(dynamicComponentClass, HASH_FIELD, Utils.hashFnv32a(componentMetadata.template, true));
 		}
 		return dynamicComponentClass as Type<IDynamicComponent>;
 	}
