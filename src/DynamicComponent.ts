@@ -19,7 +19,7 @@ import {
 	DYNAMIC_TYPES
 } from "./DynamicBase";
 
-const DYNAMIC_SELECTOR: string = 'DynamicComponent';
+const DYNAMIC_SELECTOR: string = 'DynamicComponent{id}';
 const DYNAMIC_DEFAULT_TEMPLATE: string = '';
 
 export class DynamicComponentMetadata {

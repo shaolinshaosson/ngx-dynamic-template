@@ -7,8 +7,14 @@ import {
 
 import {DynamicComponentType} from './DynamicBase';
 
+let uniqueId:number = 0;
+
 export class Utils {
 
+    static nextId():number {
+        return uniqueId++;
+    }
+    
     static isPresent(obj) {
         return obj !== undefined && obj !== null;
     }

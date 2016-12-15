@@ -19,7 +19,7 @@ import {
 	DYNAMIC_TYPES
 } from "./DynamicBase";
 
-const DYNAMIC_SELECTOR: string = '[dynamic-component]';
+const DYNAMIC_SELECTOR: string = '[dynamic-component-{id}]';
 
 @Directive({
 	selector: DYNAMIC_SELECTOR,
