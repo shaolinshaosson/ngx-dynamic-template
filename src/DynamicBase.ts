@@ -1,7 +1,6 @@
 import {
 	Component,
 	Input,
-	Inject,
 	Output,
 	Compiler,
 	OnChanges,
@@ -87,7 +86,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	private cachedDynamicComponent:Type<IDynamicComponent>;
 	private componentInstance: ComponentRef<IDynamicComponent>;
 
-	constructor(@Inject(DYNAMIC_TYPES.DynamicExtraModules) protected dynamicExtraModules: Array<any>,
+	constructor(protected dynamicExtraModules: Array<any>,
 	            protected viewContainer: ViewContainerRef,
 	            protected compiler: Compiler,
 	            protected http: Http,

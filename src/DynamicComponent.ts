@@ -47,9 +47,9 @@ export class DynamicComponent extends DynamicBase {
 	@Input() componentModules: Array<any>;
 
 	constructor(@Inject(DYNAMIC_TYPES.DynamicExtraModules) dynamicExtraModules: Array<any>,
-	            viewContainer: ViewContainerRef,
-	            compiler: Compiler,
-	            http: Http) {
+	            @Inject(ViewContainerRef) viewContainer: ViewContainerRef,
+	            @Inject(Compiler) compiler: Compiler,
+	            @Inject(Http) http: Http) {
 		super(dynamicExtraModules, viewContainer, compiler, http, DYNAMIC_SELECTOR);
 	}
 }
