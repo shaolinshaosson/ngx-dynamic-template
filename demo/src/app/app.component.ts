@@ -6,8 +6,6 @@ import {FormsModule} from '@angular/forms';
 
 import {DynamicComponentModule} from 'angular2-dynamic-component/index';
 
-import { AppState } from './app.service';
-
 /*
  * App Component
  * Top Level Component
@@ -19,91 +17,58 @@ import { AppState } from './app.service';
     './app.component.css'
   ],
   template: `
-    <nav>
-      <span>
-        <a [routerLink]=" ['./'] ">
-          Index
-        </a>
-      </span>
-      |
-      <span>
-        <a [routerLink]=" ['./home'] ">
-          Home
-        </a>
-      </span>
-      |
-      <span>
-        <a [routerLink]=" ['./detail'] ">
-          Detail
-        </a>
-      </span>
-      |
-      <span>
-        <a [routerLink]=" ['./about'] ">
-          About
-        </a>
-      </span>
-    </nav>
-
     <main>
       <router-outlet></router-outlet>
     </main>
-
-    <pre class="app-state">this.appState.state = {{ appState.state | json }}</pre>
     
+    <b>Scenario #1</b><br>  
     <template dynamic-component
               [componentContext]="outerDynamicContext"
               [componentModules]="outerDynamicModules"
-              [componentTemplate]="outerDynamicTemplate"></template><br>
+              [componentTemplate]="outerDynamicTemplate"></template>
               
-    Inner dynamic value (root level): {{ outerDynamicContext.innerDynamicContext.innerContextValue }}<br>
+    <br>     
+    Inner dynamic value [this is a part of app template]: {{ outerDynamicContext.innerDynamicContext.value }}<br>
+    <br>
               
+    <b>Scenario #2</b><br>    
     <DynamicComponent [componentTemplate]="extraTemplate2"
                       [componentContext]="context2"></DynamicComponent>
-
-    <footer>
-      <span>WebPack Angular 2 Starter by <a [href]="url">@AngularClass</a></span>
-      <div>
-        <a [href]="url">
-          <img [src]="angularclassLogo" width="25%">
-        </a>
-      </div>
-    </footer>
   `
 })
 export class AppComponent {
-  angularclassLogo = 'assets/img/angularclass-avatar.png';
   name = 'Angular 2 Webpack Starter';
   url = 'https://twitter.com/AngularClass';
 
-  outerDynamicModules = [DynamicComponentModule];
-  outerDynamicContext = {
-    innerDynamicContext: {
-      innerContextValue: 'inner value'
-    },
-    innerDynamicTemplate: `<input type=\"text\" [(ngModel)]=\"innerContextValue\" (ngModelChange)=\"innerContextValue = $event\">`,
-    innerDynamicModules: [
-      FormsModule
-    ]
-  };
+  // Scenario #1
   outerDynamicTemplate = `
         <DynamicComponent [componentContext]='innerDynamicContext' 
                           [componentModules]='innerDynamicModules'
                           [componentTemplate]='innerDynamicTemplate'>         
-        </DynamicComponent><br>
-        Inner dynamic value (second level): {{ innerDynamicContext.innerContextValue }}
+        </DynamicComponent>
+        <br>
+        Inner dynamic value [this is a part of outer dynamic template]: {{ innerDynamicContext.value }}
    `;
+  outerDynamicModules = [DynamicComponentModule];
+  outerDynamicContext = {
+    innerDynamicContext: {value: 'inner value'},
+    innerDynamicTemplate: `<input type=\"text\" [(ngModel)]=\"value\" (ngModelChange)=\"value = $event\">`,
+    innerDynamicModules: [FormsModule]
+  };
 
-  extraTemplate2 = `<span>{{ user }}</span>`;
-  context2 = {user: 'test user name'};
+  // Scenario #2
+  extraTemplate2 = `<span>{{ contextValue }}</span>`;
+  context2 = {contextValue: 'test value is 0'};
   
-  constructor(
-    public appState: AppState) {
-
+  constructor() {
   }
 
   ngOnInit() {
-    console.log('Initial App State', this.appState.state);
+    let initialValue = 0;
+
+    setInterval(() => {
+      this.context2.contextValue = 'test value is ' + ++initialValue;
+    }, 1000);
   }
 
 }
