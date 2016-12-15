@@ -1,6 +1,6 @@
 # angular2-dynamic-component & angular2-dynamic-directive
 
-An implementation of dynamic component wrapper at Angular2 [2.2.2].
+An implementation of dynamic component wrapper at Angular2 [2.2.4].
 
 ## Description
 
@@ -43,7 +43,7 @@ import {DynamicComponentModule} from 'angular2-dynamic-component/index';
 
 ##### **3** Support of **DynamicComponent** component. See below.  
 
-##### **4** Support of **Dynamic within Dynamic** strategy.  
+##### **4** Support of **Dynamic within Dynamic** strategy (see demo inside).
 
 ```typescript
 @Component(...)
