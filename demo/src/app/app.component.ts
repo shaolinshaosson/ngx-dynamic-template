@@ -26,11 +26,8 @@ import {DynamicComponentModule} from 'angular2-dynamic-component/index';
               [componentContext]="outerDynamicContext"
               [componentModules]="outerDynamicModules"
               [componentTemplate]="outerDynamicTemplate"></template>
-              
-    <br>     
-    Inner dynamic value [this is a part of app template]: {{ outerDynamicContext.innerDynamicContext.value }}<br>
-    <br>
-              
+                
+    Inner dynamic value [this is a part of app template]: {{ outerDynamicContext.innerDynamicContext.value }}<br><br>   
     <b>Scenario #2</b><br>    
     <DynamicComponent [componentTemplate]="extraTemplate2"
                       [componentContext]="context2"></DynamicComponent>
@@ -51,9 +48,24 @@ export class AppComponent {
    `;
   outerDynamicModules = [DynamicComponentModule];
   outerDynamicContext = {
-    innerDynamicContext: {value: 'inner value'},
-    innerDynamicTemplate: `<input type=\"text\" [(ngModel)]=\"value\" (ngModelChange)=\"value = $event\">`,
-    innerDynamicModules: [FormsModule]
+    innerDynamicContext: {
+      root: this,
+      value: 'inner value',
+      valueAccessorTemplate: `
+                Second input field [dynamic inside dynamic inside dynamic]: <input type=\"text\" [(ngModel)]=\"root.context2.contextValue\">
+                <br>
+        `,
+      valueAccessorModules: [FormsModule, DynamicComponentModule]
+    },
+    innerDynamicTemplate: `
+        First input field [dynamic inside dynamic]: <input type=\"text\" [(ngModel)]=\"value\" (ngModelChange)=\"value = $event\">
+        <br>
+        <DynamicComponent [componentContext]='{root: root}'
+                          [componentModules]='valueAccessorModules'
+                          [componentTemplate]='valueAccessorTemplate'>         
+        </DynamicComponent>
+    `,
+    innerDynamicModules: [FormsModule, DynamicComponentModule]
   };
 
   // Scenario #2
