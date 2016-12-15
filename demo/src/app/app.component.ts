@@ -6,8 +6,6 @@ import {DynamicComponentModule} from 'angular2-dynamic-component/index';
 
 import { AppState } from './app.service';
 
-import {FormsModule} from '@angular/forms';
-
 /*
  * App Component
  * Top Level Component
@@ -19,11 +17,38 @@ import {FormsModule} from '@angular/forms';
     './app.component.css'
   ],
   template: `
+    <nav>
+      <span>
+        <a [routerLink]=" ['./'] ">
+          Index
+        </a>
+      </span>
+      |
+      <span>
+        <a [routerLink]=" ['./home'] ">
+          Home
+        </a>
+      </span>
+      |
+      <span>
+        <a [routerLink]=" ['./detail'] ">
+          Detail
+        </a>
+      </span>
+      |
+      <span>
+        <a [routerLink]=" ['./about'] ">
+          About
+        </a>
+      </span>
+    </nav>
 
     <main>
       <router-outlet></router-outlet>
     </main>
 
+    <pre class="app-state">this.appState.state = {{ appState.state | json }}</pre>
+    
     <template dynamic-component
               [componentContext]="outerDynamicContext"
               [componentModules]="outerDynamicModules"
@@ -33,6 +58,15 @@ import {FormsModule} from '@angular/forms';
               
     <DynamicComponent [componentTemplate]="extraTemplate2"
                       [componentContext]="context2"></DynamicComponent>
+
+    <footer>
+      <span>WebPack Angular 2 Starter by <a [href]="url">@AngularClass</a></span>
+      <div>
+        <a [href]="url">
+          <img [src]="angularclassLogo" width="25%">
+        </a>
+      </div>
+    </footer>
   `
 })
 export class AppComponent {
