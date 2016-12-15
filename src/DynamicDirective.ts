@@ -19,10 +19,8 @@ import {
 	DYNAMIC_TYPES
 } from "./DynamicBase";
 
-const DYNAMIC_SELECTOR: string = '[dynamic-component-{id}]';
-
 @Directive({
-	selector: DYNAMIC_SELECTOR,
+	selector: '[dynamic-component]'
 })
 export class DynamicDirective extends DynamicBase {
 
@@ -43,6 +41,6 @@ export class DynamicDirective extends DynamicBase {
 	            @Inject(ViewContainerRef) viewContainer: ViewContainerRef,
 	            @Inject(Compiler) compiler: Compiler,
 	            @Inject(Http) http: Http) {
-		super(dynamicExtraModules, viewContainer, compiler, http, DYNAMIC_SELECTOR);
+		super(dynamicExtraModules, viewContainer, compiler, http, '[dynamic-component-{id}]');
 	}
 }

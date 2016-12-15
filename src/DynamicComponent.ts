@@ -19,18 +19,12 @@ import {
 	DYNAMIC_TYPES
 } from "./DynamicBase";
 
-const DYNAMIC_SELECTOR: string = 'DynamicComponent{id}';
-const DYNAMIC_DEFAULT_TEMPLATE: string = '';
-
 export class DynamicComponentMetadata {
-	constructor(public selector: string = DYNAMIC_SELECTOR, public template: string = DYNAMIC_DEFAULT_TEMPLATE) {
+	constructor(public selector: string = 'DynamicComponent', public template: string = '') {
 	}
 }
 
-@Component({
-	selector: DYNAMIC_SELECTOR,
-	template: DYNAMIC_DEFAULT_TEMPLATE
-})
+@Component(new DynamicComponentMetadata())
 export class DynamicComponent extends DynamicBase {
 
 	@Output() dynamicComponentReady: EventEmitter<IDynamicComponent>;
@@ -50,6 +44,6 @@ export class DynamicComponent extends DynamicBase {
 	            @Inject(ViewContainerRef) viewContainer: ViewContainerRef,
 	            @Inject(Compiler) compiler: Compiler,
 	            @Inject(Http) http: Http) {
-		super(dynamicExtraModules, viewContainer, compiler, http, DYNAMIC_SELECTOR);
+		super(dynamicExtraModules, viewContainer, compiler, http, 'DynamicComponent{id}');
 	}
 }
