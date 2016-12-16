@@ -11,8 +11,6 @@ export class DynamicCache {
     private memoryCache:Map<string, Promise<ModuleWithComponentFactories<any>>> = new Map<string, Promise<ModuleWithComponentFactories<any>>>();
 
     constructor(@Inject(NgZone) ngZone:NgZone) {
-        super();
-
         /**
          * Notifies when code enters Angular Zone. This gets fired first on VM Turn.
          */
