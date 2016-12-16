@@ -18,6 +18,7 @@ import {
 	ComponentContext,
 	DYNAMIC_TYPES
 } from "./DynamicBase";
+import {DynamicCache} from './DynamicCache';
 
 export class DynamicComponentMetadata {
 	constructor(public selector: string = 'DynamicComponent', public template: string = '') {
@@ -43,7 +44,8 @@ export class DynamicComponent extends DynamicBase {
 	constructor(@Inject(DYNAMIC_TYPES.DynamicExtraModules) dynamicExtraModules: Array<any>,
 	            @Inject(ViewContainerRef) viewContainer: ViewContainerRef,
 	            @Inject(Compiler) compiler: Compiler,
-	            @Inject(Http) http: Http) {
-		super(dynamicExtraModules, viewContainer, compiler, http, 'DynamicComponent{id}');
+	            @Inject(Http) http: Http,
+				@Inject(DynamicCache) dynamicCache:DynamicCache) {
+		super(dynamicExtraModules, viewContainer, compiler, http, dynamicCache, 'DynamicComponent{id}');
 	}
 }

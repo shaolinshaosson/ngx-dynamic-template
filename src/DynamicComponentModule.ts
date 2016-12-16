@@ -6,8 +6,9 @@ import {
 import {DynamicComponent} from './DynamicComponent';
 import {DynamicDirective} from "./DynamicDirective";
 import {DYNAMIC_TYPES} from "./DynamicBase";
+import {DynamicCache} from './DynamicCache';
 
-@NgModule({
+const DynamicDeclarations = {
 	declarations: [
 		DynamicComponent,
 		DynamicDirective
@@ -15,30 +16,31 @@ import {DYNAMIC_TYPES} from "./DynamicBase";
 	exports: [
 		DynamicComponent,
 		DynamicDirective
-	],
-	providers: [
-		{provide: DYNAMIC_TYPES.DynamicExtraModules, useValue: []}
 	]
-})
+};
+
+@NgModule(
+	Object.assign({
+		providers: [
+			DynamicCache,
+			{provide: DYNAMIC_TYPES.DynamicExtraModules, useValue: []}
+		]
+	}, DynamicDeclarations)
+)
 export class DynamicComponentModule {
 }
 
 export class DynamicComponentModuleFactory {
 
-	static buildModule(dynamicExtraModules: Array<any>): Type<any> {
-		@NgModule({
-			declarations: [
-				DynamicComponent,
-				DynamicDirective
-			],
-			exports: [
-				DynamicComponent,
-				DynamicDirective
-			],
-			providers: [
-				{provide: DYNAMIC_TYPES.DynamicExtraModules, useValue: dynamicExtraModules}
-			]
-		})
+	static buildModule(dynamicExtraModules:Array<any>):Type<any> {
+		@NgModule(
+			Object.assign({
+				providers: [
+					DynamicCache,
+					{provide: DYNAMIC_TYPES.DynamicExtraModules, useValue: dynamicExtraModules}
+				]
+			}, DynamicDeclarations)
+		)
 		class DynamicComponentFactoryModule {
 		}
 		return DynamicComponentFactoryModule;

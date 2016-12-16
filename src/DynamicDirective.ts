@@ -18,6 +18,7 @@ import {
 	ComponentContext,
 	DYNAMIC_TYPES
 } from "./DynamicBase";
+import {DynamicCache} from './DynamicCache';
 
 @Directive({
 	selector: '[dynamic-component]'
@@ -40,7 +41,8 @@ export class DynamicDirective extends DynamicBase {
 	constructor(@Inject(DYNAMIC_TYPES.DynamicExtraModules) dynamicExtraModules: Array<any>,
 	            @Inject(ViewContainerRef) viewContainer: ViewContainerRef,
 	            @Inject(Compiler) compiler: Compiler,
-	            @Inject(Http) http: Http) {
-		super(dynamicExtraModules, viewContainer, compiler, http, '[dynamic-component-{id}]');
+	            @Inject(Http) http: Http,
+				@Inject(DynamicCache) dynamicCache:DynamicCache) {
+		super(dynamicExtraModules, viewContainer, compiler, http, dynamicCache, '[dynamic-component-{id}]');
 	}
 }

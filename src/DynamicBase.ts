@@ -31,6 +31,7 @@ import {
 
 import {IComponentRemoteTemplateFactory} from './IComponentRemoteTemplateFactory';
 import {Utils} from './Utils';
+import {DynamicCache} from './DynamicCache';
 
 export interface ComponentContext {
 	[index: string]: any;
@@ -62,7 +63,6 @@ export const DYNAMIC_TYPES = {
 };
 
 const HASH_FIELD:string = '__hashValue';
-const modulesCache:Map<string, Promise<ModuleWithComponentFactories<any>>> = new Map<string, Promise<ModuleWithComponentFactories<any>>>();
 
 export class DynamicBase implements OnChanges, OnDestroy {
 
@@ -90,6 +90,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	            protected viewContainer: ViewContainerRef,
 	            protected compiler: Compiler,
 	            protected http: Http,
+				protected dynamicCache:DynamicCache,
 				dynamicSelector:string) {
 		this.dynamicComponentReady = new EventEmitter<IDynamicComponent>(false);
 		this.dynamicComponentBeforeReady = new EventEmitter<void>(false);
@@ -110,9 +111,9 @@ export class DynamicBase implements OnChanges, OnDestroy {
 			const currentModuleHash:string = Reflect.get(module, HASH_FIELD);
 
 			if (Utils.isPresent(currentModuleHash)) {
-				compiledModule = modulesCache.get(currentModuleHash);
+				compiledModule = this.dynamicCache.get(currentModuleHash);
 				if (!Utils.isPresent(compiledModule)) {
-					modulesCache.set(currentModuleHash, compiledModule = this.compiler.compileModuleAndAllComponentsAsync<any>(module));
+					this.dynamicCache.set(currentModuleHash, compiledModule = this.compiler.compileModuleAndAllComponentsAsync<any>(module));
 				}
 			} else {
 				compiledModule = this.compiler.compileModuleAndAllComponentsAsync<any>(module);
