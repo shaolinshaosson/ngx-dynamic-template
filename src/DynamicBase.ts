@@ -131,7 +131,9 @@ export class DynamicBase implements OnChanges, OnDestroy {
 									return true;
 								}
 
-								return componentFactory.selector === this.dynamicSelector;
+								return componentFactory.selector === this.dynamicSelector
+									|| (Utils.isPresent(componentFactory.componentType) && Utils.isPresent(this.componentTemplate)
+											&& Reflect.get(componentFactory.componentType, HASH_FIELD) === Utils.hashFnv32a(this.componentTemplate, true));
 							}
 						),
 						0,
