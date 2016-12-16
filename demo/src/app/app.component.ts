@@ -28,11 +28,24 @@ import {DynamicComponentModule} from 'angular2-dynamic-component/index';
               [componentTemplate]="outerDynamicTemplate"></template>
                 
     Inner dynamic value [this is a part of app template]: {{ outerDynamicContext.innerDynamicContext.value }}<br><br>   
+    
     <b>Scenario #2</b><br>    
     <DynamicComponent [componentTemplate]="extraTemplate2"
                       [componentContext]="context2"></DynamicComponent><br>
     <DynamicComponent [componentTemplate]="extraTemplate2"
-                      [componentContext]="context2"></DynamicComponent>                 
+                      [componentContext]="context2"></DynamicComponent><br> 
+    <DynamicComponent [componentTemplate]="extraTemplate2"
+                      [componentContext]="context2"></DynamicComponent><br><br>
+    
+    <b>Scenario #3</b><br>    
+    <div *ngFor="let i of longArray">
+        <template dynamic-component [componentTemplate]="extraTemplate2"
+                                    [componentContext]="context2"></template>
+    </div>
+    <div *ngFor="let i of longArray">
+        <DynamicComponent [componentTemplate]="extraTemplate2"
+                          [componentContext]="context2"></DynamicComponent>
+    </div>
   `
 })
 export class AppComponent {
@@ -73,7 +86,9 @@ export class AppComponent {
   // Scenario #2
   extraTemplate2 = `<span>{{ contextValue }}</span>`;
   context2 = {contextValue: 'test value is 0'};
-  
+
+  longArray:Array<number> = new Array(500);
+
   constructor() {
   }
 
