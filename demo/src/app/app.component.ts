@@ -30,7 +30,9 @@ import {DynamicComponentModule} from 'angular2-dynamic-component/index';
     Inner dynamic value [this is a part of app template]: {{ outerDynamicContext.innerDynamicContext.value }}<br><br>   
     <b>Scenario #2</b><br>    
     <DynamicComponent [componentTemplate]="extraTemplate2"
-                      [componentContext]="context2"></DynamicComponent>
+                      [componentContext]="context2"></DynamicComponent><br>
+    <DynamicComponent [componentTemplate]="extraTemplate2"
+                      [componentContext]="context2"></DynamicComponent>                 
   `
 })
 export class AppComponent {
