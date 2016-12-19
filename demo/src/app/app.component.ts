@@ -4,7 +4,9 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import {FormsModule} from '@angular/forms';
 
-import {DynamicComponentModule} from 'angular2-dynamic-component/index';
+import {DynamicComponentModuleFactory} from 'angular2-dynamic-component/index';
+
+export const DYNAMIC_MODULE = DynamicComponentModuleFactory.buildModule([]);
 
 /*
  * App Component
@@ -61,7 +63,7 @@ export class AppComponent {
         <br>
         Inner dynamic value [this is a part of outer dynamic template]: {{ innerDynamicContext.value }}
    `;
-  outerDynamicModules = [DynamicComponentModule];
+  outerDynamicModules = [DYNAMIC_MODULE];
   outerDynamicContext = {
     innerDynamicContext: {
       root: this,
@@ -70,7 +72,7 @@ export class AppComponent {
                 Second input field [dynamic inside dynamic inside dynamic]: <input type=\"text\" [(ngModel)]=\"root.context2.contextValue\">
                 <br>
         `,
-      valueAccessorModules: [FormsModule, DynamicComponentModule]
+      valueAccessorModules: [FormsModule, DYNAMIC_MODULE]
     },
     innerDynamicTemplate: `
         First input field [dynamic inside dynamic]: <input type=\"text\" [(ngModel)]=\"value\" (ngModelChange)=\"value = $event\">
@@ -80,7 +82,7 @@ export class AppComponent {
                           [componentTemplate]='valueAccessorTemplate'>         
         </DynamicComponent>
     `,
-    innerDynamicModules: [FormsModule, DynamicComponentModule]
+    innerDynamicModules: [FormsModule, DYNAMIC_MODULE]
   };
 
   // Scenario #2

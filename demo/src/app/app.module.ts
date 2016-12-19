@@ -12,7 +12,7 @@ import {DynamicComponentModule} from 'angular2-dynamic-component/index';
 import { ENV_PROVIDERS } from './environment';
 import { ROUTES } from './app.routes';
 // App is our top level component
-import { AppComponent } from './app.component';
+import {AppComponent, DYNAMIC_MODULE} from './app.component';
 import { APP_RESOLVER_PROVIDERS } from './app.resolver';
 import { AppState, InternalStateType } from './app.service';
 import { HomeComponent } from './home';
@@ -49,7 +49,7 @@ type StoreType = {
     FormsModule,
     HttpModule,
     RouterModule.forRoot(ROUTES, { useHash: true, preloadingStrategy: PreloadAllModules }),
-    DynamicComponentModule
+    DYNAMIC_MODULE
   ],
   providers: [ // expose our Services and Providers into Angular's dependency injection
     ENV_PROVIDERS,
