@@ -6,7 +6,7 @@ import {FormsModule} from '@angular/forms';
 
 import {DynamicComponentModuleFactory} from 'angular2-dynamic-component/index';
 
-export const DYNAMIC_MODULE = DynamicComponentModuleFactory.buildModule([]);
+export const DYNAMIC_MODULE = DynamicComponentModuleFactory.buildModule([ /** Custom modules here **/ ]);
 
 /*
  * App Component
