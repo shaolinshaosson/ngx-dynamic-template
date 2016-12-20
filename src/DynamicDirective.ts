@@ -42,7 +42,7 @@ export class DynamicDirective extends DynamicBase {
 	            @Inject(ViewContainerRef) viewContainer: ViewContainerRef,
 	            @Inject(Compiler) compiler: Compiler,
 	            @Inject(Http) http: Http,
-				@Inject(DynamicCache) dynamicCache:DynamicCache) {
+	            @Inject(DynamicCache) dynamicCache:DynamicCache) {
 		super(dynamicExtraModules, viewContainer, compiler, http, dynamicCache, '[dynamic-component-{id}]');
 	}
 }
