@@ -253,7 +253,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 
 		let componentMetadata:DynamicMetadata;
 		if (Utils.isPresent(componentDecorator)) {
-			if (!Utils.isPresent(componentDecorator.selector)) {
+			if (!Utils.isPresent(Reflect.get(componentDecorator, 'selector'))) {
 				// Setting selector if it is not present in Component metadata
 				Reflect.set(componentDecorator, 'selector', this.componentType.name);
 			}
@@ -278,8 +278,8 @@ export class DynamicBase implements OnChanges, OnDestroy {
 		class dynamicComponentClass extends componentParentClass {
 		}
 
-		if (Utils.isPresent(dynamicClassMetadata.template)) {
-			Reflect.set(dynamicComponentClass, HASH_FIELD, Utils.hashFnv32a(dynamicClassMetadata.template, true));
+		if (Utils.isPresent(Reflect.get(dynamicClassMetadata, 'template'))) {
+			Reflect.set(dynamicComponentClass, HASH_FIELD, Utils.hashFnv32a(Reflect.get(dynamicClassMetadata, 'template'), true));
 		}
 		return dynamicComponentClass as Type<IDynamicComponent>;
 	}
