@@ -249,21 +249,19 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	 * @returns {Type<IDynamicComponent>}
 	 */
 	protected makeComponent(componentConfig?: DynamicComponentConfig):Type<IDynamicComponent> {
-		const componentParentClass = this.componentType || class {};
+		const componentDecorator: DecoratorType = Utils.findComponentDecoratorByComponentType(this.componentType);
 
-		let componentDecorator: DecoratorType = Utils.findComponentDecoratorByComponentType(this.componentType);
-		if (Utils.isPresent(componentDecorator) && !Reflect.has(componentDecorator, 'selector')) {
-			// Set selector if it is not present at Component metadata
-			Reflect.set(componentDecorator, 'selector', this.componentType.name);
-		}
-
-		let componentMetadata: DynamicMetadata;
-		if (!Utils.isPresent(componentDecorator)) {
+		let componentMetadata:DynamicMetadata;
+		if (Utils.isPresent(componentDecorator)) {
+			if (!Utils.isPresent(componentDecorator.selector)) {
+				// Setting selector if it is not present in Component metadata
+				Reflect.set(componentDecorator, 'selector', this.componentType.name);
+			}
+		} else {
 			componentMetadata = {
 				selector: this.dynamicSelector,
 				styles: this.componentStyles
 			};
-
 			if (Utils.isPresent(componentConfig)) {
 				if (Utils.isPresent(componentConfig.template)) {
 					componentMetadata.template = componentConfig.template;
@@ -273,12 +271,15 @@ export class DynamicBase implements OnChanges, OnDestroy {
 			}
 		}
 
-		@Component(componentDecorator || componentMetadata)
+		const dynamicClassMetadata:DynamicMetadata|DecoratorType = componentDecorator || componentMetadata;
+		const componentParentClass = this.componentType || class {};
+
+		@Component(dynamicClassMetadata)
 		class dynamicComponentClass extends componentParentClass {
 		}
 
-		if (Utils.isPresent(componentMetadata) && Utils.isPresent(componentMetadata.template)) {
-			Reflect.set(dynamicComponentClass, HASH_FIELD, Utils.hashFnv32a(componentMetadata.template, true));
+		if (Utils.isPresent(dynamicClassMetadata.template)) {
+			Reflect.set(dynamicComponentClass, HASH_FIELD, Utils.hashFnv32a(dynamicClassMetadata.template, true));
 		}
 		return dynamicComponentClass as Type<IDynamicComponent>;
 	}
