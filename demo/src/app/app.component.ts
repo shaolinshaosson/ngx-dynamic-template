@@ -1,7 +1,7 @@
 /*
  * Angular 2 decorators and services
  */
-import {Component, ViewEncapsulation, Input} from '@angular/core';
+import {Component, ViewEncapsulation, Input, ElementRef, Renderer} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 
 import {DynamicComponentModuleFactory} from 'angular2-dynamic-component/index';
@@ -158,12 +158,13 @@ export class TextField {
   @Input() fieldName: string;
   @Input() value: string;
 
-  constructor() {
+  constructor(private elementRef: ElementRef, private renderer: Renderer) {
     console.log('The constructor of TextField is called');  // The constructor of TextField is called
   }
 
   ngOnInit() {
     setTimeout(() => this.value = this.fieldName + ': next value', 4000);
+    this.elementRef.nativeElement.childNodes[0].style.color = 'red';
   }
 }
 
