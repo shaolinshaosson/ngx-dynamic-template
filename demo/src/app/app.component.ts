@@ -35,8 +35,6 @@ export const DYNAMIC_MODULE = DynamicComponentModuleFactory.buildModule([ /** Cu
     <DynamicComponent [componentTemplate]="extraTemplate2"
                       [componentContext]="context2"></DynamicComponent><br>
     <DynamicComponent [componentTemplate]="extraTemplate2"
-                      [componentContext]="context2"></DynamicComponent><br> 
-    <DynamicComponent [componentTemplate]="extraTemplate2"
                       [componentContext]="context2"></DynamicComponent><br><br>
     
     <b>Scenario #3</b><br> 
@@ -44,6 +42,11 @@ export const DYNAMIC_MODULE = DynamicComponentModuleFactory.buildModule([ /** Cu
           *ngFor="let field of columns"
           [componentType]="field.type"
           [componentContext]="field.context">
+    </template>
+    <template dynamic-component
+          *ngFor="let field of columns"
+          [componentType]="field.type"
+          [componentContext]="field.context2">
     </template>
                       
     <br><br><b>Scenario #4</b><br>
@@ -100,20 +103,32 @@ export class AppComponent {
   columns = [{
     type: TextField,
     context: {
-      name: 'description',
+      fieldName: 'description',
       value: 'Test description'
+    },
+    context2: {
+      fieldName: 'description2',
+      value: 'Test2 description'
     }
   }, {
     type: CheckboxField,
     context: {
-      name: 'expired',
+      fieldName: 'expired',
       value: true
+    },
+    context2: {
+      fieldName: 'expired2',
+      value: false
     }
   }, {
     type: RadioField,
     context: {
-      name: 'active',
+      fieldName: 'active',
       value: false
+    },
+    context2: {
+      fieldName: 'active2',
+      value: true
     }
   }];
 
@@ -146,7 +161,7 @@ export class TextField {
   }
 
   ngOnInit() {
-    setTimeout(() => this.value = 'Next value', 4000);
+    setTimeout(() => this.value = this.fieldName + ': next value', 4000);
   }
 }
 
