@@ -108,6 +108,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 		this.ngOnDestroy();
 		this.dynamicComponentBeforeReady.emit(null);
 
+		// TODO investigate memory leak in the specific case
 		this.buildModule().then((module:AnyT) => {
 			let compiledModule:Promise<ModuleWithComponentFactories<any>>;
 			const currentModuleHash:string = Reflect.get(module, HASH_FIELD);
