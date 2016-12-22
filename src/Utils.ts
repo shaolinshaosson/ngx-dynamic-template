@@ -62,6 +62,10 @@ export class Utils {
 		return Reflect.get(object, 'selector');
 	}
 
+	static isSelectorPresent(object: DecoratorType): boolean {
+		return Utils.isPresent(this.extractSelector(object));
+	}
+
 	/**
 	 * Calculate a 32 bit FNV-1a hash
 	 * Found here: https://gist.github.com/vaiorabbit/5657561

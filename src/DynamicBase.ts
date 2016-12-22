@@ -245,7 +245,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 
 		let componentMetadata:DynamicMetadata;
 		if (Utils.isPresent(componentDecorator)) {
-			if (!Utils.isPresent(Reflect.get(componentDecorator, 'selector'))) {
+			if (!Utils.isSelectorPresent(componentDecorator)) {
 				// Setting selector if it is not present in Component metadata
 				Reflect.set(componentDecorator, 'selector', this.componentType.name);
 			}
