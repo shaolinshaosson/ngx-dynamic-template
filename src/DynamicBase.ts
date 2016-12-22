@@ -12,7 +12,9 @@ import {
 	ModuleWithComponentFactories,
 	ComponentFactory,
 	Type,
-	ReflectiveInjector
+	ReflectiveInjector,
+	ElementRef,
+	Inject
 } from '@angular/core';
 
 import {CommonModule} from "@angular/common";
@@ -268,6 +270,10 @@ export class DynamicBase implements OnChanges, OnDestroy {
 
 		@Component(dynamicClassMetadata)
 		class dynamicComponentClass extends componentParentClass {
+			
+			constructor(@Inject(ElementRef) elementRef:ElementRef) {
+				super(elementRef);
+			}
 		}
 
 		if (Utils.isPresent(Reflect.get(dynamicClassMetadata, 'template'))) {
