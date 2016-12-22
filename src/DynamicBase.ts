@@ -123,16 +123,8 @@ export class DynamicBase implements OnChanges, OnDestroy {
 				.then((moduleWithComponentFactories:ModuleWithComponentFactories<any>) => {
 					this.componentInstance = this.viewContainer.createComponent<IDynamicComponent>(
 						moduleWithComponentFactories.componentFactories.find((componentFactory:ComponentFactory<AnyT>) => {
-
-								let currentSelector:string = null;
-								const builtComponentDecorator:DecoratorType = Utils.findComponentDecoratorByComponentType(this.componentType);
-								if (Utils.isPresent(builtComponentDecorator)
-									&& Utils.isPresent(currentSelector = Reflect.get(builtComponentDecorator, 'selector'))
-									&& componentFactory.selector === currentSelector) {
-									return true;
-								}
-
-								return componentFactory.selector === this.dynamicSelector
+								return Utils.isSelectorOfComponentTypeEqual(componentFactory.selector, this.componentType)
+									|| componentFactory.selector === this.dynamicSelector
 									|| (Utils.isPresent(componentFactory.componentType) && Utils.isPresent(this.componentTemplate)
 											&& Reflect.get(componentFactory.componentType, HASH_FIELD) === Utils.hashFnv32a(this.componentTemplate, true));
 							}

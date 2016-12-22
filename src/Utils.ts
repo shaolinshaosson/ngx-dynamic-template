@@ -45,6 +45,19 @@ export class Utils {
         return null;
     }
 
+    static isSelectorOfComponentTypeEqual(selector: string, componentType: DynamicComponentType): boolean {
+        const componentDecorator: DecoratorType = Utils.findComponentDecoratorByComponentType(componentType);
+        let currentSelector: string = null;
+
+        return this.isPresent(componentDecorator)
+            && this.isPresent(currentSelector = this.extractSelector(componentDecorator))
+            && selector === currentSelector;
+    }
+
+    static extractSelector(object: DecoratorType): string {
+        return Reflect.get(object, 'selector');
+    }
+
     /**
      * Calculate a 32 bit FNV-1a hash
      * Found here: https://gist.github.com/vaiorabbit/5657561
