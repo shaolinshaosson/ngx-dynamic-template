@@ -142,7 +142,9 @@ export class AppComponent {
     let initialValue = 0;
 
     setInterval(() => {
-      this.context2.contextValue = 'test value is ' + ++initialValue;
+      this.context2 = {
+        contextValue: 'test value is ' + ++initialValue
+      };
     }, 1000);
   }
 
