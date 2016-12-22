@@ -266,11 +266,11 @@ export class DynamicBase implements OnChanges, OnDestroy {
 		}
 
 		const dynamicClassMetadata:DynamicMetadata|DecoratorType = componentDecorator || componentMetadata;
-		const componentParentClass = this.componentType || class {};
+		const componentParentClass = (this.componentType || class {}) as {new (elementRef:ElementRef): IDynamicComponent};
 
 		@Component(dynamicClassMetadata)
 		class dynamicComponentClass extends componentParentClass {
-			
+
 			constructor(@Inject(ElementRef) elementRef:ElementRef) {
 				super(elementRef);
 			}
