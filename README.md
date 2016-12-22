@@ -183,12 +183,13 @@ export class TextField {
 	@Input() fieldName: string;
 	@Input() value: string;
 
-	constructor() {
+	constructor(private elementRef: ElementRef, private renderer: Renderer) {
 		console.log('The constructor of TextField is called');  // The constructor of TextField is called
 	}
 
 	ngOnInit() {
-		setTimeout(() => this.value = 'Next value', 2000);
+		setTimeout(() => this.value = this.fieldName + ': next value', 4000);
+		this.elementRef.nativeElement.childNodes[0].style.color = 'red';
 	}
 }
 
