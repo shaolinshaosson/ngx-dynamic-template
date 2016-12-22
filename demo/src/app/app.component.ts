@@ -1,7 +1,7 @@
 /*
  * Angular 2 decorators and services
  */
-import { Component, ViewEncapsulation } from '@angular/core';
+import {Component, ViewEncapsulation, Input} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 
 import {DynamicComponentModuleFactory} from 'angular2-dynamic-component/index';
@@ -39,7 +39,14 @@ export const DYNAMIC_MODULE = DynamicComponentModuleFactory.buildModule([ /** Cu
     <DynamicComponent [componentTemplate]="extraTemplate2"
                       [componentContext]="context2"></DynamicComponent><br><br>
     
-    <b>Scenario #3</b><br>    
+    <b>Scenario #3</b><br> 
+    <template dynamic-component
+          *ngFor="let field of columns"
+          [componentType]="field.type"
+          [componentContext]="field.context">
+    </template>
+                      
+    <br><br><b>Scenario #4</b><br>
     <div *ngFor="let i of longArray">
         <template dynamic-component [componentTemplate]="extraTemplate2"
                                     [componentContext]="context2"></template>
@@ -89,6 +96,28 @@ export class AppComponent {
   extraTemplate2 = `<span>{{ contextValue }}</span>`;
   context2 = {contextValue: 'test value is 0'};
 
+  // Scenario #3 {No 9}
+  columns = [{
+    type: TextField,
+    context: {
+      name: 'description',
+      value: 'Test description'
+    }
+  }, {
+    type: CheckboxField,
+    context: {
+      name: 'expired',
+      value: true
+    }
+  }, {
+    type: RadioField,
+    context: {
+      name: 'active',
+      value: false
+    }
+  }];
+
+  // Scenario #4
   longArray:Array<number> = new Array(500);
 
   constructor() {
@@ -104,10 +133,52 @@ export class AppComponent {
 
 }
 
-/*
- * Please review the https://github.com/AngularClass/angular2-examples/ repo for
- * more angular app examples that you may copy/paste
- * (The examples may not be updated as quickly. Please open an issue on github for us to update it)
- * For help or questions please contact us at @AngularClass on twitter
- * or our chat on Slack at https://AngularClass.com/slack-join
- */
+@Component({
+  selector: 'DynamicTextField',       // Can be absent => selector === "TextField"
+  template: `<input name="{{fieldName}}" type="text" [value]="value">`,
+})
+export class TextField {
+  @Input() fieldName: string;
+  @Input() value: string;
+
+  constructor() {
+    console.log('The constructor of TextField is called');  // The constructor of TextField is called
+  }
+
+  ngOnInit() {
+    setTimeout(() => this.value = 'Next value', 4000);
+  }
+}
+
+@Component({
+  selector: 'DynamicCheckboxField',       // Can be absent => selector === "CheckboxField"
+  template: `<input name="{{fieldName}}" type="checkbox" [checked]="value">`,
+})
+export class CheckboxField {
+  @Input() fieldName: string;
+  @Input() value: boolean;
+
+  constructor() {
+    console.log('The constructor of CheckboxField is called');  // The constructor of CheckboxField is called
+  }
+
+  ngOnInit() {
+    setTimeout(() => this.value = !this.value, 2000);
+  }
+}
+
+@Component({
+  template: `<input name="{{fieldName}}" type="radio" [checked]="value">`,
+})
+export class RadioField {
+  @Input() fieldName: string;
+  @Input() value: boolean;
+
+  constructor() {
+    console.log('The constructor of RadioField is called');  // The constructor of RadioField is called
+  }
+
+  ngOnInit() {
+    setTimeout(() => this.value = !this.value, 3000);
+  }
+}
