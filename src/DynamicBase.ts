@@ -90,11 +90,11 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	            protected viewContainer: ViewContainerRef,
 	            protected compiler: Compiler,
 	            protected http: Http,
-				protected dynamicCache:DynamicCache,
-				dynamicSelector:string) {
+	            protected dynamicCache: DynamicCache,
+	            dynamicSelector: string) {
 		this.dynamicComponentReady = new EventEmitter<IDynamicComponent>(false);
 		this.dynamicComponentBeforeReady = new EventEmitter<void>(false);
-		this.dynamicSelector = dynamicSelector.replace('{id}', String(Utils.nextId()));
+		this.dynamicSelector = Utils.buildByNextId(dynamicSelector);
 
 		this.injector = ReflectiveInjector.fromResolvedProviders([], this.viewContainer.parentInjector);
 	}
