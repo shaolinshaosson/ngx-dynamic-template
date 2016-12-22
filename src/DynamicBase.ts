@@ -14,7 +14,8 @@ import {
 	Type,
 	ReflectiveInjector,
 	ElementRef,
-	Inject
+	Inject,
+	Renderer
 } from '@angular/core';
 
 import {CommonModule} from "@angular/common";
@@ -267,13 +268,14 @@ export class DynamicBase implements OnChanges, OnDestroy {
 		}
 
 		const dynamicClassMetadata:DynamicMetadata|DecoratorType = componentDecorator || componentMetadata;
-		const componentParentClass = (this.componentType || class {}) as {new (elementRef:ElementRef): IDynamicComponent};
+		const componentParentClass = (this.componentType || class {}) as {new (elementRef:ElementRef, renderer: Renderer): IDynamicComponent};
 
 		@Component(dynamicClassMetadata)
 		class dynamicComponentClass extends componentParentClass {
 
-			constructor(@Inject(ElementRef) elementRef:ElementRef) {
-				super(elementRef);
+			constructor(@Inject(ElementRef) elementRef: ElementRef,
+			            @Inject(Renderer) renderer: Renderer) {
+				super(elementRef, renderer);
 			}
 		}
 
