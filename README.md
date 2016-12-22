@@ -153,19 +153,19 @@ export class AppComponent {
 	columns = [{
 		type: TextField,
 		context: {
-			name: 'description',
+			fieldName: 'description',
 			value: 'Test description'
 		}
 	}, {
 		type: CheckboxField,
 		context: {
-			name: 'expired',
+			fieldName: 'expired',
 			value: true
 		}
 	}];
 	ngOnInit() {
 		setTimeout(() => {
-			console.log(JSON.stringify(this.columns));  // [{"context":{"name":"description","value":"Next value"}},{"context":{"name":"expired","value":false}}]
+			console.log(JSON.stringify(this.columns));  // [{"context":{"fieldName":"description","value":"Next value"}},{"context":{"fieldName":"expired","value":false}}]
 		}, 3000);
 	}
 ```
