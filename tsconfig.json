@@ -9,9 +9,12 @@
     "declaration": true,
     "rootDir": "src",
     "outDir": "",
+    "lib": [
+      "es6",
+      "dom"
+    ],
     "types": [
-      "node",
-      "core-js"
+      "node"
     ]
   },
   "compileOnSave": false,
