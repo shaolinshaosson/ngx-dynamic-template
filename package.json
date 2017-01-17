@@ -21,35 +21,35 @@
     "deploy": "npm install && npm run compile && npm publish ./"
   },
   "peerDependencies": {
-    "@angular/core": "~2.2.4",
-    "@angular/common": "~2.2.4",
-    "@angular/compiler": "~2.2.4",
-    "@angular/platform-browser": "~2.2.4",
-    "@angular/http": "~2.2.4",
+    "@angular/core": "~2.4.3",
+    "@angular/common": "~2.4.3",
+    "@angular/compiler": "~2.4.3",
+    "@angular/platform-browser": "~2.4.3",
+    "@angular/http": "~2.4.3",
 
     "ts-metadata-helper": "~0.0.4",
 
-    "core-js": "~2.4.1",
-    "rxjs": "~5.0.1",
-    "zone.js": "~0.6.25"
+    "core-js": "^2.4.1",
+    "rxjs": "~5.0.2",
+    "zone.js": "~0.7.4"
   },
   "devDependencies": {
-    "@angular/compiler-cli": "~2.2.4",
-    "@angular/core": "~2.2.4",
-    "@angular/common": "~2.2.4",
-    "@angular/compiler": "~2.2.4",
-    "@angular/platform-browser": "~2.2.4",
-    "@angular/http": "~2.2.4",
+    "@angular/compiler-cli": "~2.4.3",
+    "@angular/core": "~2.4.3",
+    "@angular/common": "~2.4.3",
+    "@angular/compiler": "~2.4.3",
+    "@angular/platform-browser": "~2.4.3",
+    "@angular/http": "~2.4.3",
 
     "@types/core-js": "~0.9.28",
     "@types/node": "~6.0.38",
-    "typescript": "^2.0.3",
+    "typescript": "~2.1.5",
 
     "ts-metadata-helper": "~0.0.4",
 
-    "core-js": "~2.4.1",
-    "rxjs": "~5.0.1",
-    "zone.js": "~0.6.25",
+    "core-js": "^2.4.1",
+    "rxjs": "~5.0.2",
+    "zone.js": "~0.7.4",
 
     "rollup": "~0.36.3",
     "rollup-plugin-uglify": "~1.0.1"
