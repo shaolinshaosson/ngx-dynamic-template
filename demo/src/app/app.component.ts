@@ -19,6 +19,24 @@ export const DYNAMIC_MODULE = DynamicComponentModuleFactory.buildModule([ /** Cu
     './app.component.css'
   ],
   template: `
+    <nav>
+      <a [routerLink]=" ['./'] " routerLinkActive="active">
+        Index
+      </a>
+      <a [routerLink]=" ['./home'] " routerLinkActive="active">
+        Home
+      </a>
+      <a [routerLink]=" ['./detail'] " routerLinkActive="active">
+        Detail
+      </a>
+      <a [routerLink]=" ['./barrel'] " routerLinkActive="active">
+        Barrel
+      </a>
+      <a [routerLink]=" ['./about'] " routerLinkActive="active">
+        About
+      </a>
+    </nav>
+
     <main>
       <router-outlet></router-outlet>
     </main>
