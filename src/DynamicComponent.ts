@@ -25,7 +25,10 @@ export class DynamicComponentMetadata {
 	}
 }
 
-@Component(new DynamicComponentMetadata())
+@Component({
+	selector: 'DynamicComponent',
+	template: ''
+})
 export class DynamicComponent extends DynamicBase {
 
 	@Output() dynamicComponentReady: EventEmitter<IDynamicComponent>;
