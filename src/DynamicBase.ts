@@ -15,7 +15,8 @@ import {
 	ReflectiveInjector,
 	ElementRef,
 	Inject,
-	Renderer
+	Renderer,
+	SimpleChanges
 } from '@angular/core';
 
 import {CommonModule} from "@angular/common";
@@ -105,7 +106,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	/**
 	 * @override
 	 */
-	public ngOnChanges() {
+	public ngOnChanges(changes: SimpleChanges) {
 		this.ngOnDestroy();
 		this.dynamicComponentBeforeReady.emit(null);
 
