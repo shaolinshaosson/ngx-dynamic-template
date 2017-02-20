@@ -1,4 +1,5 @@
 import uglify from 'rollup-plugin-uglify';
+import commonjs from 'rollup-plugin-commonjs';
 
 export default {
 	entry: 'index.js',
@@ -6,20 +7,19 @@ export default {
 	format: 'umd',
 	external: [
 		'@angular/core',
-		'@angular/compiler',
-		'@angular/platform-browser',
 		'@angular/common',
-		'@angular/http'
+		'@angular/http',
+		'ts-metadata-helper/index'
 	],
 	globals: {
 		'@angular/core': 'ng.core',
-		'@angular/compiler': 'ng.compiler',
-		'@angular/platform-browser': 'ng.platform-browser',
 		'@angular/common': 'ng.common',
-		'@angular/http': 'ng.http'
+		'@angular/http': 'ng.http',
+		'ts-metadata-helper/index': 'alexpoter.ts-metadata-helper'
 	},
-	moduleName: 'angular2.dynamic.component',
 	plugins: [
+		commonjs(),
 		uglify()
-	]
+	],
+	moduleName: 'angular2.dynamic.component'
 }
