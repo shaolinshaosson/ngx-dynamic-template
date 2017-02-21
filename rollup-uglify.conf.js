@@ -1,5 +1,6 @@
-import uglify from 'rollup-plugin-uglify';
 import commonjs from 'rollup-plugin-commonjs';
+import uglify from 'rollup-plugin-uglify';
+import includePaths from 'rollup-plugin-includepaths';
 
 export default {
 	entry: 'index.js',
@@ -8,16 +9,19 @@ export default {
 	external: [
 		'@angular/core',
 		'@angular/common',
-		'@angular/http',
-		'ts-metadata-helper/index'
+		'@angular/http'
 	],
 	globals: {
 		'@angular/core': 'ng.core',
 		'@angular/common': 'ng.common',
-		'@angular/http': 'ng.http',
-		'ts-metadata-helper/index': 'alexpoter.ts-metadata-helper'
+		'@angular/http': 'ng.http'
 	},
 	plugins: [
+		includePaths({
+			include: {
+				'ts-metadata-helper/index': './node_modules/ts-metadata-helper/index.js'
+			}
+		}),
 		commonjs(),
 		uglify()
 	],
