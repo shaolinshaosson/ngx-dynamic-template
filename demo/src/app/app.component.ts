@@ -1,7 +1,14 @@
 /*
  * Angular 2 decorators and services
  */
-import {Component, ViewEncapsulation, Input, ElementRef, Renderer} from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewEncapsulation
+} from '@angular/core';
+import { AppState } from './app.service';
+
+import {Input, ElementRef, Renderer} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 
 import {DynamicComponentModuleFactory} from 'angular2-dynamic-component/index';
@@ -20,19 +27,24 @@ export const DYNAMIC_MODULE = DynamicComponentModuleFactory.buildModule([ /** Cu
   ],
   template: `
     <nav>
-      <a [routerLink]=" ['./'] " routerLinkActive="active">
+      <a [routerLink]=" ['./'] "
+        routerLinkActive="active" [routerLinkActiveOptions]= "{exact: true}">
         Index
       </a>
-      <a [routerLink]=" ['./home'] " routerLinkActive="active">
+      <a [routerLink]=" ['./home'] "
+        routerLinkActive="active" [routerLinkActiveOptions]= "{exact: true}">
         Home
       </a>
-      <a [routerLink]=" ['./detail'] " routerLinkActive="active">
+      <a [routerLink]=" ['./detail'] "
+        routerLinkActive="active" [routerLinkActiveOptions]= "{exact: true}">
         Detail
       </a>
-      <a [routerLink]=" ['./barrel'] " routerLinkActive="active">
+      <a [routerLink]=" ['./barrel'] "
+        routerLinkActive="active" [routerLinkActiveOptions]= "{exact: true}">
         Barrel
       </a>
-      <a [routerLink]=" ['./about'] " routerLinkActive="active">
+      <a [routerLink]=" ['./about'] "
+        routerLinkActive="active" [routerLinkActiveOptions]= "{exact: true}">
         About
       </a>
     </nav>
@@ -41,7 +53,7 @@ export const DYNAMIC_MODULE = DynamicComponentModuleFactory.buildModule([ /** Cu
       <router-outlet></router-outlet>
     </main>
     
-    <b>Scenario #1</b><br>  
+     <b>Scenario #1</b><br>  
     <template dynamic-component
               [componentContext]="outerDynamicContext"
               [componentModules]="outerDynamicModules"
@@ -76,11 +88,23 @@ export const DYNAMIC_MODULE = DynamicComponentModuleFactory.buildModule([ /** Cu
         <DynamicComponent [componentTemplate]="extraTemplate2"
                           [componentContext]="context2"></DynamicComponent>
     </div>
+
+    <pre class="app-state">this.appState.state = {{ appState.state | json }}</pre>
+
+    <footer>
+      <span>WebPack Angular 2 Starter by <a [href]="url">@AngularClass</a></span>
+      <div>
+        <a [href]="url">
+          <img [src]="angularclassLogo" width="25%">
+        </a>
+      </div>
+    </footer>
   `
 })
-export class AppComponent {
-  name = 'Angular 2 Webpack Starter';
-  url = 'https://twitter.com/AngularClass';
+export class AppComponent implements OnInit {
+  public angularclassLogo = 'assets/img/angularclass-avatar.png';
+  public name = 'Angular 2 Webpack Starter';
+  public url = 'https://twitter.com/AngularClass';
 
   // Scenario #1
   outerDynamicTemplate = `
@@ -153,8 +177,9 @@ export class AppComponent {
   // Scenario #4
   longArray:Array<number> = new Array(500);
 
-  constructor() {
-  }
+  constructor(
+    public appState: AppState
+  ) {}
 
   ngOnInit() {
     let initialValue = 0;
@@ -218,3 +243,11 @@ export class RadioField {
     setTimeout(() => this.value = !this.value, 3000);
   }
 }
+
+/*
+ * Please review the https://github.com/AngularClass/angular2-examples/ repo for
+ * more angular app examples that you may copy/paste
+ * (The examples may not be updated as quickly. Please open an issue on github for us to update it)
+ * For help or questions please contact us at @AngularClass on twitter
+ * or our chat on Slack at https://AngularClass.com/slack-join
+ */
