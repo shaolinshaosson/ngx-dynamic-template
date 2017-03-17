@@ -1,10 +1,10 @@
 # angular2-dynamic-component & angular2-dynamic-directive
 
-An implementation of dynamic component wrapper at Angular2 [2.4.10] (AoT compatible).
+An implementation of dynamic component wrapper at Angular2 [4.0.0-rc.4] (AoT compatible).
 
 ## Description
 
-Date of creation: 18 Jun [starting with 2.0.0-rc.2].
+Date of creation: 18 Jun [starting with Angular 2.0.0-rc.2].
 
 ## Installation
 
