@@ -126,17 +126,27 @@ export class DynamicBase implements OnChanges, OnDestroy {
 
 			compiledModule
 				.then((moduleWithComponentFactories:ModuleWithComponentFactories<any>) => {
-					this.componentInstance = this.viewContainer.createComponent<IDynamicComponent>(
-						moduleWithComponentFactories.componentFactories.find((componentFactory:ComponentFactory<AnyT>) => {
-								return Utils.isSelectorOfComponentTypeEqual(componentFactory.selector, this.componentType)
-									|| componentFactory.selector === this.dynamicSelector
-									|| (Utils.isPresent(componentFactory.componentType) && Utils.isPresent(this.componentTemplate)
-											&& Reflect.get(componentFactory.componentType, HASH_FIELD) === Utils.hashFnv32a(this.componentTemplate, true));
-							}
-						),
-						0,
-						this.injector
+
+					// TODO Fix later
+					const _moduleRef = moduleWithComponentFactories.ngModuleFactory.create(this.injector);
+
+					const factory = moduleWithComponentFactories.componentFactories.find((componentFactory:ComponentFactory<AnyT>) => {
+							return Utils.isSelectorOfComponentTypeEqual(componentFactory.selector, this.componentType)
+								|| componentFactory.selector === this.dynamicSelector
+								|| (Utils.isPresent(componentFactory.componentType) && Utils.isPresent(this.componentTemplate)
+								&& Reflect.get(componentFactory.componentType, HASH_FIELD) === Utils.hashFnv32a(this.componentTemplate, true));
+						}
 					);
+
+					const componentRef = this.componentInstance = factory.create(this.injector, null, null, _moduleRef);
+					this.viewContainer.insert(componentRef.hostView, 0);
+
+					// TODO Make angular ticket
+					// this.componentInstance = this.viewContainer.createComponent<IDynamicComponent>(
+					//	factory,
+					//	0,
+					//	this.injector
+					//);
 
 					this.applyPropertiesToDynamicComponent(this.componentInstance.instance);
 
