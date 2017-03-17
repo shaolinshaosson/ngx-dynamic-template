@@ -1,6 +1,9 @@
 # angular2-dynamic-component & angular2-dynamic-directive
 
 An implementation of dynamic component wrapper at Angular2 [4.0.0-rc.4] (AoT compatible).
+Also, you must see the solution out of the box before using this component: (NgComponentOutlet, since 4.0.x)
+
+https://angular.io/docs/ts/latest/api/common/index/NgComponentOutlet-directive.html
 
 ## Description
 
