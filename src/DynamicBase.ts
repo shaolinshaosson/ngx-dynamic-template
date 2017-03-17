@@ -16,7 +16,8 @@ import {
 	ElementRef,
 	Inject,
 	Renderer,
-	SimpleChanges
+	SimpleChanges,
+	NgModuleRef
 } from '@angular/core';
 
 import {CommonModule} from "@angular/common";
@@ -89,6 +90,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	private cachedDynamicModule:AnyT;
 	private cachedDynamicComponent:Type<IDynamicComponent>;
 	private componentInstance: ComponentRef<IDynamicComponent>;
+	private moduleInstance: NgModuleRef<any>;
 
 	constructor(protected dynamicExtraModules: Array<any>,
 	            protected viewContainer: ViewContainerRef,
@@ -126,9 +128,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 
 			compiledModule
 				.then((moduleWithComponentFactories:ModuleWithComponentFactories<any>) => {
-
-					// TODO Fix later
-					const _moduleRef = moduleWithComponentFactories.ngModuleFactory.create(this.injector);
+					this.moduleInstance = moduleWithComponentFactories.ngModuleFactory.create(this.injector);
 
 					const factory = moduleWithComponentFactories.componentFactories.find((componentFactory:ComponentFactory<AnyT>) => {
 							return Utils.isSelectorOfComponentTypeEqual(componentFactory.selector, this.componentType)
@@ -138,18 +138,10 @@ export class DynamicBase implements OnChanges, OnDestroy {
 						}
 					);
 
-					const componentRef = this.componentInstance = factory.create(this.injector, null, null, _moduleRef);
-					this.viewContainer.insert(componentRef.hostView, 0);
-
-					// TODO Make angular ticket
-					// this.componentInstance = this.viewContainer.createComponent<IDynamicComponent>(
-					//	factory,
-					//	0,
-					//	this.injector
-					//);
+					const componentInstance = this.componentInstance = factory.create(this.injector, null, null, this.moduleInstance);
+					this.viewContainer.insert(componentInstance.hostView, 0);
 
 					this.applyPropertiesToDynamicComponent(this.componentInstance.instance);
-
 					this.dynamicComponentReady.emit(this.componentInstance.instance);
 				})
 			}
@@ -160,6 +152,10 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	 * @override
 	 */
 	public ngOnDestroy() {
+		if (Utils.isPresent(this.moduleInstance)) {
+			this.moduleInstance.destroy();
+			this.moduleInstance = null;
+		}
 		if (Utils.isPresent(this.componentInstance)) {
 			this.componentInstance.destroy();
 			this.componentInstance = null;
