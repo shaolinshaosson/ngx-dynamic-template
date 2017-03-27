@@ -286,7 +286,10 @@ export class DynamicBase implements OnChanges, OnDestroy {
 			constructor(@Inject(ElementRef) elementRef: ElementRef) {
 				super(
 					...componentTypeParameters
-						.map((service) => internalInjector.get(service))
+						.map((service) =>
+							elementRef instanceof service
+								? elementRef
+								: internalInjector.get(service))
 						.concat([elementRef])
 				);
 			}
