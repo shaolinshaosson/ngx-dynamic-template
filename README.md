@@ -178,15 +178,19 @@ import {
 } from '@angular/core';
 
 @Component({
-	selector: 'DynamicTextField',       // Can be absent => selector === "TextField"
+	selector: 'DynamicTextField',       // It can be absent => selector === "TextField"
 	template: `<input name="{{fieldName}}" type="text" [value]="value">`,
 })
 export class TextField {
 	@Input() fieldName: string;
 	@Input() value: string;
 
-	constructor(private elementRef: ElementRef, private renderer: Renderer) {
-		console.log('The constructor of TextField is called');  // The constructor of TextField is called
+	constructor(
+	    private appState: AppState,
+	    private elementRef: ElementRef,
+	    private appRef: ApplicationRef
+	) {
+		console.log('The TextField constructor has been called');
 	}
 
 	ngOnInit() {
@@ -196,7 +200,7 @@ export class TextField {
 }
 
 @Component({
-	selector: 'DynamicCheckboxField',       // Can be absent => selector === "CheckboxField"
+	selector: 'DynamicCheckboxField',       // It can be absent => selector === "CheckboxField"
 	template: `<input name="{{fieldName}}" type="checkbox" [checked]="value">`,
 })
 export class CheckboxField {
@@ -204,7 +208,7 @@ export class CheckboxField {
 	@Input() value: boolean;
 
 	constructor() {
-		console.log('The constructor of CheckboxField is called');  // The constructor of CheckboxField is called
+		console.log('The CheckboxField constructor has been called');
 	}
 
 	ngOnInit() {
