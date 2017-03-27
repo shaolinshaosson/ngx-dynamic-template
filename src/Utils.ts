@@ -62,6 +62,10 @@ export class Utils {
 		return Reflect.get(object, 'selector');
 	}
 
+	static getParamTypes(object: any): Array<any> {
+		return Reflect.getMetadata("design:paramtypes", object);
+	}
+
 	static isSelectorPresent(object: DecoratorType): boolean {
 		return Utils.isPresent(this.extractSelector(object));
 	}
@@ -92,4 +96,9 @@ export class Utils {
 		}
 		return hval >>> 0;
 	}
+}
+
+declare namespace Reflect {
+	function get(target: any, propertyKey: PropertyKey, receiver?: any): any;
+	function getMetadata(metadataKey: any, target: Object): any;
 }

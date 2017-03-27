@@ -15,7 +15,6 @@ import {
 	ReflectiveInjector,
 	ElementRef,
 	Inject,
-	Renderer,
 	SimpleChanges,
 	NgModuleRef
 } from '@angular/core';
@@ -252,7 +251,11 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	 * @returns {Type<IDynamicComponent>}
 	 */
 	protected makeComponent(componentConfig?: DynamicComponentConfig):Type<IDynamicComponent> {
+		const internalInjector = this.injector;
 		const componentDecorator: DecoratorType = Utils.findComponentDecoratorByComponentType(this.componentType);
+		const componentTypeParameters:Array<any> = Utils.isPresent(this.componentType)
+			? Utils.getParamTypes(this.componentType)
+			: [];
 
 		let componentMetadata:DynamicMetadata;
 		if (Utils.isPresent(componentDecorator)) {
@@ -275,14 +278,17 @@ export class DynamicBase implements OnChanges, OnDestroy {
 		}
 
 		const dynamicClassMetadata:DynamicMetadata|DecoratorType = componentDecorator || componentMetadata;
-		const componentParentClass = (this.componentType || class {}) as {new (elementRef:ElementRef, renderer: Renderer): IDynamicComponent};
+		const componentParentClass = (this.componentType || class {}) as {new (...any): IDynamicComponent};
 
 		@Component(dynamicClassMetadata)
 		class dynamicComponentClass extends componentParentClass {
 
-			constructor(@Inject(ElementRef) elementRef: ElementRef,
-			            @Inject(Renderer) renderer: Renderer) {
-				super(elementRef, renderer);
+			constructor(@Inject(ElementRef) elementRef: ElementRef) {
+				super(
+					...componentTypeParameters
+						.map((service) => internalInjector.get(service))
+						.concat([elementRef])
+				);
 			}
 		}
 
