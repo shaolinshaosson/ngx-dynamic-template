@@ -15,15 +15,13 @@ import {
   PreloadAllModules
 } from '@angular/router';
 
-import {DynamicComponentModule} from 'angular2-dynamic-component/index';
-
 /*
  * Platform and Environment providers/directives/pipes
  */
 import { ENV_PROVIDERS } from './environment';
 import { ROUTES } from './app.routes';
 // App is our top level component
-import { AppComponent, DYNAMIC_MODULE } from './app.component';
+import {AppComponent, DYNAMIC_MODULE} from './app.component';
 import { APP_RESOLVER_PROVIDERS } from './app.resolver';
 import { AppState, InternalStateType } from './app.service';
 import { HomeComponent } from './home';

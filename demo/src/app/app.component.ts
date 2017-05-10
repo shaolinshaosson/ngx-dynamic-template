@@ -8,12 +8,14 @@ import {
 } from '@angular/core';
 import { AppState } from './app.service';
 
-import {Input, ElementRef, Renderer} from '@angular/core';
-import {FormsModule} from '@angular/forms';
+import { Input, ElementRef, Renderer } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
-import {DynamicComponentModuleFactory} from 'angular2-dynamic-component/index';
+import { DynamicComponentModuleFactory } from 'angular2-dynamic-component/index';
 
-export const DYNAMIC_MODULE = DynamicComponentModuleFactory.buildModule([ /** Custom modules here **/ ]);
+export const DYNAMIC_MODULE = DynamicComponentModuleFactory.buildModule([
+  /* Custom modules here */
+]);
 
 /*
  * App Component
@@ -34,18 +36,6 @@ export const DYNAMIC_MODULE = DynamicComponentModuleFactory.buildModule([ /** Cu
       <a [routerLink]=" ['./home'] "
         routerLinkActive="active" [routerLinkActiveOptions]= "{exact: true}">
         Home
-      </a>
-      <a [routerLink]=" ['./detail'] "
-        routerLinkActive="active" [routerLinkActiveOptions]= "{exact: true}">
-        Detail
-      </a>
-      <a [routerLink]=" ['./barrel'] "
-        routerLinkActive="active" [routerLinkActiveOptions]= "{exact: true}">
-        Barrel
-      </a>
-      <a [routerLink]=" ['./about'] "
-        routerLinkActive="active" [routerLinkActiveOptions]= "{exact: true}">
-        About
       </a>
     </nav>
 
@@ -107,7 +97,7 @@ export class AppComponent implements OnInit {
   public url = 'https://twitter.com/AngularClass';
 
   // Scenario #1
-  outerDynamicTemplate = `
+  public outerDynamicTemplate = `
         <DynamicComponent [componentContext]='innerDynamicContext' 
                           [componentModules]='innerDynamicModules'
                           [componentTemplate]='innerDynamicTemplate'>         
@@ -115,8 +105,8 @@ export class AppComponent implements OnInit {
         <br>
         Inner dynamic value [this is a part of outer dynamic template]: {{ innerDynamicContext.value }}
    `;
-  outerDynamicModules = [DYNAMIC_MODULE];
-  outerDynamicContext = {
+  public outerDynamicModules = [DYNAMIC_MODULE];
+  public outerDynamicContext = {
     innerDynamicContext: {
       root: this,
       value: 'inner value',
