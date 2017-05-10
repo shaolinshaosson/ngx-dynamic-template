@@ -254,7 +254,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 		const internalInjector = this.injector;
 		const componentDecorator: DecoratorType = Utils.findComponentDecoratorByComponentType(this.componentType);
 		const componentTypeParameters:Array<any> = Utils.isPresent(this.componentType)
-			? Utils.getParamTypes(this.componentType)
+			? (Utils.getParamTypes(this.componentType) || [])
 			: [];
 
 		let componentMetadata:DynamicMetadata;
