@@ -79,7 +79,14 @@ export const DYNAMIC_MODULE = DynamicComponentModuleFactory.buildModule([
                           [componentContext]="context2"></DynamicComponent>
     </div>
 
-    <pre class="app-state">this.appState.state = {{ appState.state | json }}</pre>
+    <br>
+    // Scenario #5
+    <template dynamic-component
+              *ngFor="let field of columns2"
+              [componentType]="field.type"
+              [componentModules]="componentModules2"
+              [componentContext]="field.context">
+    </template>
 
     <footer>
       <span>WebPack Angular 2 Starter by <a [href]="url">@AngularClass</a></span>
@@ -167,9 +174,23 @@ export class AppComponent implements OnInit {
   // Scenario #4
   longArray:Array<number> = new Array(500);
 
-  constructor(
-    public appState: AppState
-  ) {}
+  // Scenario #5
+  componentModules2 = [DYNAMIC_MODULE];
+  columns2 = [{
+    type: Child1Component,
+    context: {
+      fieldName: 'description',
+      value: 'Test description'
+    }
+  },
+    {
+      type: Child2Component,
+      context: {
+        fieldName: 'expired',
+        value: true
+      }
+    }
+  ];
 
   ngOnInit() {
     let initialValue = 0;
@@ -234,10 +255,43 @@ export class RadioField {
   }
 }
 
-/*
- * Please review the https://github.com/AngularClass/angular2-examples/ repo for
- * more angular app examples that you may copy/paste
- * (The examples may not be updated as quickly. Please open an issue on github for us to update it)
- * For help or questions please contact us at @AngularClass on twitter
- * or our chat on Slack at https://AngularClass.com/slack-join
- */
+@Component({
+  template: `
+    <template dynamic-component
+              *ngFor="let field of childList"
+              [componentType]="field.type"
+              [componentContext]="field.context">
+    </template>`
+})
+export class Child1Component {
+  @Input() fieldName: string;
+  @Input() value: boolean;
+
+  childList = [
+    {
+      type: Child2Component,
+      context: {
+        fieldName: 'expired',
+        value: true
+      }
+    }
+  ]
+}
+
+@Component({
+  template: `<div>Child2Component template!</div>`
+})
+export class Child2Component {
+  @Input() fieldName: string;
+  @Input() value: boolean;
+
+  childList = [
+    {
+      type: Child2Component,
+      context: {
+        fieldName: 'expired',
+        value: true
+      }
+    }
+  ]
+}
