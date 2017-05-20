@@ -1,13 +1,11 @@
-# ngx-dynamic-component & ngx-dynamic-component
+# ngx-dynamic-template
 
-An implementation of dynamic component wrapper at Angular2/4 [4.1.3] (AoT compatible).
-Also, you must see the solution out of the box before using this component: (NgComponentOutlet, since 4.0.x)
-
-https://angular.io/docs/ts/latest/api/common/index/NgComponentOutlet-directive.html
+An implementation of dynamic template wrapper at Angular2/4 [4.1.3] (AoT compatible).
 
 ## Description
 
 Date of creation: 18 Jun 2016 [starting with Angular 2.0.0-rc.2].
+The previous version of this module is [angular2-dynamic-component](https://www.npmjs.com/package/angular2-dynamic-component).
 
 ## Installation
 
@@ -18,7 +16,7 @@ npm install ts-metadata-helper --save
 ```  
 **3** And after that, you have to install the target package  
 ```sh
-npm install ngx-dynamic-component --save
+npm install ngx-dynamic-template --save
 ```
 **4** Then you must apply the **DynamicComponentModule**  
 
@@ -142,84 +140,7 @@ export class AppComponent {
           [componentTemplate]='"<span [innerHTML]=\"changedValue\"></span><input type=\"text\" [(ngModel)]=\"dynamicContextValue\" (ngModelChange)=\"changedValue = $event\">"'></template>
 ```
 
-##### **9** Support of **componentType** attribute.  
-
-```html
-<template dynamic-component
-          *ngFor="let field of columns"
-          [componentType]="field.type"
-          [componentContext]="field.context">
-</template>
-```
-```typescript
-@Component(...)
-export class AppComponent {
-	columns = [{
-		type: TextField,
-		context: {
-			fieldName: 'description',
-			value: 'Test description'
-		}
-	}, {
-		type: CheckboxField,
-		context: {
-			fieldName: 'expired',
-			value: true
-		}
-	}];
-	ngOnInit() {
-		setTimeout(() => {
-			console.log(JSON.stringify(this.columns));  // [{"context":{"fieldName":"description","value":"Next value"}},{"context":{"fieldName":"expired","value":false}}]
-		}, 3000);
-	}
-```
-```typescript
-import {
-	Component,
-	Input,
-} from '@angular/core';
-
-@Component({
-	selector: 'DynamicTextField',       // It can be absent => selector === "TextField"
-	template: `<input name="{{fieldName}}" type="text" [value]="value">`,
-})
-export class TextField {
-	@Input() fieldName: string;
-	@Input() value: string;
-
-	constructor(
-	    private appState: AppState,
-	    private elementRef: ElementRef,
-	    private appRef: ApplicationRef
-	) {
-		console.log('The TextField constructor has been called');
-	}
-
-	ngOnInit() {
-		setTimeout(() => this.value = this.fieldName + ': next value', 4000);
-		this.elementRef.nativeElement.childNodes[0].style.color = 'red';
-	}
-}
-
-@Component({
-	selector: 'DynamicCheckboxField',       // It can be absent => selector === "CheckboxField"
-	template: `<input name="{{fieldName}}" type="checkbox" [checked]="value">`,
-})
-export class CheckboxField {
-	@Input() fieldName: string;
-	@Input() value: boolean;
-
-	constructor() {
-		console.log('The CheckboxField constructor has been called');
-	}
-
-	ngOnInit() {
-		setTimeout(() => this.value = !this.value, 1000);
-	}
-}
-```
-
-##### **10** Support of **componentTemplatePath** attribute. This analogue of **templateUrl** parameter for **@Component**.  
+##### **9** Support of **componentTemplatePath** attribute. This analogue of **templateUrl** parameter for **@Component**.
 
 ## License
 

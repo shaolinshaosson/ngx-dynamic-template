@@ -1,20 +1,19 @@
 {
-  "name": "ngx-dynamic-component",
-  "version": "1.6.7",
+  "name": "ngx-dynamic-template",
+  "version": "2.0.0",
   "license": "MIT",
   "keywords": [
     "angular",
     "angular2",
     "angular4",
-    "dynamic",
-    "dynamic-component",
-    "angular2-dynamic-component",
-    "angular4-dynamic-component",
+    "dynamic-template",
+    "angular2-dynamic-template",
+    "angular4-dynamic-template",
     "ngx-dynamic",
     "ng2-dynamic",
     "ng4-dynamic",
-    "ng2-dynamic-component",
-    "ng4-dynamic-component"
+    "ng2-dynamic-template",
+    "ng4-dynamic-template"
   ],
   "author": "Alex Poter <a.poterenko@gmail.com>",
   "scripts": {
@@ -63,14 +62,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/apoterenko/ngx-dynamic-component.git"
+    "url": "https://github.com/apoterenko/ngx-dynamic-template.git"
   },
   "bugs": {
-    "url": "https://github.com/apoterenko/ngx-dynamic-component/issues"
+    "url": "https://github.com/apoterenko/ngx-dynamic-template/issues"
   },
   "module": "index.js",
   "typings": "index.d.ts",
-  "main": "bundles/ngx-dynamic-component.umd.js",
+  "main": "bundles/ngx-dynamic-template.umd.js",
   "engines": {
     "node": ">= 6.5",
     "npm": ">= 3"
