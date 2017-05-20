@@ -4,9 +4,9 @@ An implementation of dynamic template wrapper at Angular2/4 [4.1.3] (AoT compati
 
 ## Description
 
-Date of creation: 18 Jun 2016 [started with Angular 2.0.0-rc.2].
-The previous version of this module is tandem [angular2-dynamic-component](https://www.npmjs.com/package/angular2-dynamic-component) and [ts-metadata-helper](https://www.npmjs.com/package/ts-metadata-helper).
-In case of dynamic component please use ngComponentOutlet.
+Date of creation: 18 Jun 2016 [started with Angular 2.0.0-rc.2].  
+The previous version of this module is tandem [angular2-dynamic-component](https://www.npmjs.com/package/angular2-dynamic-component) and [ts-metadata-helper](https://www.npmjs.com/package/ts-metadata-helper).  
+In case of dynamic component please use ngComponentOutlet.  
 
 ## Installation
 
@@ -25,10 +25,10 @@ import {DynamicComponentModule} from 'ngx-dynamic-template';
 
 [Live demo](https://apoterenko.github.io/ngx-dynamic-component)
 
-**1** git clone --progress -v "git@github.com:apoterenko/ngx-dynamic-component.git" "D:\sources"
-**2** cd C:\sources\ngx-dynamic-component\demo
+**1** git clone --progress -v "git@github.com:apoterenko/ngx-dynamic-component.git" "D:\sources"  
+**2** cd C:\sources\ngx-dynamic-component\demo  
 **3** npm install  
-**4** npm start
+**4** npm start  
 
 ## Features
 
