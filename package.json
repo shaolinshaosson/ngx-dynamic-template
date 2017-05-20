@@ -1,6 +1,6 @@
 {
-  "name": "angular2-dynamic-component",
-  "version": "1.6.1",
+  "name": "ngx-dynamic-component",
+  "version": "1.6.2",
   "license": "MIT",
   "keywords": [
     "angular",
@@ -8,6 +8,7 @@
     "dynamic",
     "dynamic-component",
     "angular2-dynamic-component",
+    "ngx-dynamic",
     "ng2-dynamic",
     "ng2-dynamic-component"
   ],

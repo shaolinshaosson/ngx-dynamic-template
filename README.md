@@ -1,4 +1,4 @@
-# angular2-dynamic-component & angular2-dynamic-directive
+# ngx-dynamic-component & ngx-dynamic-component
 
 An implementation of dynamic component wrapper at Angular2 [4.1.2] (AoT compatible).
 Also, you must see the solution out of the box before using this component: (NgComponentOutlet, since 4.0.x)
@@ -18,12 +18,12 @@ npm install ts-metadata-helper --save
 ```  
 **3** And after that, you have to install the target package  
 ```sh
-npm install angular2-dynamic-component --save
+npm install ngx-dynamic-component --save
 ```
 **4** Then you must apply the **DynamicComponentModule**  
 
 ```typescript
-import {DynamicComponentModule} from 'angular2-dynamic-component/index';
+import {DynamicComponentModule} from 'ngx-dynamic-component/index';
 
 @NgModule({
     imports: [DynamicComponentModule]
@@ -33,7 +33,7 @@ import {DynamicComponentModule} from 'angular2-dynamic-component/index';
 ## Demo
 
 **1** git clone --progress -v "git@github.com:apoterenko/angular2-dynamic-component.git" "D:\sources"  
-**2** cd D:\sources\angular2-dynamic-component\demo  
+**2** cd D:\sources\angular2-dynamic-component\demo
 **3** npm install  
 **4** npm start  
 
@@ -107,7 +107,7 @@ export class AppComponent {
 The **CommonModule** module is imported by default.
 
 ```typescript
-import {DynamicComponentModuleFactory} from "angular2-dynamic-component/index";
+import {DynamicComponentModuleFactory} from "ngx-dynamic-component/index";
 @NgModule({
 	imports: [..., 
 		DynamicComponentModuleFactory.buildModule([
