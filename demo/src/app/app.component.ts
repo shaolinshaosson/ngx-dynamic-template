@@ -1,107 +1,14 @@
-/*
- * Angular 2 decorators and services
- */
-import {
-  Component,
-  OnInit,
-  ViewEncapsulation
-} from '@angular/core';
-import { AppState } from './app.service';
+import {Component, Input, ElementRef, Renderer} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+import {DYNAMIC_MODULE} from './app.dynamic.module.factory';
 
-import { Input, ElementRef, Renderer } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-
-import { DynamicComponentModuleFactory } from 'angular2-dynamic-component/index';
-
-export const DYNAMIC_MODULE = DynamicComponentModuleFactory.buildModule([
-  /* Custom modules here */
-]);
-
-/*
- * App Component
- * Top Level Component
- */
 @Component({
-  selector: 'app',
-  encapsulation: ViewEncapsulation.None,
-  styleUrls: [
-    './app.component.css'
-  ],
-  template: `
-    <nav>
-      <a [routerLink]=" ['./'] "
-        routerLinkActive="active" [routerLinkActiveOptions]= "{exact: true}">
-        Index
-      </a>
-      <a [routerLink]=" ['./home'] "
-        routerLinkActive="active" [routerLinkActiveOptions]= "{exact: true}">
-        Home
-      </a>
-    </nav>
-
-    <main>
-      <router-outlet></router-outlet>
-    </main>
-    
-     <b>Scenario #1</b><br>  
-    <template dynamic-component
-              [componentContext]="outerDynamicContext"
-              [componentModules]="outerDynamicModules"
-              [componentTemplate]="outerDynamicTemplate"></template>
-                
-    Inner dynamic value [this is a part of app template]: {{ outerDynamicContext.innerDynamicContext.value }}<br><br>   
-    
-    <b>Scenario #2</b><br>    
-    <DynamicComponent [componentTemplate]="extraTemplate2"
-                      [componentContext]="context2"></DynamicComponent><br>
-    <DynamicComponent [componentTemplate]="extraTemplate2"
-                      [componentContext]="context2"></DynamicComponent><br><br>
-    
-    <b>Scenario #3</b><br> 
-    <template dynamic-component
-          *ngFor="let field of columns"
-          [componentType]="field.type"
-          [componentContext]="field.context">
-    </template>
-    <template dynamic-component
-          *ngFor="let field of columns"
-          [componentType]="field.type"
-          [componentContext]="field.context2">
-    </template>
-                      
-    <br><br><b>Scenario #4</b><br>
-    <div *ngFor="let i of longArray">
-        <template dynamic-component [componentTemplate]="extraTemplate2"
-                                    [componentContext]="context2"></template>
-    </div>
-    <div *ngFor="let i of longArray">
-        <DynamicComponent [componentTemplate]="extraTemplate2"
-                          [componentContext]="context2"></DynamicComponent>
-    </div>
-
-    <br>
-    // Scenario #5
-    <template dynamic-component
-              *ngFor="let field of columns2"
-              [componentType]="field.type"
-              [componentModules]="componentModules2"
-              [componentContext]="field.context">
-    </template>
-
-    <footer>
-      <span>WebPack Angular 2 Starter by <a [href]="url">@AngularClass</a></span>
-      <div>
-        <a [href]="url">
-          <img [src]="angularclassLogo" width="25%">
-        </a>
-      </div>
-    </footer>
-  `
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit {
-  public angularclassLogo = 'assets/img/angularclass-avatar.png';
-  public name = 'Angular 2 Webpack Starter';
-  public url = 'https://twitter.com/AngularClass';
+export class AppComponent {
+  title = 'app works!';
 
   // Scenario #1
   public outerDynamicTemplate = `
@@ -172,7 +79,7 @@ export class AppComponent implements OnInit {
   }];
 
   // Scenario #4
-  longArray:Array<number> = new Array(500);
+  longArray: Array<number> = new Array(500);
 
   // Scenario #5
   componentModules2 = [DYNAMIC_MODULE];

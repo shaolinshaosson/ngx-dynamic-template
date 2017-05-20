@@ -1,0 +1,47 @@
+<h1>
+  The ngx-dynamic-component demo
+</h1>
+
+<b>Scenario #1</b><br>
+<template dynamic-component
+          [componentContext]="outerDynamicContext"
+          [componentModules]="outerDynamicModules"
+          [componentTemplate]="outerDynamicTemplate"></template>
+
+Inner dynamic value [this is a part of app template]: {{ outerDynamicContext.innerDynamicContext.value }}<br><br>
+
+<b>Scenario #2</b><br>
+<DynamicComponent [componentTemplate]="extraTemplate2"
+                  [componentContext]="context2"></DynamicComponent><br>
+<DynamicComponent [componentTemplate]="extraTemplate2"
+                  [componentContext]="context2"></DynamicComponent><br><br>
+
+<b>Scenario #3</b><br>
+<template dynamic-component
+          *ngFor="let field of columns"
+          [componentType]="field.type"
+          [componentContext]="field.context">
+</template>
+<template dynamic-component
+          *ngFor="let field of columns"
+          [componentType]="field.type"
+          [componentContext]="field.context2">
+</template>
+
+<br><br><b>Scenario #4</b><br>
+<div *ngFor="let i of longArray">
+  <template dynamic-component [componentTemplate]="extraTemplate2"
+            [componentContext]="context2"></template>
+</div>
+<div *ngFor="let i of longArray">
+  <DynamicComponent [componentTemplate]="extraTemplate2"
+                    [componentContext]="context2"></DynamicComponent>
+</div>
+<br>
+// Scenario #5
+<template dynamic-component
+          *ngFor="let field of columns2"
+          [componentType]="field.type"
+          [componentModules]="componentModules2"
+          [componentContext]="field.context">
+</template>
