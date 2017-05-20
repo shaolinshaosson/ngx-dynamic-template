@@ -30,11 +30,9 @@ import {DynamicComponentModule} from 'ngx-dynamic-component/index';
 })
 ```
 
-## Live demo
-
-TODO
-
 ## Demo
+
+[Live demo](https://apoterenko.github.io/ngx-dynamic-component)
 
 **1** git clone --progress -v "git@github.com:apoterenko/ngx-dynamic-component.git" "D:\sources"
 **2** cd D:\sources\ngx-dynamic-component\demo
