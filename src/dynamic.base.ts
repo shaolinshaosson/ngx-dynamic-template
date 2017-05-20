@@ -17,27 +17,17 @@ import {
 	NgModuleRef
 } from '@angular/core';
 
-import {CommonModule} from "@angular/common";
-
-import {
-	Http,
-	Response,
-	RequestOptionsArgs
-} from '@angular/http';
-
-import {IComponentRemoteTemplateFactory} from './IComponentRemoteTemplateFactory';
-import {Utils} from './Utils';
-import {DynamicCache} from './DynamicCache';
+import { CommonModule } from '@angular/common';
+import { Http, Response, RequestOptionsArgs } from '@angular/http';
+import { IComponentRemoteTemplateFactory } from './IComponentRemoteTemplateFactory';
+import { Utils } from './Utils';
+import { DynamicCache } from './dynamic.cache';
 
 export interface ComponentContext {
 	[index: string]: any;
 }
 
 export interface IDynamicComponent {
-}
-
-export interface DynamicComponentType {
-	new (): IDynamicComponent
 }
 
 export interface DynamicMetadata {
@@ -53,10 +43,6 @@ export interface DynamicComponentConfig {
 }
 
 export type AnyT = Type<any>;
-
-export const DYNAMIC_TYPES = {
-	DynamicExtraModules: 'DynamicExtraModules'  // AoT workaround Symbol(..)
-};
 
 const HASH_FIELD:string = '__hashValue';
 
@@ -159,13 +145,8 @@ export class DynamicBase implements OnChanges, OnDestroy {
 		}
 	}
 
-	/**
-	 * Build module wrapper for dynamic component asynchronously
-	 *
-	 * @returns {Promise<AnyT>}
-	 */
-	protected buildModule():Promise<AnyT> {
-		return new Promise((resolve:(value:AnyT) => void) => {
+	private buildModule(): Promise<AnyT> {
+		return new Promise((resolve: (value: AnyT) => void) => {
 			if (Utils.isPresent(this.componentTemplate)) {
 				resolve(this.makeComponentModule({template: this.componentTemplate}));
 			} else if (Utils.isPresent(this.componentTemplatePath)) {
@@ -178,7 +159,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 		});
 	}
 
-	protected loadRemoteTemplate(url: string, resolve: (value: AnyT) => void) {
+	private loadRemoteTemplate(url: string, resolve: (value: AnyT) => void) {
 		let requestArgs: RequestOptionsArgs = {withCredentials: true};
 		if (Utils.isPresent(this.componentRemoteTemplateFactory)) {
 			requestArgs = this.componentRemoteTemplateFactory.buildRequestOptions();
@@ -189,25 +170,18 @@ export class DynamicBase implements OnChanges, OnDestroy {
 				// TODO Inject response statuses
 				if ([301, 302, 307, 308].indexOf(response.status) > -1) {
 					const chainedUrl: string = response.headers.get('Location');
-
-					// TODO Inject logger
-					console.debug('[$DynamicBase][loadRemoteTemplate] The URL into the chain is:', chainedUrl);
 					if (Utils.isPresent(chainedUrl)) {
 						this.loadRemoteTemplate(chainedUrl, resolve);
-					} else {
-						console.warn('[$DynamicBase][loadRemoteTemplate] The URL into the chain is empty. The process of redirect has stopped.');
 					}
 				} else {
-					const loadedTemplate:string = Utils.isPresent(this.componentRemoteTemplateFactory)
+					const loadedTemplate: string = Utils.isPresent(this.componentRemoteTemplateFactory)
 						? this.componentRemoteTemplateFactory.parseResponse(response)
 						: response.text();
 
 					resolve(this.makeComponentModule({template: loadedTemplate}));
 				}
 			}, (response: Response) => {
-				console.warn('[$DynamicBase][loadRemoteTemplate] Error response:', response);
-
-				const template:string = this.componentDefaultTemplate || '';
+				const template: string = this.componentDefaultTemplate || '';
 				resolve(this.makeComponentModule({template: template}));
 			});
 	}
@@ -258,18 +232,20 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	}
 
 	private applyPropertiesToDynamicComponent(instance: IDynamicComponent) {
-		if (Utils.isPresent(this.componentContext)) {
-			for (let property in this.componentContext) {
-				const propValue = Reflect.get(this.componentContext, property);
-				const attributes: PropertyDescriptor = {} as PropertyDescriptor;
+		if (!Utils.isPresent(this.componentContext)) {
+			return;
+		}
 
-				if (!Utils.isFunction(propValue)) {
-					attributes.set = (v) => Reflect.set(this.componentContext, property, v);
-				}
-				attributes.get = () => Reflect.get(this.componentContext, property);
+		for (let property in this.componentContext) {
+			const propValue = Reflect.get(this.componentContext, property);
+			const attributes: PropertyDescriptor = {} as PropertyDescriptor;
 
-				Reflect.defineProperty(instance, property, attributes);
+			if (!Utils.isFunction(propValue)) {
+				attributes.set = (v) => Reflect.set(this.componentContext, property, v);
 			}
+			attributes.get = () => Reflect.get(this.componentContext, property);
+
+			Reflect.defineProperty(instance, property, attributes);
 		}
 	}
 }
