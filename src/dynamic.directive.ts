@@ -1,16 +1,16 @@
 import { Directive, Input, Inject, Output, EventEmitter, Compiler, ViewContainerRef } from '@angular/core';
 import { Http } from '@angular/http';
 
-import { IDynamicComponent, DynamicBase, ComponentContext } from './dynamic.base';
+import { DynamicBase, ComponentContext } from './dynamic.base';
 import { DynamicCache } from './dynamic.cache';
-import { DYNAMIC_TYPES, IComponentRemoteTemplateFactory } from './dynamic.interface';
+import { DYNAMIC_TYPES, IComponentRemoteTemplateFactory, IDynamicType } from './dynamic.interface';
 
 @Directive({
   selector: '[dynamic-component]'
 })
 export class DynamicDirective extends DynamicBase {
 
-  @Output() dynamicComponentReady: EventEmitter<IDynamicComponent>;
+  @Output() dynamicComponentReady: EventEmitter<IDynamicType>;
   @Output() dynamicComponentBeforeReady: EventEmitter<void>;
 
   @Input() componentTemplate: string;

@@ -19,22 +19,12 @@ import {
 
 import { CommonModule } from '@angular/common';
 import { Http, Response, RequestOptionsArgs } from '@angular/http';
-import { IComponentRemoteTemplateFactory } from './IComponentRemoteTemplateFactory';
 import { Utils } from './Utils';
 import { DynamicCache } from './dynamic.cache';
+import { IComponentRemoteTemplateFactory, IDynamicMetadata, IDynamicType } from './dynamic.interface';
 
 export interface ComponentContext {
 	[index: string]: any;
-}
-
-export interface IDynamicComponent {
-}
-
-export interface DynamicMetadata {
-	selector: string;
-	styles?: Array<string>;
-	template?: string;
-	templateUrl?: string;
 }
 
 export interface DynamicComponentConfig {
@@ -48,7 +38,7 @@ const HASH_FIELD:string = '__hashValue';
 
 export class DynamicBase implements OnChanges, OnDestroy {
 
-	@Output() dynamicComponentReady:EventEmitter<IDynamicComponent>;
+	@Output() dynamicComponentReady:EventEmitter<IDynamicType>;
 	@Output() dynamicComponentBeforeReady:EventEmitter<void>;
 
 	@Input() componentTemplate: string;
@@ -61,11 +51,10 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	@Input() componentModules: Array<any>;
 
 	private injector:ReflectiveInjector;
-
 	private dynamicSelector:string;
 	private cachedDynamicModule:AnyT;
-	private cachedDynamicComponent:Type<IDynamicComponent>;
-	private componentInstance: ComponentRef<IDynamicComponent>;
+	private cachedDynamicComponent:Type<IDynamicType>;
+	private componentInstance: ComponentRef<IDynamicType>;
 	private moduleInstance: NgModuleRef<any>;
 
 	constructor(protected dynamicExtraModules: Array<any>,
@@ -74,8 +63,8 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	            protected http: Http,
 	            protected dynamicCache: DynamicCache,
 	            dynamicSelector: string) {
-		this.dynamicComponentReady = new EventEmitter<IDynamicComponent>(false);
-		this.dynamicComponentBeforeReady = new EventEmitter<void>(false);
+		this.dynamicComponentReady = new EventEmitter<IDynamicType>();
+		this.dynamicComponentBeforeReady = new EventEmitter<void>();
 		this.dynamicSelector = Utils.buildByNextId(dynamicSelector);
 
 		this.injector = ReflectiveInjector.fromResolvedProviders([], this.viewContainer.parentInjector);
@@ -187,7 +176,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	}
 
 	private makeComponentModule(dynamicConfig?: DynamicComponentConfig): AnyT {
-		const dynamicComponentType: Type<IDynamicComponent>
+		const dynamicComponentType: Type<IDynamicType>
 			= this.cachedDynamicComponent
 			= this.makeComponent(dynamicConfig);
 
@@ -207,8 +196,8 @@ export class DynamicBase implements OnChanges, OnDestroy {
 		return this.cachedDynamicModule = dynamicComponentModule;
 	}
 
-	private makeComponent(componentConfig?: DynamicComponentConfig): Type<IDynamicComponent> {
-		const dynamicComponentMetaData: DynamicMetadata = {
+	private makeComponent(componentConfig?: DynamicComponentConfig): Type<IDynamicType> {
+		const dynamicComponentMetaData: IDynamicMetadata = {
 			selector: this.dynamicSelector,
 			styles: this.componentStyles
 		};
@@ -228,10 +217,10 @@ export class DynamicBase implements OnChanges, OnDestroy {
 		if (Utils.isPresent(Reflect.get(dynamicComponentMetaData, 'template'))) {
 			Reflect.set(dynamicComponentClass, HASH_FIELD, Utils.hashFnv32a(Reflect.get(dynamicComponentMetaData, 'template'), true));
 		}
-		return dynamicComponentClass as Type<IDynamicComponent>;
+		return dynamicComponentClass as Type<IDynamicType>;
 	}
 
-	private applyPropertiesToDynamicComponent(instance: IDynamicComponent) {
+	private applyPropertiesToDynamicComponent(instance: IDynamicType) {
 		if (!Utils.isPresent(this.componentContext)) {
 			return;
 		}
