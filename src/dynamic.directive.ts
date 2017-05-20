@@ -6,7 +6,7 @@ import { DynamicCache } from './dynamic.cache';
 import { DYNAMIC_TYPES, IComponentRemoteTemplateFactory, IDynamicType } from './dynamic.interface';
 
 @Directive({
-  selector: '[dynamic-component]'
+  selector: '[dynamic-template]'
 })
 export class DynamicDirective extends DynamicBase {
 
@@ -27,6 +27,6 @@ export class DynamicDirective extends DynamicBase {
               @Inject(Compiler) compiler: Compiler,
               @Inject(Http) http: Http,
               @Inject(DynamicCache) dynamicCache: DynamicCache) {
-    super(dynamicExtraModules, viewContainer, compiler, http, dynamicCache, '[dynamic-component-{id}]');
+    super(dynamicExtraModules, viewContainer, compiler, http, dynamicCache, '[dynamic-template-{id}]');
   }
 }

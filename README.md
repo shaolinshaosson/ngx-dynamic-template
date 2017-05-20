@@ -14,40 +14,42 @@ In case of dynamic component please use ngComponentOutlet.
 npm install ngx-dynamic-template --save
 
 ```typescript
-import {DynamicComponentModule} from 'ngx-dynamic-template';
+import { NgxDynamicTemplateModule } from 'ngx-dynamic-template';
 
 @NgModule({
-    imports: [DynamicComponentModule]
+    imports: [NgxDynamicTemplateModule.forRoot()]
 })
 ```
 
 ## Demo
 
-[Live demo](https://apoterenko.github.io/ngx-dynamic-component)
+[Live demo](https://apoterenko.github.io/ngx-dynamic-template)
 
-**1** git clone --progress -v "git@github.com:apoterenko/ngx-dynamic-component.git" "D:\sources"  
-**2** cd C:\sources\ngx-dynamic-component\demo  
+Or
+
+**1** git clone --progress -v "git@github.com:apoterenko/ngx-dynamic-template.git" "C:\sources"
+**2** cd C:\sources\ngx-dynamic-template\demo
 **3** npm install  
 **4** npm start  
 
 ## Features
 
-##### **1** Support of **dynamicComponentReady** & **dynamicComponentBeforeReady** output events. See below.  
+##### **1** Support of **dynamicComponentReady** & **dynamicComponentBeforeReady** output events.
 
-##### **2** Support of **dynamic-component** directive. See below.
+##### **2** Support of **dynamic-template** directive.
 
-##### **3** Support of **Dynamic within Dynamic** strategy (see demo inside).
+##### **3** Support of **Dynamic within Dynamic** strategy.
 
 ```typescript
 @Component(...)
 export class AppComponent {
-	extraTemplate = `<DynamicComponent [componentTemplate]='"<span>Dynamic inside dynamic!</span>"'></DynamicComponent>`;
+	extraTemplate = `<template dynamic-template [componentTemplate]='"<span>Dynamic inside dynamic!</span>"'></template>`;
 	extraModules = [DynamicComponentModule];
 	...
 }
 ```
 ```html
-<template dynamic-component
+<template dynamic-template
           [componentModules]="extraModules"
           [componentTemplate]='extraTemplate'></template>
 ``` 
@@ -66,7 +68,7 @@ export class AppComponent {
 }
 ```
 ```html
-<template dynamic-component
+<template dynamic-template
           (dynamicComponentReady)="dynamicCallback($event)"
           [componentContext]="{contextValue: 100500}"
           [componentDefaultTemplate]='"<span style=\"color: red\">This is fallback template</span>"'
@@ -87,36 +89,13 @@ export class AppComponent {
 }
 ```
 ```html
-<template dynamic-component
+<template dynamic-template
           [componentContext]="self"
           [componentModules]="dynamicExtraModules"
           [componentTemplate]='"<span [innerHTML]=\"changedValue\"></span><input type=\"text\" [(ngModel)]=\"dynamicContextValue\" (ngModelChange)=\"changedValue = $event\">"'></template>
 ```
 
-##### **7** Support of dynamic injected modules via the **DynamicComponentModuleFactory**.  
-
-The **CommonModule** module is imported by default.
-
-```typescript
-import {DynamicComponentModuleFactory} from "ngx-dynamic-component/index";
-@NgModule({
-	imports: [..., 
-		DynamicComponentModuleFactory.buildModule([
-			FormsModule
-		])
-	],
-	...
-	bootstrap: [AppComponent]
-})
-export class AppModule {}
-```
-```html
-<template dynamic-component
-          [componentContext]="{dynamicContextValue: 100500, changedValue: 0}"
-          [componentTemplate]='"<span [innerHTML]=\"changedValue\"></span><input type=\"text\" [(ngModel)]=\"dynamicContextValue\" (ngModelChange)=\"changedValue = $event\">"'></template>
-```
-
-##### **8** Support of **componentModules** attribute.  
+##### **7** Support of **componentModules** attribute.
 
 ```typescript
 @Component(...)
@@ -125,13 +104,13 @@ export class AppComponent {
 }
 ```
 ```html
-<template dynamic-component
+<template dynamic-template
           [componentModules]="dynamicExtraModules"
           [componentContext]="{dynamicContextValue: 100500, changedValue: 0}"
           [componentTemplate]='"<span [innerHTML]=\"changedValue\"></span><input type=\"text\" [(ngModel)]=\"dynamicContextValue\" (ngModelChange)=\"changedValue = $event\">"'></template>
 ```
 
-##### **9** Support of **componentTemplatePath** attribute. This analogue of **templateUrl** parameter for **@Component**.
+##### **8** Support of **componentTemplatePath** attribute. This analogue of **templateUrl** parameter for **@Component**.
 
 ## License
 
