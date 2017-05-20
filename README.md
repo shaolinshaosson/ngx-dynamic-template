@@ -23,14 +23,8 @@ import { NgxDynamicTemplateModule } from 'ngx-dynamic-template';
 
 ## Demo
 
-[Live demo](https://apoterenko.github.io/ngx-dynamic-template)
-
-Or
-
-**1** git clone --progress -v "git@github.com:apoterenko/ngx-dynamic-template.git" "C:\sources"
-**2** cd C:\sources\ngx-dynamic-template\demo
-**3** npm install  
-**4** npm start  
+[Live demo](https://apoterenko.github.io/ngx-dynamic-template)  
+[Local demo](https://github.com/apoterenko/ngx-dynamic-template/tree/master/demo)  
 
 ## Features
 
