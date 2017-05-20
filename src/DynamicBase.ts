@@ -13,8 +13,6 @@ import {
 	ComponentFactory,
 	Type,
 	ReflectiveInjector,
-	ElementRef,
-	Inject,
 	SimpleChanges,
 	NgModuleRef
 } from '@angular/core';
@@ -26,12 +24,6 @@ import {
 	Response,
 	RequestOptionsArgs
 } from '@angular/http';
-
-import {
-	MetadataHelper,
-	IAnnotationMetadataHolder,
-	DecoratorType
-} from 'ts-metadata-helper/index';
 
 import {IComponentRemoteTemplateFactory} from './IComponentRemoteTemplateFactory';
 import {Utils} from './Utils';
@@ -73,7 +65,6 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	@Output() dynamicComponentReady:EventEmitter<IDynamicComponent>;
 	@Output() dynamicComponentBeforeReady:EventEmitter<void>;
 
-	@Input() componentType: DynamicComponentType;
 	@Input() componentTemplate: string;
 	@Input() componentStyles: string[];
 	@Input() componentContext: ComponentContext;
@@ -130,8 +121,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 					this.moduleInstance = moduleWithComponentFactories.ngModuleFactory.create(this.injector);
 
 					const factory = moduleWithComponentFactories.componentFactories.find((componentFactory:ComponentFactory<AnyT>) => {
-							return Utils.isSelectorOfComponentTypeEqual(componentFactory.selector, this.componentType)
-								|| componentFactory.selector === this.dynamicSelector
+							return componentFactory.selector === this.dynamicSelector
 								|| (Utils.isPresent(componentFactory.componentType) && Utils.isPresent(this.componentTemplate)
 								&& Reflect.get(componentFactory.componentType, HASH_FIELD) === Utils.hashFnv32a(this.componentTemplate, true));
 						}
@@ -222,7 +212,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 			});
 	}
 
-	protected makeComponentModule(dynamicConfig?: DynamicComponentConfig): AnyT {
+	private makeComponentModule(dynamicConfig?: DynamicComponentConfig): AnyT {
 		const dynamicComponentType: Type<IDynamicComponent>
 			= this.cachedDynamicComponent
 			= this.makeComponent(dynamicConfig);
@@ -236,91 +226,42 @@ export class DynamicBase implements OnChanges, OnDestroy {
 		class dynamicComponentModule {
 		}
 
-		const dynamicComponentTypeHash:string = Reflect.get(dynamicComponentType, HASH_FIELD);
+		const dynamicComponentTypeHash: string = Reflect.get(dynamicComponentType, HASH_FIELD);
 		if (Utils.isPresent(dynamicComponentTypeHash)) {
 			Reflect.set(dynamicComponentModule, HASH_FIELD, dynamicComponentTypeHash);
 		}
-
 		return this.cachedDynamicModule = dynamicComponentModule;
 	}
 
-	/**
-	 * Build dynamic component class
-	 *
-	 * @param componentConfig
-	 * @returns {Type<IDynamicComponent>}
-	 */
-	protected makeComponent(componentConfig?: DynamicComponentConfig):Type<IDynamicComponent> {
-		const internalInjector = this.injector;
-		const componentDecorator: DecoratorType = Utils.findComponentDecoratorByComponentType(this.componentType);
-		const componentTypeParameters:Array<any> = Utils.isPresent(this.componentType)
-			? (Utils.getParamTypes(this.componentType) || [])
-			: [];
+	private makeComponent(componentConfig?: DynamicComponentConfig): Type<IDynamicComponent> {
+		const dynamicComponentMetaData: DynamicMetadata = {
+			selector: this.dynamicSelector,
+			styles: this.componentStyles
+		};
 
-		let componentMetadata:DynamicMetadata;
-		if (Utils.isPresent(componentDecorator)) {
-			if (!Utils.isSelectorPresent(componentDecorator)) {
-				// Setting selector if it is not present in Component metadata
-				Reflect.set(componentDecorator, 'selector', this.componentType.name);
-			}
-		} else {
-			componentMetadata = {
-				selector: this.dynamicSelector,
-				styles: this.componentStyles
-			};
-			if (Utils.isPresent(componentConfig)) {
-				if (Utils.isPresent(componentConfig.template)) {
-					componentMetadata.template = componentConfig.template;
-				} else if (Utils.isPresent(componentConfig.templatePath)) {
-					componentMetadata.templateUrl = componentConfig.templatePath;
-				}
+		if (Utils.isPresent(componentConfig)) {
+			if (Utils.isPresent(componentConfig.template)) {
+				dynamicComponentMetaData.template = componentConfig.template;
+			} else if (Utils.isPresent(componentConfig.templatePath)) {
+				dynamicComponentMetaData.templateUrl = componentConfig.templatePath;
 			}
 		}
 
-		const dynamicClassMetadata:DynamicMetadata|DecoratorType = componentDecorator || componentMetadata;
-		const componentParentClass = (this.componentType || class {}) as {new (...any): IDynamicComponent};
-
-		@Component(dynamicClassMetadata)
-		class dynamicComponentClass extends componentParentClass {
-
-			constructor(@Inject(ElementRef) elementRef: ElementRef) {
-				super(
-					...componentTypeParameters
-						.map((service) =>
-							elementRef instanceof service
-								? elementRef
-								: internalInjector.get(service))
-						.concat([elementRef])
-				);
-			}
+		@Component(dynamicComponentMetaData)
+		class dynamicComponentClass {
 		}
 
-		if (Utils.isPresent(Reflect.get(dynamicClassMetadata, 'template'))) {
-			Reflect.set(dynamicComponentClass, HASH_FIELD, Utils.hashFnv32a(Reflect.get(dynamicClassMetadata, 'template'), true));
+		if (Utils.isPresent(Reflect.get(dynamicComponentMetaData, 'template'))) {
+			Reflect.set(dynamicComponentClass, HASH_FIELD, Utils.hashFnv32a(Reflect.get(dynamicComponentMetaData, 'template'), true));
 		}
 		return dynamicComponentClass as Type<IDynamicComponent>;
 	}
 
-	protected applyPropertiesToDynamicComponent(instance:IDynamicComponent) {
-		const metadataHolder:IAnnotationMetadataHolder = MetadataHelper.findPropertyMetadata(this, Input);
-
-		for (let property of Object.keys(this)) {
-			if (Reflect.has(metadataHolder, property)) {
-				if (Reflect.has(instance, property)) {
-					console.warn('[$DynamicBase][applyPropertiesToDynamicComponent] The property', property, 'will be overwritten for the component', instance);
-				}
-				Reflect.set(instance, property, Reflect.get(this, property));
-			}
-		}
-
+	private applyPropertiesToDynamicComponent(instance: IDynamicComponent) {
 		if (Utils.isPresent(this.componentContext)) {
 			for (let property in this.componentContext) {
-				if (Reflect.has(instance, property)) {
-					console.warn('[$DynamicBase][applyPropertiesToDynamicComponent] The property', property, 'will be overwritten for the component', instance);
-				}
-
 				const propValue = Reflect.get(this.componentContext, property);
-				const attributes:PropertyDescriptor = {} as PropertyDescriptor;
+				const attributes: PropertyDescriptor = {} as PropertyDescriptor;
 
 				if (!Utils.isFunction(propValue)) {
 					attributes.set = (v) => Reflect.set(this.componentContext, property, v);

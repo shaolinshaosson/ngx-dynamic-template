@@ -1,7 +1,6 @@
 import { NgModule, Compiler } from '@angular/core';
 import { JitCompilerFactory } from '@angular/compiler';
 
-import { DynamicComponent } from './DynamicComponent';
 import { DynamicDirective } from "./DynamicDirective";
 import { DYNAMIC_TYPES } from "./DynamicBase";
 import { DynamicCache } from './DynamicCache';
@@ -18,11 +17,9 @@ export function createJitCompiler() {
 			{provide: Compiler, useFactory: createJitCompiler}
 		],
 		declarations: [
-			DynamicComponent,
 			DynamicDirective
 		],
 		exports: [
-			DynamicComponent,
 			DynamicDirective
 		]
 	}
@@ -41,11 +38,9 @@ export class DynamicComponentModuleFactory {
 					{provide: Compiler, useFactory: createJitCompiler}
 				],
 				declarations: [
-					DynamicComponent,
 					DynamicDirective
 				],
 				exports: [
-					DynamicComponent,
 					DynamicDirective
 				]
 			}

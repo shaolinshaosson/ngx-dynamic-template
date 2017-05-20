@@ -4,24 +4,17 @@ An implementation of dynamic template wrapper at Angular2/4 [4.1.3] (AoT compati
 
 ## Description
 
-Date of creation: 18 Jun 2016 [starting with Angular 2.0.0-rc.2].
-The previous version of this module is [angular2-dynamic-component](https://www.npmjs.com/package/angular2-dynamic-component).
+Date of creation: 18 Jun 2016 [started with Angular 2.0.0-rc.2].
+The previous version of this module is tandem [angular2-dynamic-component](https://www.npmjs.com/package/angular2-dynamic-component) and [ts-metadata-helper](https://www.npmjs.com/package/ts-metadata-helper).
+In case of dynamic component please use ngComponentOutlet.
 
 ## Installation
 
-**1** At first, you need to install the [core-js](https://www.npmjs.com/package/core-js) npm module.  
-**2** Then you need to install the [ts-metadata-helper](https://www.npmjs.com/package/ts-metadata-helper) dependency package (don't worry, it's very small and simple, I like "reusable" approach)  
-```sh
-npm install ts-metadata-helper --save
-```  
-**3** And after that, you have to install the target package  
 ```sh
 npm install ngx-dynamic-template --save
-```
-**4** Then you must apply the **DynamicComponentModule**  
 
 ```typescript
-import {DynamicComponentModule} from 'ngx-dynamic-component/index';
+import {DynamicComponentModule} from 'ngx-dynamic-template';
 
 @NgModule({
     imports: [DynamicComponentModule]
@@ -33,7 +26,7 @@ import {DynamicComponentModule} from 'ngx-dynamic-component/index';
 [Live demo](https://apoterenko.github.io/ngx-dynamic-component)
 
 **1** git clone --progress -v "git@github.com:apoterenko/ngx-dynamic-component.git" "D:\sources"
-**2** cd D:\sources\ngx-dynamic-component\demo
+**2** cd C:\sources\ngx-dynamic-component\demo
 **3** npm install  
 **4** npm start
 
@@ -41,11 +34,9 @@ import {DynamicComponentModule} from 'ngx-dynamic-component/index';
 
 ##### **1** Support of **dynamicComponentReady** & **dynamicComponentBeforeReady** output events. See below.  
 
-##### **2** Support of **dynamic-component** directive. See below.  
+##### **2** Support of **dynamic-component** directive. See below.
 
-##### **3** Support of **DynamicComponent** component. See below.  
-
-##### **4** Support of **Dynamic within Dynamic** strategy (see demo inside).
+##### **3** Support of **Dynamic within Dynamic** strategy (see demo inside).
 
 ```typescript
 @Component(...)
