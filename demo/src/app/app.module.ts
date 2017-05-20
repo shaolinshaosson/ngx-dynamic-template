@@ -3,26 +3,18 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
-import { DynamicComponentModule } from 'ngx-dynamic-component';
+import { DynamicComponentModule } from 'ngx-dynamic-template';
 
-import { AppComponent, TextField, CheckboxField, RadioField, Child1Component, Child2Component } from './app.component';
+import { AppComponent } from './app.component';
 
 @NgModule({
   declarations: [
-    AppComponent,
-    TextField,
-    CheckboxField,
-    RadioField,
-    Child1Component,
-    Child2Component
+    AppComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpModule,
-    DynamicComponentModule
-  ],
-  exports: [
     DynamicComponentModule
   ],
   providers: [
