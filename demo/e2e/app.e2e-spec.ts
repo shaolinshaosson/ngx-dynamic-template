@@ -1,10 +1,10 @@
-import { NgxDynamicComponentDemoPage } from './app.po';
+import { NgxDynamicTemplateDemoPage } from './app.po';
 
 describe('ngx-dynamic-component-demo App', () => {
-  let page: NgxDynamicComponentDemoPage;
+  let page: NgxDynamicTemplateDemoPage;
 
   beforeEach(() => {
-    page = new NgxDynamicComponentDemoPage();
+    page = new NgxDynamicTemplateDemoPage();
   });
 
   it('should display message saying app works', () => {

@@ -1,6 +1,6 @@
 import { browser, by, element } from 'protractor';
 
-export class NgxDynamicComponentDemoPage {
+export class NgxDynamicTemplateDemoPage {
   navigateTo() {
     return browser.get('/');
   }

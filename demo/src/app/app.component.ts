@@ -11,7 +11,7 @@ export class AppComponent {
 
   // Scenario #1
   public outerDynamicTemplate = `
-        <template dynamic-component
+        <template dynamic-template
                   [componentContext]='innerDynamicContext' 
                   [componentModules]='innerDynamicModules'
                   [componentTemplate]='innerDynamicTemplate'>         
@@ -33,7 +33,7 @@ export class AppComponent {
     innerDynamicTemplate: `
         First input field [dynamic inside dynamic]: <input type=\"text\" [(ngModel)]=\"value\" (ngModelChange)=\"value = $event\">
         <br>
-        <template dynamic-component 
+        <template dynamic-template
                   [componentContext]='{root: root}'
                   [componentModules]='valueAccessorModules'
                   [componentTemplate]='valueAccessorTemplate'>         
