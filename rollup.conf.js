@@ -8,12 +8,14 @@ export default {
 	external: [
 		'@angular/core',
 		'@angular/common',
-		'@angular/http'
+		'@angular/http',
+		'@angular/compiler'
 	],
 	globals: {
 		'@angular/core': 'ng.core',
 		'@angular/common': 'ng.common',
-		'@angular/http': 'ng.http'
+		'@angular/http': 'ng.http',
+		'@angular/compiler': 'ng.compiler'
 	},
 	plugins: [
 		includePaths({
