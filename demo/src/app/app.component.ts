@@ -1,6 +1,5 @@
-import {Component, Input, ElementRef, Renderer} from '@angular/core';
-import {FormsModule} from '@angular/forms';
-import {DYNAMIC_MODULE} from './app.dynamic.module.factory';
+import { Component, Input, ElementRef, Renderer, Inject } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
@@ -19,7 +18,7 @@ export class AppComponent {
         <br>
         Inner dynamic value [this is a part of outer dynamic template]: {{ innerDynamicContext.value }}
    `;
-  public outerDynamicModules = [DYNAMIC_MODULE];
+  public outerDynamicModules = [this.dynamicModule];
   public outerDynamicContext = {
     innerDynamicContext: {
       root: this,
@@ -28,7 +27,7 @@ export class AppComponent {
                 Second input field [dynamic inside dynamic inside dynamic]: <input type=\"text\" [(ngModel)]=\"root.context2.contextValue\">
                 <br>
         `,
-      valueAccessorModules: [FormsModule, DYNAMIC_MODULE]
+      valueAccessorModules: [FormsModule, this.dynamicModule]
     },
     innerDynamicTemplate: `
         First input field [dynamic inside dynamic]: <input type=\"text\" [(ngModel)]=\"value\" (ngModelChange)=\"value = $event\">
@@ -38,7 +37,7 @@ export class AppComponent {
                           [componentTemplate]='valueAccessorTemplate'>         
         </DynamicComponent>
     `,
-    innerDynamicModules: [FormsModule, DYNAMIC_MODULE]
+    innerDynamicModules: [FormsModule, this.dynamicModule]
   };
 
   // Scenario #2
@@ -82,7 +81,7 @@ export class AppComponent {
   longArray: Array<number> = new Array(500);
 
   // Scenario #5
-  componentModules2 = [DYNAMIC_MODULE];
+  componentModules2 = [this.dynamicModule];
   columns2 = [{
     type: Child1Component,
     context: {
@@ -99,6 +98,9 @@ export class AppComponent {
     }
   ];
 
+  constructor(@Inject('DynamicModule') private dynamicModule) {
+  }
+  
   ngOnInit() {
     let initialValue = 0;
 
@@ -119,7 +121,8 @@ export class TextField {
   @Input() fieldName: string;
   @Input() value: string;
 
-  constructor(private elementRef: ElementRef, private renderer: Renderer) {
+  constructor(private elementRef: ElementRef,
+              private renderer: Renderer) {
     console.log('The constructor of TextField is called');  // The constructor of TextField is called
   }
 
