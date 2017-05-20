@@ -6,7 +6,7 @@ import { DynamicDirective } from "./DynamicDirective";
 import { DYNAMIC_TYPES } from "./DynamicBase";
 import { DynamicCache } from './DynamicCache';
 
-function createJitCompiler() {
+export function createJitCompiler() {
 	return new JitCompilerFactory([{useJit: true}]).createCompiler();
 }
 
