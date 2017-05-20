@@ -3,7 +3,7 @@ import includePaths from 'rollup-plugin-includepaths';
 
 export default {
 	entry: 'index.js',
-	dest: 'bundles/angular2-dynamic-component.umd.js',
+	dest: 'bundles/ngx-dynamic-component.umd.js',
 	format: 'umd',
 	external: [
 		'@angular/core',
@@ -23,5 +23,5 @@ export default {
 		}),
 		commonjs()
 	],
-	moduleName: 'angular2.dynamic.component'
+	moduleName: 'ngx.dynamic.component'
 }

@@ -1,13 +1,13 @@
 # ngx-dynamic-component & ngx-dynamic-component
 
-An implementation of dynamic component wrapper at Angular2 [4.1.2] (AoT compatible).
+An implementation of dynamic component wrapper at Angular2/4 [4.1.2] (AoT compatible).
 Also, you must see the solution out of the box before using this component: (NgComponentOutlet, since 4.0.x)
 
 https://angular.io/docs/ts/latest/api/common/index/NgComponentOutlet-directive.html
 
 ## Description
 
-Date of creation: 18 Jun [starting with Angular 2.0.0-rc.2].
+Date of creation: 18 Jun 2016 [starting with Angular 2.0.0-rc.2].
 
 ## Installation
 
@@ -30,12 +30,16 @@ import {DynamicComponentModule} from 'ngx-dynamic-component/index';
 })
 ```
 
+## Live demo
+
+TODO
+
 ## Demo
 
-**1** git clone --progress -v "git@github.com:apoterenko/angular2-dynamic-component.git" "D:\sources"  
-**2** cd D:\sources\angular2-dynamic-component\demo
+**1** git clone --progress -v "git@github.com:apoterenko/ngx-dynamic-component.git" "D:\sources"
+**2** cd D:\sources\ngx-dynamic-component\demo
 **3** npm install  
-**4** npm start  
+**4** npm start
 
 ## Features
 

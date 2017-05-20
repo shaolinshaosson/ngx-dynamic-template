@@ -5,12 +5,16 @@
   "keywords": [
     "angular",
     "angular2",
+    "angular4",
     "dynamic",
     "dynamic-component",
     "angular2-dynamic-component",
+    "angular4-dynamic-component",
     "ngx-dynamic",
     "ng2-dynamic",
-    "ng2-dynamic-component"
+    "ng4-dynamic",
+    "ng2-dynamic-component",
+    "ng4-dynamic-component"
   ],
   "author": "Alex Poter <a.poterenko@gmail.com>",
   "scripts": {
@@ -59,14 +63,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/apoterenko/angular2-dynamic-component.git"
+    "url": "https://github.com/apoterenko/ngx-dynamic-component.git"
   },
   "bugs": {
-    "url": "https://github.com/apoterenko/angular2-dynamic-component/issues"
+    "url": "https://github.com/apoterenko/ngx-dynamic-component/issues"
   },
   "module": "index.js",
   "typings": "index.d.ts",
-  "main": "bundles/angular2-dynamic-component.umd.js",
+  "main": "bundles/ngx-dynamic-component.umd.js",
   "engines": {
     "node": ">= 6.5",
     "npm": ">= 3"
