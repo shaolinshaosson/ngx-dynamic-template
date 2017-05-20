@@ -1,8 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, Compiler } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
-import { JitCompiler } from '@angular/compiler';
 
 import { DynamicComponentModule } from 'ngx-dynamic-component';
 
@@ -27,8 +26,7 @@ import { AppComponent, TextField, CheckboxField, RadioField, Child1Component, Ch
     DynamicComponentModule
   ],
   providers: [
-    {provide: 'DynamicModule', useValue: DynamicComponentModule},
-    {provide: Compiler, useExisting: JitCompiler}
+    {provide: 'DynamicModule', useValue: DynamicComponentModule}
   ],
   bootstrap: [AppComponent],
 })
