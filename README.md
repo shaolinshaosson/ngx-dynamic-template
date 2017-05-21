@@ -58,9 +58,21 @@ Also 301, 302, 307, 308 HTTP statuses are supported (recursive redirection). The
 ```
 
 ```typescript
+import { Response, Headers, RequestOptionsArgs } from '@angular/http';
 import { IDynamicRemoteTemplateFactory } from 'ngx-dynamic-template';
 ...
   remoteTemplateFactory: IDynamicRemoteTemplateFactory = {
+    // This is an optional method
+    buildRequestOptions (): RequestOptionsArgs {
+      const headers = new Headers();
+      headers.append('Token', '100500');
+
+      return {
+        withCredentials: true,
+        headers: headers
+      };
+    },
+    // This is an optional method
     parseResponse (response: Response): string {
       return response.json().headers['User-Agent'];
     }
