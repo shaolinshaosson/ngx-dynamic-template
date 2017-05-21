@@ -53,6 +53,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	@Input() componentRemoteTemplateFactory: IComponentRemoteTemplateFactory;
 	@Input() componentModules: Array<any>;
 
+	private lazyExtraModules: Type<any>[];
 	private injector:ReflectiveInjector;
 	private dynamicSelector:string;
 	private cachedDynamicModule:AnyT;
@@ -141,16 +142,29 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	}
 
 	private buildModule(): Promise<AnyT> {
+		const lazyModules: string[] = [].concat(this.lazyModules || []);
+		const lazyModulesLoaders: Promise<NgModuleFactory<any>>[] = [];
+
+		for (let lazyModule of lazyModules) {
+			lazyModulesLoaders.push(this.moduleFactoryLoader.load(lazyModule));
+		}
 		return new Promise((resolve: (value: AnyT) => void) => {
-			if (Utils.isPresent(this.componentTemplate)) {
-				resolve(this.makeComponentModule({template: this.componentTemplate}));
-			} else if (Utils.isPresent(this.componentTemplatePath)) {
-				resolve(this.makeComponentModule({templatePath: this.componentTemplatePath}));
-			} else if (Utils.isPresent(this.componentTemplateUrl)) {
-				this.loadRemoteTemplate(this.componentTemplateUrl, resolve);
-			} else {
-				resolve(this.makeComponentModule());
-			}
+			Promise.all(lazyModulesLoaders)
+				.then((moduleFactories: NgModuleFactory<any>[]) => {
+					for (let moduleFactory of moduleFactories) {
+						this.lazyExtraModules.push(moduleFactory.moduleType);
+					}
+
+					if (Utils.isPresent(this.componentTemplate)) {
+						resolve(this.makeComponentModule({template: this.componentTemplate}));
+					} else if (Utils.isPresent(this.componentTemplatePath)) {
+						resolve(this.makeComponentModule({templatePath: this.componentTemplatePath}));
+					} else if (Utils.isPresent(this.componentTemplateUrl)) {
+						this.loadRemoteTemplate(this.componentTemplateUrl, resolve);
+					} else {
+						resolve(this.makeComponentModule());
+					}
+				});
 		});
 	}
 
@@ -186,7 +200,9 @@ export class DynamicBase implements OnChanges, OnDestroy {
 			= this.cachedDynamicComponent
 			= this.makeComponent(dynamicConfig);
 
-		const componentModules: Array<any> = this.dynamicExtraModules.concat(this.componentModules || []);
+		const componentModules: Array<any> = this.dynamicExtraModules
+			.concat(this.componentModules || [])
+			.concat(this.lazyExtraModules);
 
 		@NgModule({
 			declarations: [dynamicComponentType],
