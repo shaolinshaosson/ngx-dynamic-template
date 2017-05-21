@@ -1,4 +1,4 @@
-import { NgModule, Compiler, ModuleWithProviders } from '@angular/core';
+import { NgModule, Compiler, ModuleWithProviders, SystemJsNgModuleLoader, NgModuleFactoryLoader } from '@angular/core';
 import { JitCompilerFactory } from '@angular/compiler';
 
 import { DynamicDirective } from './dynamic.directive';
@@ -27,32 +27,9 @@ export class NgxDynamicTemplateModule {
 			providers: [
 				DynamicCache,
 				{provide: DYNAMIC_TYPES.DynamicExtraModules, useValue: []},
-				{provide: Compiler, useFactory: createJitCompiler}
+				{provide: Compiler, useFactory: createJitCompiler},
+				{provide: NgModuleFactoryLoader, useClass: SystemJsNgModuleLoader},
 			]
 		};
-	}
-}
-
-export class DynamicComponentModuleFactory {
-
-	static buildModule(dynamicExtraModules:Array<any>):Function {
-		@NgModule(
-			{
-				providers: [
-					DynamicCache,
-					{provide: DYNAMIC_TYPES.DynamicExtraModules, useValue: dynamicExtraModules},
-					{provide: Compiler, useFactory: createJitCompiler}
-				],
-				declarations: [
-					DynamicDirective
-				],
-				exports: [
-					DynamicDirective
-				]
-			}
-		)
-		class DynamicComponentFactoryModule {
-		}
-		return DynamicComponentFactoryModule;
 	}
 }
