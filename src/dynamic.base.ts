@@ -53,7 +53,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	@Input() componentRemoteTemplateFactory: IComponentRemoteTemplateFactory;
 	@Input() componentModules: Array<any>;
 
-	private lazyExtraModules: Type<any>[];
+	private lazyExtraModules: Type<any>[] = [];
 	private injector:ReflectiveInjector;
 	private dynamicSelector:string;
 	private cachedDynamicModule:AnyT;
