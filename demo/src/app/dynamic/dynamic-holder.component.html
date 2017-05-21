@@ -24,3 +24,11 @@
              [template]="template4"
              [context]="context4"
              [extraModules]="[dynamicModule]"></ng-template>
+
+<br><b>Scenario #5</b><br>
+<div *ngFor="let i of longArray">
+	<ng-template dynamic-template
+	             [template]="template5"
+	             [context]="context5">
+	</ng-template>
+</div>

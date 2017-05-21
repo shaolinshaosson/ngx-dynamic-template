@@ -49,7 +49,7 @@ export class DynamicHolderComponent implements OnInit {
                         [template]='internalTemplate4_1'
                         [context]='internalContext4_1' 
                         [extraModules]='internalExtraModules4_1'
-                        [lazyModules]="internalLazyModules4_1">         
+                        [lazyModules]="['app/lazy2/lazy2.module#Lazy2Module']">         
              </ng-template>
              Scope value: {{ internalContext4_1.value4_1 }}
         </div>
@@ -60,7 +60,7 @@ export class DynamicHolderComponent implements OnInit {
         <div style="background-color: #90cdbb; font-weight: bold;">
           <lazy2-component></lazy2-component>
           <div style="color: #ff49ca">
-              First input field [dynamic inside dynamic]: <input type=\"text\" [(ngModel)]=\"value4_1\" (ngModelChange)=\"value4_1 = $event\">
+              First input field [dynamic inside dynamic, level 2]: <input type=\"text\" [(ngModel)]=\"value4_1\" (ngModelChange)=\"value4_1 = $event\">
           </div>
           <ng-template dynamic-template
                        [context]='dynamicHolder'
@@ -73,13 +73,12 @@ export class DynamicHolderComponent implements OnInit {
       dynamicHolder: this,
       value4_1: '',
       internalTemplate4_1_1: `
-            Second input field [dynamic inside dynamic]: 
+            Second input field [dynamic inside dynamic, level 3]: 
             <input type=\"text\" [(ngModel)]=\"dynamicHolderTestObject.dynamicHolderTestObjectValue\"><br>
       `,
       internalExtraModules4_1_1: this.dynamicHolderExtraModules
     },
-    internalExtraModules4_1: this.dynamicHolderExtraModules,
-    internalLazyModules4_1: ['app/lazy2/lazy2.module#Lazy2Module']
+    internalExtraModules4_1: this.dynamicHolderExtraModules
   };
 
   dynamicHolderTestObject = { dynamicHolderTestObjectValue: '' };
@@ -89,7 +88,9 @@ export class DynamicHolderComponent implements OnInit {
   //               Scenario #5
   //
   // *******************************************
-  longArray: Array<number> = new Array(500);
+  longArray = new Array(500);
+  template5 = `{{ dynamicHolderTestObject.dynamicHolderTestObjectValue }}`;
+  context5 = this;
 
   ngOnInit() {
     let dynamicHolderTestObjectValue = 0;

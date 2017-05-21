@@ -37,7 +37,7 @@ import { NgxDynamicTemplateModule } from 'ngx-dynamic-template';
 </ng-template>
 ```
 
-##### **2** Support of lazy loaded component modules for the dynamic templates via **lazyModules** input parameter.
+##### **2** Support of lazy loaded component modules for the dynamic templates via **lazyModules** input parameter (demo scenario #4).
 
 ```html
 <ng-template dynamic-template
@@ -46,7 +46,7 @@ import { NgxDynamicTemplateModule } from 'ngx-dynamic-template';
 </ng-template>
 ```
 
-##### **3** Support of **httpUrl** attribute. This attribute allows getting resource via Angular2 HTTP/Ajax.
+##### **3** Support of **httpUrl** attribute. This attribute allows getting resource via Angular2 HTTP/Ajax (demo scenario #3).
 
 Also 301, 302, 307, 308 HTTP statuses are supported (recursive redirection). The **remoteTemplateFactory** is an optional attribute allows parse response and build http request.
 
@@ -87,6 +87,8 @@ import { IDynamicRemoteTemplateFactory } from 'ngx-dynamic-template';
              [context]="context4"
              [extraModules]="[dynamicModule]"></ng-template>
 ```
+
+##### **5** Support of caching of compiled modules for the specific dynamic template. Therefore you can render a huge amount of dynamic templates at the same time (demo scenario #5).
 
 ## License
 
