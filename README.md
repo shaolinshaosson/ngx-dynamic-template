@@ -95,7 +95,7 @@ export class AppComponent {
 ```
 ```html
 <template dynamic-template
-          [componentModules]="extraModules"
+          [extraModules]="extraModules"
           [componentTemplate]='extraTemplate'></template>
 ``` 
 
@@ -133,7 +133,7 @@ export class AppComponent {
 ```html
 <template dynamic-template
           [componentContext]="self"
-          [componentModules]="dynamicExtraModules"
+          [extraModules]="dynamicExtraModules"
           [componentTemplate]='"<span [innerHTML]=\"changedValue\"></span><input type=\"text\" [(ngModel)]=\"dynamicContextValue\" (ngModelChange)=\"changedValue = $event\">"'></template>
 ```
 

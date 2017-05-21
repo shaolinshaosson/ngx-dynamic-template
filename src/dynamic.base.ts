@@ -43,10 +43,10 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	@Input() httpUrl: string;
 	@Input() context: IDynamicTemplateContext;
 	@Input() remoteTemplateFactory: IDynamicRemoteTemplateFactory;
+	@Input() extraModules: any[];
 	@Input() componentStyles: string[];
 	@Input() componentTemplatePath: string;
 	@Input() componentDefaultTemplate: string;
-	@Input() componentModules: Array<any>;
 
 	private lazyExtraModules: AnyT[] = [];
 	private injector:ReflectiveInjector;
@@ -195,13 +195,13 @@ export class DynamicBase implements OnChanges, OnDestroy {
 			= this.cachedTemplatePlaceholder
 			= this.makeComponent(dynamicConfig);
 
-		const componentModules: Array<any> = this.dynamicExtraModules
-			.concat(this.componentModules || [])
+		const modules: any[] = this.dynamicExtraModules
+			.concat(this.extraModules || [])
 			.concat(this.lazyExtraModules);
 
 		@NgModule({
 			declarations: [dynamicComponentType],
-			imports: [CommonModule].concat(componentModules)
+			imports: [CommonModule].concat(modules)
 		})
 		class dynamicComponentModule {
 		}

@@ -26,3 +26,7 @@ export interface IDynamicTemplateMetadata {
 }
 
 export type AnyT = Type<any>;
+
+export interface IDynamicTemplateOptions {
+  extraModules?: any[];
+}
