@@ -15,7 +15,7 @@ export class DynamicDirective extends DynamicBase {
   @Output() dynamicComponentReady: EventEmitter<IDynamicType>;
   @Output() dynamicComponentBeforeReady: EventEmitter<void>;
 
-  @Input() templateLazyModules: string[];
+  @Input() lazyModules: string[];
   @Input() componentTemplate: string;
   @Input() componentStyles: string[];
   @Input() componentContext: ComponentContext;

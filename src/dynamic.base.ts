@@ -14,7 +14,9 @@ import {
 	Type,
 	ReflectiveInjector,
 	SimpleChanges,
-	NgModuleRef
+	NgModuleRef,
+	NgModuleFactoryLoader,
+	NgModuleFactory
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
@@ -41,6 +43,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	@Output() dynamicComponentReady:EventEmitter<IDynamicType>;
 	@Output() dynamicComponentBeforeReady:EventEmitter<void>;
 
+	@Input() lazyModules: string[];
 	@Input() componentTemplate: string;
 	@Input() componentStyles: string[];
 	@Input() componentContext: ComponentContext;
@@ -62,6 +65,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	            protected compiler: Compiler,
 	            protected http: Http,
 	            protected dynamicCache: DynamicCache,
+	            protected moduleFactoryLoader: NgModuleFactoryLoader,
 	            dynamicSelector: string) {
 		this.dynamicComponentReady = new EventEmitter<IDynamicType>();
 		this.dynamicComponentBeforeReady = new EventEmitter<void>();
