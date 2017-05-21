@@ -13,7 +13,7 @@ export interface IDynamicTemplateContext {
   [index: string]: any;
 }
 
-export interface IDynamicTemplateType {
+export interface IDynamicTemplatePlaceholder {
 }
 
 export interface IDynamicTemplateMetadata {
