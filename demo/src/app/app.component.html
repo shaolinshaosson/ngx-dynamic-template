@@ -3,25 +3,25 @@
 </h1>
 
 <b>Scenario #1</b><br>
-<template dynamic-template
+<ng-template dynamic-template
           [componentContext]="outerDynamicContext"
           [componentModules]="outerDynamicModules"
-          [componentTemplate]="outerDynamicTemplate"></template>
+          [componentTemplate]="outerDynamicTemplate"></ng-template>
 
 Inner dynamic value [this is a part of app template]: {{ outerDynamicContext.innerDynamicContext.value }}<br><br>
 
 <b>Scenario #2</b><br>
-<template dynamic-template
+<ng-template dynamic-template
           [componentTemplate]="extraTemplate2"
-          [componentContext]="context2"></template>
-<template dynamic-template
+          [componentContext]="context2"></ng-template>
+<ng-template dynamic-template
           [componentTemplate]="extraTemplate2"
-          [componentContext]="context2"></template><br><br>
+          [componentContext]="context2"></ng-template><br><br>
 
 <b>Scenario #3</b><br>
 <div *ngFor="let i of longArray">
-  <template dynamic-template
+  <ng-template dynamic-template
             [componentTemplate]="extraTemplate2"
-            [componentContext]="context2"></template>
+            [componentContext]="context2"></ng-template>
 </div>
 <br>
