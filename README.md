@@ -79,80 +79,14 @@ import { IDynamicRemoteTemplateFactory } from 'ngx-dynamic-template';
   };
 ```
 
-##### **4** Support of **templateReady** output events.
+##### **4** Support of modules via **extraModules** input parameter.
 
-TODO
-
-##### **3** Support of **Dynamic within Dynamic** strategy.
-
-```typescript
-@Component(...)
-export class AppComponent {
-	extraTemplate = `<template dynamic-template [componentTemplate]='"<span>Dynamic inside dynamic!</span>"'></template>`;
-	extraModules = [DynamicComponentModule];
-	...
-}
-```
 ```html
-<template dynamic-template
-          [extraModules]="extraModules"
-          [componentTemplate]='extraTemplate'></template>
-``` 
-
-
-
-```typescript
-@Component(...)
-export class AppComponent {
-	dynamicCallback(scope) {
-		console.log('Hi there! Context value is:', scope.contextValue); // Hi there! Context value is: 100500
-	}
-}
+<ng-template dynamic-template
+             [template]="template4"
+             [context]="context4"
+             [extraModules]="[dynamicModule]"></ng-template>
 ```
-```html
-<template dynamic-template
-          (dynamicComponentReady)="dynamicCallback($event)"
-          [componentContext]="{contextValue: 100500}"
-          [componentDefaultTemplate]='"<span style=\"color: red\">This is fallback template</span>"'
-          [componentTemplateUrl]='"https://test-cors.appspot.com"'></template>
-```          
-
-##### **6** Support of **componentContext** attribute.  
-
-This attribute can refer to owner component (via self = this) or any other object.  
-
-```typescript
-@Component(...)
-export class AppComponent {
-	self = this;
-	dynamicContextValue = 100500;
-	changedValue = 0;
-	dynamicExtraModules = [FormsModule];
-}
-```
-```html
-<template dynamic-template
-          [componentContext]="self"
-          [extraModules]="dynamicExtraModules"
-          [componentTemplate]='"<span [innerHTML]=\"changedValue\"></span><input type=\"text\" [(ngModel)]=\"dynamicContextValue\" (ngModelChange)=\"changedValue = $event\">"'></template>
-```
-
-##### **7** Support of **componentModules** attribute.
-
-```typescript
-@Component(...)
-export class AppComponent {
-	dynamicExtraModules = [FormsModule];
-}
-```
-```html
-<template dynamic-template
-          [componentModules]="dynamicExtraModules"
-          [componentContext]="{dynamicContextValue: 100500, changedValue: 0}"
-          [componentTemplate]='"<span [innerHTML]=\"changedValue\"></span><input type=\"text\" [(ngModel)]=\"dynamicContextValue\" (ngModelChange)=\"changedValue = $event\">"'></template>
-```
-
-##### **8** Support of **componentTemplatePath** attribute. This analogue of **templateUrl** parameter for **@Component**.
 
 ## License
 
