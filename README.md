@@ -50,10 +50,12 @@ import { NgxDynamicTemplateModule } from 'ngx-dynamic-template';
 
 Also 301, 302, 307, 308 HTTP statuses are supported (recursive redirection). The **remoteTemplateFactory** is an optional attribute allows parse response and build http request.
 
+```html
 <ng-template dynamic-template
              [httpUrl]="'https://httpbin.org/get'"
              [remoteTemplateFactory]="remoteTemplateFactory">
 </ng-template>
+```
 
 ##### **4** Support of **templateReady** output events.
 
