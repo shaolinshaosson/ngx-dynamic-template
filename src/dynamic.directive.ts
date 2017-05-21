@@ -3,9 +3,9 @@ import {
 } from '@angular/core';
 import { Http } from '@angular/http';
 
-import { DynamicBase, ComponentContext } from './dynamic.base';
+import { DynamicBase } from './dynamic.base';
 import { DynamicCache } from './dynamic.cache';
-import { DYNAMIC_TYPES, IComponentRemoteTemplateFactory, IDynamicType } from './dynamic.interface';
+import { DynamicTypes, IComponentRemoteTemplateFactory, IDynamicType, IDynamicTemplateContext } from './dynamic.interface';
 
 @Directive({
   selector: '[dynamic-template]'
@@ -15,17 +15,17 @@ export class DynamicDirective extends DynamicBase {
   @Output() dynamicComponentReady: EventEmitter<IDynamicType>;
   @Output() dynamicComponentBeforeReady: EventEmitter<void>;
 
+  @Input() template: string;
   @Input() lazyModules: string[];
-  @Input() componentTemplate: string;
+  @Input() context: IDynamicTemplateContext;
   @Input() componentStyles: string[];
-  @Input() componentContext: ComponentContext;
   @Input() componentTemplateUrl: string;
   @Input() componentTemplatePath: string;
   @Input() componentDefaultTemplate: string;
   @Input() componentRemoteTemplateFactory: IComponentRemoteTemplateFactory;
   @Input() componentModules: Array<any>;
 
-  constructor(@Inject(DYNAMIC_TYPES.DynamicExtraModules) dynamicExtraModules: any[],
+  constructor(@Inject(DynamicTypes.DynamicExtraModules) dynamicExtraModules: any[],
               @Inject(ViewContainerRef) viewContainer: ViewContainerRef,
               @Inject(Compiler) compiler: Compiler,
               @Inject(Http) http: Http,

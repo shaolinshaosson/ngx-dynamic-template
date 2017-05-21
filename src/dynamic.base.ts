@@ -23,11 +23,9 @@ import { CommonModule } from '@angular/common';
 import { Http, Response, RequestOptionsArgs } from '@angular/http';
 import { Utils } from './Utils';
 import { DynamicCache } from './dynamic.cache';
-import { IComponentRemoteTemplateFactory, IDynamicMetadata, IDynamicType } from './dynamic.interface';
-
-export interface ComponentContext {
-	[index: string]: any;
-}
+import {
+	IComponentRemoteTemplateFactory, IDynamicMetadata, IDynamicType, IDynamicTemplateContext
+} from './dynamic.interface';
 
 export interface DynamicComponentConfig {
 	template?: string;
@@ -40,13 +38,13 @@ const HASH_FIELD:string = '__hashValue';
 
 export class DynamicBase implements OnChanges, OnDestroy {
 
-	@Output() dynamicComponentReady:EventEmitter<IDynamicType>;
-	@Output() dynamicComponentBeforeReady:EventEmitter<void>;
+	@Output() templateReady: EventEmitter<IDynamicType>;
+	@Output() templateBeforeReady: EventEmitter<void>;
 
+	@Input() template: string;
 	@Input() lazyModules: string[];
-	@Input() componentTemplate: string;
+	@Input() context: IDynamicTemplateContext;
 	@Input() componentStyles: string[];
-	@Input() componentContext: ComponentContext;
 	@Input() componentTemplateUrl: string;
 	@Input() componentTemplatePath: string;
 	@Input() componentDefaultTemplate: string;
@@ -68,8 +66,8 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	            protected dynamicCache: DynamicCache,
 	            protected moduleFactoryLoader: NgModuleFactoryLoader,
 	            dynamicSelector: string) {
-		this.dynamicComponentReady = new EventEmitter<IDynamicType>();
-		this.dynamicComponentBeforeReady = new EventEmitter<void>();
+		this.templateReady = new EventEmitter<IDynamicType>();
+		this.templateBeforeReady = new EventEmitter<void>();
 		this.dynamicSelector = Utils.buildByNextId(dynamicSelector);
 
 		this.injector = ReflectiveInjector.fromResolvedProviders([], this.viewContainer.parentInjector);
@@ -80,7 +78,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	 */
 	public ngOnChanges(changes: SimpleChanges) {
 		this.ngOnDestroy();
-		this.dynamicComponentBeforeReady.emit(null);
+		this.templateBeforeReady.emit(null);
 
 		// TODO investigate memory leak in the specific case
 		this.buildModule().then((module: AnyT) => {
@@ -129,8 +127,8 @@ export class DynamicBase implements OnChanges, OnDestroy {
 
 		const factory = moduleWithComponentFactories.componentFactories.find((componentFactory: ComponentFactory<AnyT>) => {
 				return componentFactory.selector === this.dynamicSelector
-					|| (Utils.isPresent(componentFactory.componentType) && Utils.isPresent(this.componentTemplate)
-					&& Reflect.get(componentFactory.componentType, HASH_FIELD) === Utils.hashFnv32a(this.componentTemplate, true));
+					|| (Utils.isPresent(componentFactory.componentType) && Utils.isPresent(this.template)
+					&& Reflect.get(componentFactory.componentType, HASH_FIELD) === Utils.hashFnv32a(this.template, true));
 			}
 		);
 
@@ -138,7 +136,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 		this.viewContainer.insert(componentInstance.hostView, 0);
 
 		this.applyPropertiesToDynamicComponent(this.componentInstance.instance);
-		this.dynamicComponentReady.emit(this.componentInstance.instance);
+		this.templateReady.emit(this.componentInstance.instance);
 	}
 
 	private buildModule(): Promise<AnyT> {
@@ -155,8 +153,8 @@ export class DynamicBase implements OnChanges, OnDestroy {
 						this.lazyExtraModules.push(moduleFactory.moduleType);
 					}
 
-					if (Utils.isPresent(this.componentTemplate)) {
-						resolve(this.makeComponentModule({template: this.componentTemplate}));
+					if (Utils.isPresent(this.template)) {
+						resolve(this.makeComponentModule({template: this.template}));
 					} else if (Utils.isPresent(this.componentTemplatePath)) {
 						resolve(this.makeComponentModule({templatePath: this.componentTemplatePath}));
 					} else if (Utils.isPresent(this.componentTemplateUrl)) {
@@ -243,18 +241,18 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	}
 
 	private applyPropertiesToDynamicComponent(instance: IDynamicType) {
-		if (!Utils.isPresent(this.componentContext)) {
+		if (!Utils.isPresent(this.context)) {
 			return;
 		}
 
-		for (let property in this.componentContext) {
-			const propValue = Reflect.get(this.componentContext, property);
+		for (let property in this.context) {
+			const propValue = Reflect.get(this.context, property);
 			const attributes: PropertyDescriptor = {} as PropertyDescriptor;
 
 			if (!Utils.isFunction(propValue)) {
-				attributes.set = (v) => Reflect.set(this.componentContext, property, v);
+				attributes.set = (v) => Reflect.set(this.context, property, v);
 			}
-			attributes.get = () => Reflect.get(this.componentContext, property);
+			attributes.get = () => Reflect.get(this.context, property);
 
 			Reflect.defineProperty(instance, property, attributes);
 		}

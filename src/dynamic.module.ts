@@ -3,7 +3,7 @@ import { JitCompilerFactory } from '@angular/compiler';
 
 import { DynamicDirective } from './dynamic.directive';
 import { DynamicCache } from './dynamic.cache';
-import { DYNAMIC_TYPES } from './dynamic.interface';
+import { DynamicTypes } from './dynamic.interface';
 
 export function createJitCompiler() {
 	return new JitCompilerFactory([{useJit: true}]).createCompiler();
@@ -26,7 +26,7 @@ export class NgxDynamicTemplateModule {
 			ngModule: NgxDynamicTemplateModule,
 			providers: [
 				DynamicCache,
-				{provide: DYNAMIC_TYPES.DynamicExtraModules, useValue: []},
+				{provide: DynamicTypes.DynamicExtraModules, useValue: []},
 				{provide: Compiler, useFactory: createJitCompiler},
 				{provide: NgModuleFactoryLoader, useClass: SystemJsNgModuleLoader},
 			]

@@ -35,13 +35,14 @@ import { NgxDynamicTemplateModule } from 'ngx-dynamic-template';
 
 ```html
 <template dynamic-template
-          ...
+          [template]="'<lazy-component></lazy-component>'"
           [lazyModules]="['app/lazy/lazy.module#LazyModule']"></template>
 ```
 
 
-TODO
 
+
+TODO
 
 ##### **1** Support of **dynamicComponentReady** & **dynamicComponentBeforeReady** output events.
 

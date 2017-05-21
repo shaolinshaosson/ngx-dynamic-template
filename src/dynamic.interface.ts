@@ -1,15 +1,16 @@
-import {
-  Response,
-  RequestOptionsArgs
-} from '@angular/http';
+import { Response, RequestOptionsArgs } from '@angular/http';
 
-export const DYNAMIC_TYPES = {
+export const DynamicTypes = {
   DynamicExtraModules: 'DynamicExtraModules'
 };
 
 export interface IComponentRemoteTemplateFactory {
-  buildRequestOptions():RequestOptionsArgs;
-  parseResponse(response:Response):string;
+  buildRequestOptions(): RequestOptionsArgs;
+  parseResponse(response: Response): string;
+}
+
+export interface IDynamicTemplateContext {
+  [index: string]: any;
 }
 
 export interface IDynamicMetadata {
