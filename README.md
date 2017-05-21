@@ -12,6 +12,7 @@ The previous version of this module is tandem [angular2-dynamic-component](https
 
 ```sh
 npm install ngx-dynamic-template --save
+```
 
 ```typescript
 import { NgxDynamicTemplateModule } from 'ngx-dynamic-template';
@@ -28,9 +29,21 @@ import { NgxDynamicTemplateModule } from 'ngx-dynamic-template';
 
 ## Features
 
-##### **1** Support of **dynamicComponentReady** & **dynamicComponentBeforeReady** output events.
+##### **1** Support of **dynamic-template** directive.
 
-##### **2** Support of **dynamic-template** directive.
+##### **2** Support of lazy loaded component modules for the dynamic templates via **lazyModules** input parameter.
+
+```html
+<template dynamic-template
+          ...
+          [lazyModules]="['app/lazy/lazy.module#LazyModule']"></template>
+```
+
+
+TODO
+
+
+##### **1** Support of **dynamicComponentReady** & **dynamicComponentBeforeReady** output events.
 
 ##### **3** Support of **Dynamic within Dynamic** strategy.
 
