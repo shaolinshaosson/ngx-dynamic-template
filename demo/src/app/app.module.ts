@@ -3,11 +3,8 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
-import { NgxDynamicTemplateModule } from 'ngx-dynamic-template';
-
 import { AppComponent } from './app.component';
-
-const DYNAMIC_TEMPLATE_MODULE = NgxDynamicTemplateModule.forRoot();
+import { AppRoutingModule } from './app.route';
 
 @NgModule({
   declarations: [
@@ -17,10 +14,7 @@ const DYNAMIC_TEMPLATE_MODULE = NgxDynamicTemplateModule.forRoot();
     BrowserModule,
     FormsModule,
     HttpModule,
-    DYNAMIC_TEMPLATE_MODULE
-  ],
-  providers: [
-    {provide: 'DynamicModule', useValue: DYNAMIC_TEMPLATE_MODULE}
+    AppRoutingModule,
   ],
   bootstrap: [AppComponent],
 })
