@@ -82,36 +82,21 @@ export class DynamicBase implements OnChanges, OnDestroy {
 		this.dynamicComponentBeforeReady.emit(null);
 
 		// TODO investigate memory leak in the specific case
-		this.buildModule().then((module:AnyT) => {
-			let compiledModule:Promise<ModuleWithComponentFactories<any>>;
-			const currentModuleHash:string = Reflect.get(module, HASH_FIELD);
+		this.buildModule().then((module: AnyT) => {
+				let compiledModule: Promise<ModuleWithComponentFactories<any>>;
+				const currentModuleHash: string = Reflect.get(module, HASH_FIELD);
 
-			if (Utils.isPresent(currentModuleHash)) {
-				compiledModule = this.dynamicCache.get(currentModuleHash);
-				if (!Utils.isPresent(compiledModule)) {
-					this.dynamicCache.set(currentModuleHash, compiledModule = this.compiler.compileModuleAndAllComponentsAsync<any>(module));
+				if (Utils.isPresent(currentModuleHash)) {
+					compiledModule = this.dynamicCache.get(currentModuleHash);
+					if (!Utils.isPresent(compiledModule)) {
+						this.dynamicCache.set(currentModuleHash, compiledModule = this.compiler.compileModuleAndAllComponentsAsync<any>(module));
+					}
+				} else {
+					compiledModule = this.compiler.compileModuleAndAllComponentsAsync<any>(module);
 				}
-			} else {
-				compiledModule = this.compiler.compileModuleAndAllComponentsAsync<any>(module);
-			}
 
-			compiledModule
-				.then((moduleWithComponentFactories:ModuleWithComponentFactories<any>) => {
-					this.moduleInstance = moduleWithComponentFactories.ngModuleFactory.create(this.injector);
-
-					const factory = moduleWithComponentFactories.componentFactories.find((componentFactory:ComponentFactory<AnyT>) => {
-							return componentFactory.selector === this.dynamicSelector
-								|| (Utils.isPresent(componentFactory.componentType) && Utils.isPresent(this.componentTemplate)
-								&& Reflect.get(componentFactory.componentType, HASH_FIELD) === Utils.hashFnv32a(this.componentTemplate, true));
-						}
-					);
-
-					const componentInstance = this.componentInstance = factory.create(this.injector, null, null, this.moduleInstance);
-					this.viewContainer.insert(componentInstance.hostView, 0);
-
-					this.applyPropertiesToDynamicComponent(this.componentInstance.instance);
-					this.dynamicComponentReady.emit(this.componentInstance.instance);
-				})
+				compiledModule
+					.then((compiledModule: ModuleWithComponentFactories<any>) => this.makeDynamicComponent(compiledModule))
 			}
 		);
 	}
@@ -136,6 +121,23 @@ export class DynamicBase implements OnChanges, OnDestroy {
 			this.compiler.clearCacheFor(this.cachedDynamicComponent);
 			this.cachedDynamicComponent = null;
 		}
+	}
+
+	private makeDynamicComponent(moduleWithComponentFactories: ModuleWithComponentFactories<any>) {
+		this.moduleInstance = moduleWithComponentFactories.ngModuleFactory.create(this.injector);
+
+		const factory = moduleWithComponentFactories.componentFactories.find((componentFactory: ComponentFactory<AnyT>) => {
+				return componentFactory.selector === this.dynamicSelector
+					|| (Utils.isPresent(componentFactory.componentType) && Utils.isPresent(this.componentTemplate)
+					&& Reflect.get(componentFactory.componentType, HASH_FIELD) === Utils.hashFnv32a(this.componentTemplate, true));
+			}
+		);
+
+		const componentInstance = this.componentInstance = factory.create(this.injector, null, null, this.moduleInstance);
+		this.viewContainer.insert(componentInstance.hostView, 0);
+
+		this.applyPropertiesToDynamicComponent(this.componentInstance.instance);
+		this.dynamicComponentReady.emit(this.componentInstance.instance);
 	}
 
 	private buildModule(): Promise<AnyT> {
