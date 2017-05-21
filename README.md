@@ -31,12 +31,17 @@ import { NgxDynamicTemplateModule } from 'ngx-dynamic-template';
 
 ##### **1** Support of **dynamic-template** directive.
 
+```html
+<ng-template dynamic-template
+             [template]="'<span style=\'color: orange;\'>This is simple dynamic template</span>'"></ng-template>
+```
+
 ##### **2** Support of lazy loaded component modules for the dynamic templates via **lazyModules** input parameter.
 
 ```html
-<template dynamic-template
-          [template]="'<lazy-component></lazy-component>'"
-          [lazyModules]="['app/lazy/lazy.module#LazyModule']"></template>
+<ng-template dynamic-template
+             [template]="'<lazy-component></lazy-component>'"
+             [lazyModules]="['app/lazy/lazy.module#LazyModule']"></ng-template>
 ```
 
 
