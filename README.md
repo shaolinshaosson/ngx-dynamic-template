@@ -46,7 +46,16 @@ import { NgxDynamicTemplateModule } from 'ngx-dynamic-template';
 </ng-template>
 ```
 
-##### **3** Support of **templateReady** output events.
+##### **3** Support of **httpUrl** attribute. This attribute allows getting resource via Angular2 HTTP/Ajax.
+
+Also 301, 302, 307, 308 HTTP statuses are supported (recursive redirection). The **remoteTemplateFactory** is an optional attribute allows parse response and build http request.
+
+<ng-template dynamic-template
+             [httpUrl]="'https://httpbin.org/get'"
+             [remoteTemplateFactory]="remoteTemplateFactory">
+</ng-template>
+
+##### **4** Support of **templateReady** output events.
 
 TODO
 
@@ -66,10 +75,7 @@ export class AppComponent {
           [componentTemplate]='extraTemplate'></template>
 ``` 
 
-##### **5** Support of **componentTemplateUrl** attribute. This attribute allows getting resource via Angular2 HTTP/Ajax.  
 
-Also, 301, 302, 307, 308 HTTP statuses are supported (recursive redirection). The **componentRemoteTemplateFactory** (IComponentRemoteTemplateFactory)
- attribute allows prepare http response before rendering.  
 
 ```typescript
 @Component(...)

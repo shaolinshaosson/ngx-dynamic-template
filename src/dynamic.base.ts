@@ -40,10 +40,10 @@ export class DynamicBase implements OnChanges, OnDestroy {
 
 	@Input() template: string;
 	@Input() lazyModules: string[];
+	@Input() httpUrl: string;
 	@Input() context: IDynamicTemplateContext;
 	@Input() remoteTemplateFactory: IDynamicRemoteTemplateFactory;
 	@Input() componentStyles: string[];
-	@Input() componentTemplateUrl: string;
 	@Input() componentTemplatePath: string;
 	@Input() componentDefaultTemplate: string;
 	@Input() componentModules: Array<any>;
@@ -153,8 +153,8 @@ export class DynamicBase implements OnChanges, OnDestroy {
 						resolve(this.makeComponentModule({template: this.template}));
 					} else if (Utils.isPresent(this.componentTemplatePath)) {
 						resolve(this.makeComponentModule({templatePath: this.componentTemplatePath}));
-					} else if (Utils.isPresent(this.componentTemplateUrl)) {
-						this.loadRemoteTemplate(this.componentTemplateUrl, resolve);
+					} else if (Utils.isPresent(this.httpUrl)) {
+						this.loadRemoteTemplate(this.httpUrl, resolve);
 					} else {
 						resolve(this.makeComponentModule());
 					}
@@ -162,14 +162,14 @@ export class DynamicBase implements OnChanges, OnDestroy {
 		});
 	}
 
-	private loadRemoteTemplate(url: string, resolve: (value: AnyT) => void) {
+	private loadRemoteTemplate(httpUrl: string, resolve: (value: AnyT) => void) {
 		let requestArgs: RequestOptionsArgs = {withCredentials: true};
 		if (Utils.isPresent(this.remoteTemplateFactory)
 			&& Utils.isFunction(this.remoteTemplateFactory.buildRequestOptions)) {
 			requestArgs = this.remoteTemplateFactory.buildRequestOptions();
 		}
 
-		this.http.get(url, requestArgs)
+		this.http.get(httpUrl, requestArgs)
 			.subscribe((response: Response) => {
 				if (this.dynamicResponseRedirectStatuses.indexOf(response.status) > -1) {
 					const chainedUrl: string = response.headers.get('Location');
