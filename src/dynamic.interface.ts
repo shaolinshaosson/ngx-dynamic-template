@@ -13,12 +13,12 @@ export interface IDynamicTemplateContext {
   [index: string]: any;
 }
 
-export interface IDynamicMetadata {
-  selector: string;
-  styles?: Array<string>;
-  template?: string;
-  templateUrl?: string;
+export interface IDynamicTemplateType {
 }
 
-export interface IDynamicType {
+export interface IDynamicTemplateMetadata {
+  selector: string;
+  styles?: string[];
+  template?: string;
+  templateUrl?: string;
 }

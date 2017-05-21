@@ -5,15 +5,14 @@ import { Http } from '@angular/http';
 
 import { DynamicBase } from './dynamic.base';
 import { DynamicCache } from './dynamic.cache';
-import { DynamicTypes, IComponentRemoteTemplateFactory, IDynamicType, IDynamicTemplateContext } from './dynamic.interface';
+import { DynamicTypes, IComponentRemoteTemplateFactory, IDynamicTemplateType, IDynamicTemplateContext } from './dynamic.interface';
 
 @Directive({
   selector: '[dynamic-template]'
 })
 export class DynamicDirective extends DynamicBase {
 
-  @Output() dynamicComponentReady: EventEmitter<IDynamicType>;
-  @Output() dynamicComponentBeforeReady: EventEmitter<void>;
+  @Output() templateReady: EventEmitter<IDynamicTemplateType>;
 
   @Input() template: string;
   @Input() lazyModules: string[];

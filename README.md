@@ -46,12 +46,9 @@ import { NgxDynamicTemplateModule } from 'ngx-dynamic-template';
 </ng-template>
 ```
 
-
-
+##### **3** Support of **templateReady** output events.
 
 TODO
-
-##### **1** Support of **dynamicComponentReady** & **dynamicComponentBeforeReady** output events.
 
 ##### **3** Support of **Dynamic within Dynamic** strategy.
 

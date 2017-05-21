@@ -24,7 +24,7 @@ import { Http, Response, RequestOptionsArgs } from '@angular/http';
 import { Utils } from './Utils';
 import { DynamicCache } from './dynamic.cache';
 import {
-	IComponentRemoteTemplateFactory, IDynamicMetadata, IDynamicType, IDynamicTemplateContext
+	IComponentRemoteTemplateFactory, IDynamicTemplateMetadata, IDynamicTemplateType, IDynamicTemplateContext
 } from './dynamic.interface';
 
 export interface DynamicComponentConfig {
@@ -38,8 +38,7 @@ const HASH_FIELD:string = '__hashValue';
 
 export class DynamicBase implements OnChanges, OnDestroy {
 
-	@Output() templateReady: EventEmitter<IDynamicType>;
-	@Output() templateBeforeReady: EventEmitter<void>;
+	@Output() templateReady: EventEmitter<IDynamicTemplateType>;
 
 	@Input() template: string;
 	@Input() lazyModules: string[];
@@ -55,8 +54,8 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	private injector:ReflectiveInjector;
 	private dynamicSelector:string;
 	private cachedDynamicModule:AnyT;
-	private cachedDynamicComponent:Type<IDynamicType>;
-	private componentInstance: ComponentRef<IDynamicType>;
+	private cachedDynamicComponent:Type<IDynamicTemplateType>;
+	private componentInstance: ComponentRef<IDynamicTemplateType>;
 	private moduleInstance: NgModuleRef<any>;
 
 	constructor(protected dynamicExtraModules: Array<any>,
@@ -66,8 +65,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	            protected dynamicCache: DynamicCache,
 	            protected moduleFactoryLoader: NgModuleFactoryLoader,
 	            dynamicSelector: string) {
-		this.templateReady = new EventEmitter<IDynamicType>();
-		this.templateBeforeReady = new EventEmitter<void>();
+		this.templateReady = new EventEmitter<IDynamicTemplateType>();
 		this.dynamicSelector = Utils.buildByNextId(dynamicSelector);
 
 		this.injector = ReflectiveInjector.fromResolvedProviders([], this.viewContainer.parentInjector);
@@ -78,7 +76,6 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	 */
 	public ngOnChanges(changes: SimpleChanges) {
 		this.ngOnDestroy();
-		this.templateBeforeReady.emit(null);
 
 		// TODO investigate memory leak in the specific case
 		this.buildModule().then((module: AnyT) => {
@@ -194,7 +191,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	}
 
 	private makeComponentModule(dynamicConfig?: DynamicComponentConfig): AnyT {
-		const dynamicComponentType: Type<IDynamicType>
+		const dynamicComponentType: Type<IDynamicTemplateType>
 			= this.cachedDynamicComponent
 			= this.makeComponent(dynamicConfig);
 
@@ -216,8 +213,8 @@ export class DynamicBase implements OnChanges, OnDestroy {
 		return this.cachedDynamicModule = dynamicComponentModule;
 	}
 
-	private makeComponent(componentConfig?: DynamicComponentConfig): Type<IDynamicType> {
-		const dynamicComponentMetaData: IDynamicMetadata = {
+	private makeComponent(componentConfig?: DynamicComponentConfig): Type<IDynamicTemplateType> {
+		const dynamicComponentMetaData: IDynamicTemplateMetadata = {
 			selector: this.dynamicSelector,
 			styles: this.componentStyles
 		};
@@ -237,10 +234,10 @@ export class DynamicBase implements OnChanges, OnDestroy {
 		if (Utils.isPresent(Reflect.get(dynamicComponentMetaData, 'template'))) {
 			Reflect.set(dynamicComponentClass, HASH_FIELD, Utils.hashFnv32a(Reflect.get(dynamicComponentMetaData, 'template'), true));
 		}
-		return dynamicComponentClass as Type<IDynamicType>;
+		return dynamicComponentClass as Type<IDynamicTemplateType>;
 	}
 
-	private applyPropertiesToDynamicComponent(instance: IDynamicType) {
+	private applyPropertiesToDynamicComponent(instance: IDynamicTemplateType) {
 		if (!Utils.isPresent(this.context)) {
 			return;
 		}
