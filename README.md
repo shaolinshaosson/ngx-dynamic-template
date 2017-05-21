@@ -57,6 +57,16 @@ Also 301, 302, 307, 308 HTTP statuses are supported (recursive redirection). The
 </ng-template>
 ```
 
+```typescript
+import { IDynamicRemoteTemplateFactory } from 'ngx-dynamic-template';
+...
+  remoteTemplateFactory: IDynamicRemoteTemplateFactory = {
+    parseResponse (response: Response): string {
+      return response.json().headers['User-Agent'];
+    }
+  };
+```
+
 ##### **4** Support of **templateReady** output events.
 
 TODO
