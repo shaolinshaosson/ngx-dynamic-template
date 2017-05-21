@@ -1,4 +1,6 @@
-import { Directive, Input, Inject, Output, EventEmitter, Compiler, ViewContainerRef } from '@angular/core';
+import {
+  Directive, Input, Inject, Output, EventEmitter, Compiler, ViewContainerRef, NgModuleFactoryLoader
+} from '@angular/core';
 import { Http } from '@angular/http';
 
 import { DynamicBase, ComponentContext } from './dynamic.base';
@@ -13,6 +15,7 @@ export class DynamicDirective extends DynamicBase {
   @Output() dynamicComponentReady: EventEmitter<IDynamicType>;
   @Output() dynamicComponentBeforeReady: EventEmitter<void>;
 
+  @Input() templateLazyModules: string[];
   @Input() componentTemplate: string;
   @Input() componentStyles: string[];
   @Input() componentContext: ComponentContext;
@@ -26,7 +29,8 @@ export class DynamicDirective extends DynamicBase {
               @Inject(ViewContainerRef) viewContainer: ViewContainerRef,
               @Inject(Compiler) compiler: Compiler,
               @Inject(Http) http: Http,
+              @Inject(NgModuleFactoryLoader) moduleFactoryLoader: NgModuleFactoryLoader,
               @Inject(DynamicCache) dynamicCache: DynamicCache) {
-    super(dynamicExtraModules, viewContainer, compiler, http, dynamicCache, '[dynamic-template-{id}]');
+    super(dynamicExtraModules, viewContainer, compiler, http, dynamicCache, moduleFactoryLoader, '[dynamic-template-{id}]');
   }
 }
