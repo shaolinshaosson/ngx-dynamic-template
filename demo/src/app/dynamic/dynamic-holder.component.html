@@ -19,10 +19,8 @@
              [remoteTemplateFactory]="remoteTemplateFactory">
 </ng-template>
 
-
 <br><b>Scenario #4</b><br>
 <ng-template dynamic-template
-             [template]="outerTemplate"
-             [context]="outerContext"
-             [lazyModules]="['app/lazy/lazy.module#LazyModule']"
-             [componentModules]="outerDynamicModules"></ng-template>
+             [template]="template4"
+             [context]="context4"
+             [extraModules]="[dynamicModule]"></ng-template>
