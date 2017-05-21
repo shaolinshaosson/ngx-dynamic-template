@@ -21,18 +21,16 @@ import {
 
 import { CommonModule } from '@angular/common';
 import { Http, Response, RequestOptionsArgs } from '@angular/http';
-import { Utils } from './Utils';
+import { Utils } from './dynamic.utils';
 import { DynamicCache } from './dynamic.cache';
 import {
-	IComponentRemoteTemplateFactory, IDynamicTemplateMetadata, IDynamicTemplatePlaceholder, IDynamicTemplateContext
+	IDynamicRemoteTemplateFactory, IDynamicTemplateMetadata, IDynamicTemplatePlaceholder, IDynamicTemplateContext, AnyT
 } from './dynamic.interface';
 
 export interface DynamicComponentConfig {
 	template?: string;
 	templatePath?: string;
 }
-
-export type AnyT = Type<any>;
 
 const HASH_FIELD:string = '__hashValue';
 
@@ -43,14 +41,14 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	@Input() template: string;
 	@Input() lazyModules: string[];
 	@Input() context: IDynamicTemplateContext;
+	@Input() remoteTemplateFactory: IDynamicRemoteTemplateFactory;
 	@Input() componentStyles: string[];
 	@Input() componentTemplateUrl: string;
 	@Input() componentTemplatePath: string;
 	@Input() componentDefaultTemplate: string;
-	@Input() componentRemoteTemplateFactory: IComponentRemoteTemplateFactory;
 	@Input() componentModules: Array<any>;
 
-	private lazyExtraModules: Type<any>[] = [];
+	private lazyExtraModules: AnyT[] = [];
 	private injector:ReflectiveInjector;
 	private dynamicSelector:string;
 	private cachedDynamicModule:AnyT;
@@ -166,8 +164,9 @@ export class DynamicBase implements OnChanges, OnDestroy {
 
 	private loadRemoteTemplate(url: string, resolve: (value: AnyT) => void) {
 		let requestArgs: RequestOptionsArgs = {withCredentials: true};
-		if (Utils.isPresent(this.componentRemoteTemplateFactory)) {
-			requestArgs = this.componentRemoteTemplateFactory.buildRequestOptions();
+		if (Utils.isPresent(this.remoteTemplateFactory)
+			&& Utils.isFunction(this.remoteTemplateFactory.buildRequestOptions)) {
+			requestArgs = this.remoteTemplateFactory.buildRequestOptions();
 		}
 
 		this.http.get(url, requestArgs)
@@ -178,11 +177,12 @@ export class DynamicBase implements OnChanges, OnDestroy {
 						this.loadRemoteTemplate(chainedUrl, resolve);
 					}
 				} else {
-					const loadedTemplate: string = Utils.isPresent(this.componentRemoteTemplateFactory)
-						? this.componentRemoteTemplateFactory.parseResponse(response)
+					const loadedTemplate: string = Utils.isPresent(this.remoteTemplateFactory)
+					&& Utils.isFunction(this.remoteTemplateFactory.parseResponse)
+						? this.remoteTemplateFactory.parseResponse(response)
 						: response.text();
 
-					resolve(this.makeComponentModule({template: JSON.parse(loadedTemplate)['headers']['User-Agent']}));
+					resolve(this.makeComponentModule({template: loadedTemplate}));
 				}
 			}, () => {
 				const template: string = this.componentDefaultTemplate || '';
@@ -241,17 +241,6 @@ export class DynamicBase implements OnChanges, OnDestroy {
 		if (!Utils.isPresent(this.context)) {
 			return;
 		}
-
-		for (let property in this.context) {
-			const propValue = Reflect.get(this.context, property);
-			const attributes: PropertyDescriptor = {} as PropertyDescriptor;
-
-			if (!Utils.isFunction(propValue)) {
-				attributes.set = (v) => Reflect.set(this.context, property, v);
-			}
-			attributes.get = () => Reflect.get(this.context, property);
-
-			Reflect.defineProperty(instance, property, attributes);
-		}
+		Utils.applySourceAttributes(instance, this.context);
 	}
 }
