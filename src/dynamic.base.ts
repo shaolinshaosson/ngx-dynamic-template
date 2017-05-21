@@ -59,6 +59,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	private moduleInstance: NgModuleRef<any>;
 
 	constructor(protected dynamicExtraModules: Array<any>,
+	            protected dynamicResponseRedirectStatuses: number[],
 	            protected viewContainer: ViewContainerRef,
 	            protected compiler: Compiler,
 	            protected http: Http,
@@ -171,8 +172,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 
 		this.http.get(url, requestArgs)
 			.subscribe((response: Response) => {
-				// TODO Inject response statuses
-				if ([301, 302, 307, 308].indexOf(response.status) > -1) {
+				if (this.dynamicResponseRedirectStatuses.indexOf(response.status) > -1) {
 					const chainedUrl: string = response.headers.get('Location');
 					if (Utils.isPresent(chainedUrl)) {
 						this.loadRemoteTemplate(chainedUrl, resolve);
@@ -182,9 +182,9 @@ export class DynamicBase implements OnChanges, OnDestroy {
 						? this.componentRemoteTemplateFactory.parseResponse(response)
 						: response.text();
 
-					resolve(this.makeComponentModule({template: loadedTemplate}));
+					resolve(this.makeComponentModule({template: JSON.parse(loadedTemplate)['headers']['User-Agent']}));
 				}
-			}, (response: Response) => {
+			}, () => {
 				const template: string = this.componentDefaultTemplate || '';
 				resolve(this.makeComponentModule({template: template}));
 			});

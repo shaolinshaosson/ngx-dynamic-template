@@ -1,7 +1,8 @@
 import { Response, RequestOptionsArgs } from '@angular/http';
 
 export const DynamicTypes = {
-  DynamicExtraModules: 'DynamicExtraModules'
+  DynamicExtraModules: 'DynamicExtraModules',
+  DynamicResponseRedirectStatuses: 'DynamicResponseRedirectStatuses'
 };
 
 export interface IComponentRemoteTemplateFactory {

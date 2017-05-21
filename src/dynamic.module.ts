@@ -26,9 +26,10 @@ export class NgxDynamicTemplateModule {
 			ngModule: NgxDynamicTemplateModule,
 			providers: [
 				DynamicCache,
-				{provide: DynamicTypes.DynamicExtraModules, useValue: []},
-				{provide: Compiler, useFactory: createJitCompiler},
-				{provide: NgModuleFactoryLoader, useClass: SystemJsNgModuleLoader},
+				{ provide: DynamicTypes.DynamicExtraModules, useValue: [] },
+				{ provide: DynamicTypes.DynamicResponseRedirectStatuses, useValue: [301, 302, 307, 308] },
+				{ provide: Compiler, useFactory: createJitCompiler },
+				{ provide: NgModuleFactoryLoader, useClass: SystemJsNgModuleLoader },
 			]
 		};
 	}
