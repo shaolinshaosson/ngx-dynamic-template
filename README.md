@@ -1,6 +1,6 @@
 # ngx-dynamic-template
 
-An implementation of dynamic template wrapper at Angular2/4 [4.1.3] (AoT compatible).  
+An implementation of dynamic template wrapper at Angular4 [4.1.3] (AoT compatible).
 In case of dynamic component please use ngComponentOutlet.  
 
 ## Description
