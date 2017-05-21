@@ -73,8 +73,10 @@ export class DynamicHolderComponent implements OnInit {
       dynamicHolder: this,
       value4_1: '',
       internalTemplate4_1_1: `
+         <div style="background-color: #cd9306; font-weight: bold;">
             Second input field [dynamic inside dynamic, level 3]: 
-            <input type=\"text\" [(ngModel)]=\"dynamicHolderTestObject.dynamicHolderTestObjectValue\"><br>
+            <input type=\"text\" [(ngModel)]=\"dynamicHolderTestObject.dynamicHolderTestObjectValue\">
+         </div>
       `,
       internalExtraModules4_1_1: this.dynamicHolderExtraModules
     },
