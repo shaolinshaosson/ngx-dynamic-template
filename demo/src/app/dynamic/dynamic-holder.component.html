@@ -1,0 +1,14 @@
+<h1>
+	ngx-dynamic-template demo
+</h1>
+
+<b>Scenario #1</b><br>
+<ng-template dynamic-template
+             [template]="'<span style=\'color: orange;\'>This is simple dynamic template</span>'"></ng-template><br>
+
+<b>Scenario #2</b><br>
+<ng-template dynamic-template
+             [template]="outerDynamicTemplate"
+             [context]="outerContext"
+             [lazyModules]="outerLazyModules"
+             [componentModules]="outerDynamicModules"></ng-template>
