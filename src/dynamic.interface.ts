@@ -36,10 +36,7 @@ export interface IDynamicComponentMetadata {
   componentMetadata: any;
 }
 
-export interface IDynamicMetadata {
-  modules: any[];
-  components: IDynamicComponentMetadata[];
-}
+export const DynamicMetadataKey = '__metadata';
 
 export class Compiler2 extends Compiler {
 }

@@ -46,6 +46,45 @@ import { NgxDynamicTemplateModule } from 'ngx-dynamic-template';
 </ng-template>
 ```
 
+```typescript
+import { DynamicLazyMetadata } from 'ngx-dynamic-template';
+
+import { LazyComponent } from './lazy.component';
+import { LazyRouteModule } from './lazy.route';
+
+const moduleMetaData = {
+  imports: [
+    CommonModule,
+    LazyRouteModule,
+  ],
+  declarations: [
+    LazyComponent,
+  ],
+  exports: [
+    LazyComponent
+  ]
+};
+
+@DynamicLazyMetadata(moduleMetaData)
+@NgModule(moduleMetaData)
+export class LazyModule {
+}
+
+...
+
+import { DynamicLazyMetadata } from 'ngx-dynamic-template';
+
+const moduleMetaData = {
+  selector: 'lazy-component',
+  template: '<span style="color: red;">This is a lazy loaded component LazyComponent!</span>'
+};
+
+@DynamicLazyMetadata(moduleMetaData)
+@Component(moduleMetaData)
+export class LazyComponent {
+}
+```
+
 ##### **3** Support of **httpUrl** attribute. This attribute allows getting resource via Angular2 HTTP/Ajax (demo scenario #3).
 
 Also 301, 302, 307, 308 HTTP statuses are supported (recursive redirection). The **remoteTemplateFactory** is an optional attribute allows parse response and build http request.

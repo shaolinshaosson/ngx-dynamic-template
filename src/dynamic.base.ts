@@ -28,9 +28,9 @@ import {
 	IDynamicTemplatePlaceholder,
 	IDynamicTemplateContext,
 	AnyT,
-	IDynamicMetadata,
 	IDynamicComponentMetadata,
-	Compiler2
+	Compiler2,
+	DynamicMetadataKey
 } from './dynamic.interface';
 
 export interface DynamicComponentConfig {
@@ -152,11 +152,11 @@ export class DynamicBase implements OnChanges, OnDestroy {
 			Promise.all(lazyModulesLoaders)
 				.then((moduleFactories: NgModuleFactory<any>[]) => {
 					for (let moduleFactory of moduleFactories) {
-						const moduleMetaData: IDynamicMetadata = moduleFactory.moduleType['moduleMetaData'] as IDynamicMetadata;
+						const moduleMetaData = Reflect.get(moduleFactory.moduleType, DynamicMetadataKey);
 						if (moduleMetaData) {
 							// TODO refactoring
 							const lazyComponents: any[] = [];
-							for (let component of moduleMetaData.components) {
+							for (let component of moduleMetaData.declarations) {
 								@Component((component as IDynamicComponentMetadata).componentMetadata)
 								class dynamicLazyComponentClass {
 								}
