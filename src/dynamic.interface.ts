@@ -30,3 +30,14 @@ export type AnyT = Type<any>;
 export interface IDynamicTemplateOptions {
   extraModules?: any[];
 }
+
+// TODO extends from angular metadata
+export interface IDynamicComponentMetadata {
+  selector: string;
+  template: string;
+}
+
+export interface IDynamicMetadata {
+  modules: any[];
+  components: IDynamicComponentMetadata[];
+}

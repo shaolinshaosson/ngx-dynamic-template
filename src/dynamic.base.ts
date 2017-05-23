@@ -24,7 +24,8 @@ import { Http, Response, RequestOptionsArgs } from '@angular/http';
 import { Utils } from './dynamic.utils';
 import { DynamicCache } from './dynamic.cache';
 import {
-	IDynamicRemoteTemplateFactory, IDynamicTemplateMetadata, IDynamicTemplatePlaceholder, IDynamicTemplateContext, AnyT
+	IDynamicRemoteTemplateFactory, IDynamicTemplateMetadata, IDynamicTemplatePlaceholder, IDynamicTemplateContext, AnyT,
+	IDynamicMetadata
 } from './dynamic.interface';
 
 export interface DynamicComponentConfig {
@@ -146,9 +147,24 @@ export class DynamicBase implements OnChanges, OnDestroy {
 			Promise.all(lazyModulesLoaders)
 				.then((moduleFactories: NgModuleFactory<any>[]) => {
 					for (let moduleFactory of moduleFactories) {
-						const moduleMetaData = moduleFactory.moduleType['moduleMetaData'];
+						const moduleMetaData: IDynamicMetadata = moduleFactory.moduleType['moduleMetaData'] as IDynamicMetadata;
 						if (moduleMetaData) {
-							@NgModule(moduleMetaData)
+							// TODO refactoring
+							const lazyComponents: any[] = [];
+							for (let componentConfig of moduleMetaData.components) {
+								@Component({
+									template: componentConfig.template,
+									selector: componentConfig.selector
+								})
+								class dynamicLazyComponentClass {
+								}
+								lazyComponents.push(dynamicLazyComponentClass);
+							}
+							@NgModule({
+								imports: moduleMetaData.modules,
+								declarations: lazyComponents,
+								exports: lazyComponents
+							})
 							class dynamicLazyModule {
 							}
 							this.lazyExtraModules.push(
