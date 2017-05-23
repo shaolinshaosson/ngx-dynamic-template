@@ -157,7 +157,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 							// TODO refactoring
 							const lazyComponents: any[] = [];
 							for (let component of moduleMetaData.declarations) {
-								@Component((component as IDynamicComponentMetadata).componentMetadata)
+								@Component(Reflect.get(component, DynamicMetadataKey))
 								class dynamicLazyComponentClass {
 								}
 								lazyComponents.push(dynamicLazyComponentClass);
