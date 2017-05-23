@@ -29,6 +29,7 @@ export type AnyT = Type<any>;
 
 export interface IDynamicTemplateOptions {
   extraModules?: any[];
+  useJit: boolean;
 }
 
 // TODO extends from angular metadata

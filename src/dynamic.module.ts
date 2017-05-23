@@ -22,15 +22,18 @@ export function createJitCompiler() {
 export class NgxDynamicTemplateModule {
 
 	static forRoot(options?: IDynamicTemplateOptions): ModuleWithProviders {
+		const providers: any[] = [
+			DynamicCache,
+			{ provide: DynamicTypes.DynamicExtraModules, useValue: options && options.extraModules ? options.extraModules : [] },
+			{ provide: DynamicTypes.DynamicResponseRedirectStatuses, useValue: [301, 302, 307, 308] },
+			{ provide: NgModuleFactoryLoader, useClass: SystemJsNgModuleLoader },
+		];
+		if (options && options.useJit) {
+			providers.push({ provide: Compiler, useFactory: createJitCompiler },);
+		}
 		return {
 			ngModule: NgxDynamicTemplateModule,
-			providers: [
-				DynamicCache,
-				{ provide: DynamicTypes.DynamicExtraModules, useValue: options && options.extraModules ? options.extraModules : [] },
-				{ provide: DynamicTypes.DynamicResponseRedirectStatuses, useValue: [301, 302, 307, 308] },
-				{ provide: Compiler, useFactory: createJitCompiler },
-				{ provide: NgModuleFactoryLoader, useClass: SystemJsNgModuleLoader },
-			]
+			providers: providers
 		};
 	}
 }
