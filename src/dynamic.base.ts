@@ -146,7 +146,17 @@ export class DynamicBase implements OnChanges, OnDestroy {
 			Promise.all(lazyModulesLoaders)
 				.then((moduleFactories: NgModuleFactory<any>[]) => {
 					for (let moduleFactory of moduleFactories) {
-						this.lazyExtraModules.push(moduleFactory.moduleType);
+						const moduleMetaData = moduleFactory.moduleType['moduleMetaData'];
+						if (moduleMetaData) {
+							@NgModule(moduleMetaData)
+							class dynamicLazyModule {
+							}
+							this.lazyExtraModules.push(
+								this.compiler.compileModuleSync<any>(dynamicLazyModule).moduleType
+							);
+						} else {
+							this.lazyExtraModules.push(moduleFactory.moduleType);
+						}
 					}
 
 					if (Utils.isPresent(this.template)) {
