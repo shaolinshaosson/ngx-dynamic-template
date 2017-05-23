@@ -32,10 +32,8 @@ export interface IDynamicTemplateOptions {
   useJit: boolean;
 }
 
-// TODO extends from angular metadata
 export interface IDynamicComponentMetadata {
-  selector: string;
-  template: string;
+  componentMetadata: any;
 }
 
 export interface IDynamicMetadata {

@@ -25,7 +25,7 @@ import { Utils } from './dynamic.utils';
 import { DynamicCache } from './dynamic.cache';
 import {
 	IDynamicRemoteTemplateFactory, IDynamicTemplateMetadata, IDynamicTemplatePlaceholder, IDynamicTemplateContext, AnyT,
-	IDynamicMetadata
+	IDynamicMetadata, IDynamicComponentMetadata
 } from './dynamic.interface';
 
 export interface DynamicComponentConfig {
@@ -151,11 +151,8 @@ export class DynamicBase implements OnChanges, OnDestroy {
 						if (moduleMetaData) {
 							// TODO refactoring
 							const lazyComponents: any[] = [];
-							for (let componentConfig of moduleMetaData.components) {
-								@Component({
-									template: componentConfig.template,
-									selector: componentConfig.selector
-								})
+							for (let component of moduleMetaData.components) {
+								@Component((component as IDynamicComponentMetadata).componentMetadata)
 								class dynamicLazyComponentClass {
 								}
 								lazyComponents.push(dynamicLazyComponentClass);
