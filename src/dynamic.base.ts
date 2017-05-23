@@ -2,7 +2,6 @@ import {
 	Component,
 	Input,
 	Output,
-	Compiler,
 	OnChanges,
 	OnDestroy,
 	EventEmitter,
@@ -24,8 +23,14 @@ import { Http, Response, RequestOptionsArgs } from '@angular/http';
 import { Utils } from './dynamic.utils';
 import { DynamicCache } from './dynamic.cache';
 import {
-	IDynamicRemoteTemplateFactory, IDynamicTemplateMetadata, IDynamicTemplatePlaceholder, IDynamicTemplateContext, AnyT,
-	IDynamicMetadata, IDynamicComponentMetadata
+	IDynamicRemoteTemplateFactory,
+	IDynamicTemplateMetadata,
+	IDynamicTemplatePlaceholder,
+	IDynamicTemplateContext,
+	AnyT,
+	IDynamicMetadata,
+	IDynamicComponentMetadata,
+	Compiler2
 } from './dynamic.interface';
 
 export interface DynamicComponentConfig {
@@ -60,7 +65,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	constructor(protected dynamicExtraModules: Array<any>,
 	            protected dynamicResponseRedirectStatuses: number[],
 	            protected viewContainer: ViewContainerRef,
-	            protected compiler: Compiler,
+	            protected compiler: Compiler2,
 	            protected http: Http,
 	            protected dynamicCache: DynamicCache,
 	            protected moduleFactoryLoader: NgModuleFactoryLoader,

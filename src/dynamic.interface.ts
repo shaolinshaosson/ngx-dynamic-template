@@ -1,5 +1,5 @@
 import { Response, RequestOptionsArgs } from '@angular/http';
-import { Type } from '@angular/core';
+import { Compiler, Type } from '@angular/core';
 
 export const DynamicTypes = {
   DynamicExtraModules: 'DynamicExtraModules',
@@ -39,4 +39,7 @@ export interface IDynamicComponentMetadata {
 export interface IDynamicMetadata {
   modules: any[];
   components: IDynamicComponentMetadata[];
+}
+
+export class Compiler2 extends Compiler {
 }
