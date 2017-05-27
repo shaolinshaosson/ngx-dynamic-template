@@ -26,7 +26,7 @@ import { NgxDynamicTemplateModule } from 'ngx-dynamic-template';
 
 [Live demo](https://apoterenko.github.io/ngx-dynamic-template)  
 [Local demo, based on angular-cli](https://github.com/apoterenko/ngx-dynamic-template/tree/master/demo)
-[Local demo #2, based on Angular 2 Webpack Starter](https://github.com/apoterenko/ngx-dynamic-template/tree/master/demo2)
+[Local demo #2, based on Angular 2 Webpack Starter <npm run build:prod>](https://github.com/apoterenko/ngx-dynamic-template/tree/master/demo2)
 
 ## Features
 
