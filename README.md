@@ -81,6 +81,7 @@ Also 301, 302, 307, 308 HTTP statuses are supported (recursive redirection). The
 ```html
 <ng-template dynamic-template
              [httpUrl]="'https://httpbin.org/get'"
+             [defaultTemplate]="'<span>on error template</span>'"
              [remoteTemplateFactory]="remoteTemplateFactory">
 </ng-template>
 ```

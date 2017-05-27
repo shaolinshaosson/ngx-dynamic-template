@@ -16,6 +16,7 @@
 <br><b>Scenario #3</b><br>
 <ng-template dynamic-template
              [httpUrl]="'https://httpbin.org/get'"
+             [defaultTemplate]="'<span>on error template</span>'"
              [remoteTemplateFactory]="remoteTemplateFactory">
 </ng-template>
 

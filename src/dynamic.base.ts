@@ -21,6 +21,8 @@ import {
 
 import { CommonModule } from '@angular/common';
 import { Http, Response, RequestOptionsArgs } from '@angular/http';
+import { Observable } from 'rxjs';
+
 import { Utils } from './dynamic.utils';
 import { DynamicCache } from './dynamic.cache';
 import {
@@ -29,17 +31,10 @@ import {
 	IDynamicTemplatePlaceholder,
 	IDynamicTemplateContext,
 	AnyT,
-	DynamicMetadataKey,
-	ILazyRoute
+	ILazyRoute,
+	HASH_FIELD,
+	IDynamicComponentConfig
 } from './dynamic.interface';
-import {Observable} from "rxjs";
-
-export interface DynamicComponentConfig {
-	template?: string;
-	templatePath?: string;
-}
-
-const HASH_FIELD:string = '__hashValue';
 
 export class DynamicBase implements OnChanges, OnDestroy {
 
@@ -51,9 +46,8 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	@Input() context: IDynamicTemplateContext;
 	@Input() remoteTemplateFactory: IDynamicRemoteTemplateFactory;
 	@Input() extraModules: any[];
-	@Input() componentStyles: string[];
-	@Input() componentTemplatePath: string;
-	@Input() componentDefaultTemplate: string;
+	@Input() styles: string[];
+	@Input() defaultTemplate: string;
 
 	private lazyExtraModules: (AnyT|Function)[] = [];
 	private injector:ReflectiveInjector;
@@ -177,8 +171,6 @@ export class DynamicBase implements OnChanges, OnDestroy {
 					}
 					if (Utils.isPresent(this.template)) {
 						resolve(this.makeComponentModule({template: this.template}));
-					} else if (Utils.isPresent(this.componentTemplatePath)) {
-						resolve(this.makeComponentModule({templatePath: this.componentTemplatePath}));
 					} else if (Utils.isPresent(this.httpUrl)) {
 						this.loadRemoteTemplate(this.httpUrl, resolve);
 					} else {
@@ -211,12 +203,12 @@ export class DynamicBase implements OnChanges, OnDestroy {
 					resolve(this.makeComponentModule({template: loadedTemplate}));
 				}
 			}, () => {
-				const template: string = this.componentDefaultTemplate || '';
+				const template: string = this.defaultTemplate || '';
 				resolve(this.makeComponentModule({template: template}));
 			});
 	}
 
-	private makeComponentModule(dynamicConfig?: DynamicComponentConfig): AnyT {
+	private makeComponentModule(dynamicConfig?: IDynamicComponentConfig): AnyT {
 		const dynamicComponentType: Type<IDynamicTemplatePlaceholder>
 			= this.cachedTemplatePlaceholder
 			= this.makeComponent(dynamicConfig);
@@ -239,10 +231,10 @@ export class DynamicBase implements OnChanges, OnDestroy {
 		return this.cachedDynamicModule = dynamicComponentModule;
 	}
 
-	private makeComponent(componentConfig?: DynamicComponentConfig): Type<IDynamicTemplatePlaceholder> {
+	private makeComponent(componentConfig?: IDynamicComponentConfig): Type<IDynamicTemplatePlaceholder> {
 		const dynamicComponentMetaData: IDynamicTemplateMetadata = {
 			selector: this.dynamicSelector,
-			styles: this.componentStyles
+			styles: this.styles
 		};
 
 		if (Utils.isPresent(componentConfig)) {

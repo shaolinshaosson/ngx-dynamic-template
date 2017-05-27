@@ -39,6 +39,13 @@ export interface ILazyRoute {
   loadChildren?: Function|string;
 }
 
+export interface IDynamicComponentConfig {
+  template?: string;
+  templatePath?: string;
+}
+
+export const HASH_FIELD:string = '__hashValue';
+
 export const DynamicMetadataKey = '__metadata';
 
 export const ROUTES_TOKEN = new InjectionToken('ROUTES');
