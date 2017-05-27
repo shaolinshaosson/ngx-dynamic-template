@@ -21,6 +21,7 @@
   "buildOnSave": false,
   "exclude": [
     "node_modules",
-    "demo"
+    "demo",
+	"demo2"
   ]
 }
