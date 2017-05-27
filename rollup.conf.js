@@ -1,3 +1,5 @@
+import commonjs from 'rollup-plugin-commonjs';
+
 export default {
 	entry: 'index.js',
 	dest: 'bundles/ngx-dynamic-template.umd.js',
@@ -14,5 +16,8 @@ export default {
 		'@angular/http': 'ng.http',
 		'@angular/compiler': 'ng.compiler'
 	},
+	plugins: [
+		commonjs()
+	],
 	moduleName: 'ngx.dynamic.template'
 }

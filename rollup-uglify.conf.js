@@ -1,3 +1,4 @@
+import commonjs from 'rollup-plugin-commonjs';
 import uglify from 'rollup-plugin-uglify';
 
 export default {
@@ -17,6 +18,7 @@ export default {
 		'@angular/compiler': 'ng.compiler'
 	},
 	plugins: [
+		commonjs(),
 		uglify()
 	],
 	moduleName: 'ngx.dynamic.template'
