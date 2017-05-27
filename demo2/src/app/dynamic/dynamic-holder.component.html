@@ -1,0 +1,34 @@
+<h1>
+	ngx-dynamic-template demo
+</h1>
+
+<b>Scenario #1</b><br>
+<ng-template dynamic-template
+             [template]="'<span style=\'color: orange;\'>This is simple dynamic template</span>'">
+</ng-template>
+
+<br><b>Scenario #2</b><br>
+<ng-template dynamic-template
+             [template]="'<lazy-component></lazy-component>'"
+             [lazyModules]="['lazy']">
+</ng-template>
+
+<br><b>Scenario #3</b><br>
+<ng-template dynamic-template
+             [httpUrl]="'https://httpbin.org/get'"
+             [remoteTemplateFactory]="remoteTemplateFactory">
+</ng-template>
+
+<br><b>Scenario #4</b><br>
+<ng-template dynamic-template
+             [template]="template4"
+             [context]="context4"
+             [extraModules]="[dynamicModule]"></ng-template>
+
+<br><b>Scenario #5</b><br>
+<div *ngFor="let i of longArray">
+	<ng-template dynamic-template
+	             [template]="template5"
+	             [context]="context5">
+	</ng-template>
+</div>
