@@ -1,13 +1,8 @@
 import { NgModule, ModuleWithProviders, SystemJsNgModuleLoader, NgModuleFactoryLoader } from '@angular/core';
-import { JitCompilerFactory } from '@angular/compiler';
 
 import { DynamicDirective } from './dynamic.directive';
 import { DynamicCache } from './dynamic.cache';
-import {Compiler2, DynamicTypes, IDynamicTemplateOptions, ROUTES_TOKEN} from './dynamic.interface';
-
-export function createJitCompiler() {
-	return new JitCompilerFactory([{useJit: true}]).createCompiler();
-}
+import { DynamicTypes, IDynamicTemplateOptions, ROUTES_TOKEN } from './dynamic.interface';
 
 @NgModule(
 	{
@@ -28,7 +23,6 @@ export class NgxDynamicTemplateModule {
 				DynamicCache,
 				{ provide: DynamicTypes.DynamicExtraModules, useValue: options && options.extraModules ? options.extraModules : [] },
 				{ provide: DynamicTypes.DynamicResponseRedirectStatuses, useValue: [301, 302, 307, 308] },
-				{ provide: Compiler2, useFactory: createJitCompiler },
 				{ provide: NgModuleFactoryLoader, useClass: SystemJsNgModuleLoader },
 				{ provide: ROUTES_TOKEN, useValue: options.routes || [] }
 			]

@@ -1,11 +1,11 @@
 import {
-  Directive, Inject, ViewContainerRef, NgModuleFactoryLoader
+  Directive, Inject, ViewContainerRef, NgModuleFactoryLoader, Compiler
 } from '@angular/core';
 import { Http } from '@angular/http';
 
 import { DynamicBase } from './dynamic.base';
 import { DynamicCache } from './dynamic.cache';
-import { Compiler2, DynamicTypes, ROUTES_TOKEN, ILazyRoute } from './dynamic.interface';
+import { DynamicTypes, ROUTES_TOKEN, ILazyRoute } from './dynamic.interface';
 
 @Directive({
   selector: '[dynamic-template]'
@@ -15,7 +15,7 @@ export class DynamicDirective extends DynamicBase {
   constructor(@Inject(DynamicTypes.DynamicExtraModules) dynamicExtraModules: any[],
               @Inject(DynamicTypes.DynamicResponseRedirectStatuses) dynamicResponseRedirectStatuses: number[],
               @Inject(ViewContainerRef) viewContainer: ViewContainerRef,
-              @Inject(Compiler2) compiler: Compiler2,
+              @Inject(Compiler) compiler: Compiler,
               @Inject(Http) http: Http,
               @Inject(NgModuleFactoryLoader) moduleFactoryLoader: NgModuleFactoryLoader,
               @Inject(DynamicCache) dynamicCache: DynamicCache,

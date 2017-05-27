@@ -15,7 +15,8 @@ import {
 	SimpleChanges,
 	NgModuleRef,
 	NgModuleFactoryLoader,
-	NgModuleFactory
+	NgModuleFactory,
+	Compiler
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
@@ -28,8 +29,6 @@ import {
 	IDynamicTemplatePlaceholder,
 	IDynamicTemplateContext,
 	AnyT,
-	IDynamicComponentMetadata,
-	Compiler2,
 	DynamicMetadataKey,
 	ILazyRoute
 } from './dynamic.interface';
@@ -67,7 +66,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	constructor(protected dynamicExtraModules: Array<any>,
 	            protected dynamicResponseRedirectStatuses: number[],
 	            protected viewContainer: ViewContainerRef,
-	            protected compiler: Compiler2,
+	            protected compiler: Compiler,
 	            protected http: Http,
 	            protected dynamicCache: DynamicCache,
 	            protected moduleFactoryLoader: NgModuleFactoryLoader,

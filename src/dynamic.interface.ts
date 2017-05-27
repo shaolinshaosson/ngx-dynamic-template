@@ -1,5 +1,5 @@
 import { Response, RequestOptionsArgs } from '@angular/http';
-import { Compiler, Type, InjectionToken } from '@angular/core';
+import { Type, InjectionToken } from '@angular/core';
 
 export const DynamicTypes = {
   DynamicExtraModules: 'DynamicExtraModules',
@@ -39,13 +39,6 @@ export interface ILazyRoute {
   loadChildren?: Function|string;
 }
 
-export interface IDynamicComponentMetadata {
-  componentMetadata: any;
-}
-
 export const DynamicMetadataKey = '__metadata';
-
-export class Compiler2 extends Compiler {
-}
 
 export const ROUTES_TOKEN = new InjectionToken('ROUTES');
