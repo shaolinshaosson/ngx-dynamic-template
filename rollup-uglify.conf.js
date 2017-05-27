@@ -1,10 +1,8 @@
-import commonjs from 'rollup-plugin-commonjs';
 import uglify from 'rollup-plugin-uglify';
-import includePaths from 'rollup-plugin-includepaths';
 
 export default {
 	entry: 'index.js',
-	dest: 'bundles/ngx-dynamic-component.umd.min.js',
+	dest: 'bundles/ngx-dynamic-template.umd.min.js',
 	format: 'umd',
 	external: [
 		'@angular/core',
@@ -19,13 +17,7 @@ export default {
 		'@angular/compiler': 'ng.compiler'
 	},
 	plugins: [
-		includePaths({
-			include: {
-				'ts-metadata-helper/index': './node_modules/ts-metadata-helper/index.js'
-			}
-		}),
-		commonjs(),
 		uglify()
 	],
-	moduleName: 'ngx.dynamic.component'
+	moduleName: 'ngx.dynamic.template'
 }
