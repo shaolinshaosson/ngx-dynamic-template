@@ -1,5 +1,5 @@
 import { Response, RequestOptionsArgs } from '@angular/http';
-import { Compiler, Type } from '@angular/core';
+import { Compiler, Type, InjectionToken } from '@angular/core';
 
 export const DynamicTypes = {
   DynamicExtraModules: 'DynamicExtraModules',
@@ -29,7 +29,14 @@ export type AnyT = Type<any>;
 
 export interface IDynamicTemplateOptions {
   extraModules?: any[];
-  useJit: boolean;
+  routes?: ILazyRoute[];
+  useJit?: boolean;
+}
+
+export interface ILazyRoute {
+  path?: string;
+  component?: any;
+  loadChildren?: Function|string;
 }
 
 export interface IDynamicComponentMetadata {
@@ -40,3 +47,5 @@ export const DynamicMetadataKey = '__metadata';
 
 export class Compiler2 extends Compiler {
 }
+
+export const ROUTES_TOKEN = new InjectionToken('ROUTES');

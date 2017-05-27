@@ -3,7 +3,7 @@ import { JitCompilerFactory } from '@angular/compiler';
 
 import { DynamicDirective } from './dynamic.directive';
 import { DynamicCache } from './dynamic.cache';
-import { Compiler2, DynamicTypes, IDynamicTemplateOptions } from './dynamic.interface';
+import {Compiler2, DynamicTypes, IDynamicTemplateOptions, ROUTES_TOKEN} from './dynamic.interface';
 
 export function createJitCompiler() {
 	return new JitCompilerFactory([{useJit: true}]).createCompiler();
@@ -30,6 +30,7 @@ export class NgxDynamicTemplateModule {
 				{ provide: DynamicTypes.DynamicResponseRedirectStatuses, useValue: [301, 302, 307, 308] },
 				{ provide: Compiler2, useFactory: createJitCompiler },
 				{ provide: NgModuleFactoryLoader, useClass: SystemJsNgModuleLoader },
+				{ provide: ROUTES_TOKEN, useValue: options.routes || [] }
 			]
 		};
 	}

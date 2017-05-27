@@ -1,3 +1,5 @@
+import { ILazyRoute } from './dynamic.interface';
+
 let uniqueId: number = 0;
 
 export class Utils {
@@ -16,6 +18,10 @@ export class Utils {
 
 	static isFunction(obj) {
 		return typeof obj === 'function';
+	}
+
+	static findLazyRouteLoader(path: string, routes: ILazyRoute[]): ILazyRoute {
+		return routes.filter((lazyRouter: ILazyRoute) => lazyRouter.path === path)[0];
 	}
 
 	static applySourceAttributes(target, source) {

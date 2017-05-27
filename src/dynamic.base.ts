@@ -15,7 +15,8 @@ import {
 	SimpleChanges,
 	NgModuleRef,
 	NgModuleFactoryLoader,
-	NgModuleFactory
+	NgModuleFactory,
+	InjectionToken
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
@@ -30,8 +31,10 @@ import {
 	AnyT,
 	IDynamicComponentMetadata,
 	Compiler2,
-	DynamicMetadataKey
+	DynamicMetadataKey,
+	ILazyRoute
 } from './dynamic.interface';
+import {Observable} from "rxjs";
 
 export interface DynamicComponentConfig {
 	template?: string;
@@ -54,7 +57,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	@Input() componentTemplatePath: string;
 	@Input() componentDefaultTemplate: string;
 
-	private lazyExtraModules: AnyT[] = [];
+	private lazyExtraModules: (AnyT|Function)[] = [];
 	private injector:ReflectiveInjector;
 	private dynamicSelector:string;
 	private cachedDynamicModule:AnyT;
@@ -69,6 +72,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	            protected http: Http,
 	            protected dynamicCache: DynamicCache,
 	            protected moduleFactoryLoader: NgModuleFactoryLoader,
+	            protected routes: ILazyRoute[],
 	            dynamicSelector: string) {
 		this.templateReady = new EventEmitter<IDynamicTemplatePlaceholder>();
 		this.dynamicSelector = Utils.buildByNextId(dynamicSelector);
@@ -143,39 +147,52 @@ export class DynamicBase implements OnChanges, OnDestroy {
 
 	private buildModule(): Promise<AnyT> {
 		const lazyModules: string[] = [].concat(this.lazyModules || []);
-		const lazyModulesLoaders: Promise<NgModuleFactory<any>>[] = [];
+		const lazyModulesLoaders: Promise<NgModuleFactory<any>|Function>[] = [];
 
 		for (let lazyModule of lazyModules) {
-			lazyModulesLoaders.push(this.moduleFactoryLoader.load(lazyModule));
+			const lazyRoute: ILazyRoute = Utils.findLazyRouteLoader(lazyModule, this.routes);
+			if (lazyRoute) {
+				lazyModulesLoaders.push(Observable.of((lazyRoute.loadChildren as Function)()).toPromise());
+			} else {
+				lazyModulesLoaders.push(this.moduleFactoryLoader.load(lazyModule));
+			}
 		}
 		return new Promise((resolve: (value: AnyT) => void) => {
 			Promise.all(lazyModulesLoaders)
-				.then((moduleFactories: NgModuleFactory<any>[]) => {
+				.then((moduleFactories: (NgModuleFactory<any>|Function)[]) => {
+
 					for (let moduleFactory of moduleFactories) {
-						const moduleMetaData = Reflect.get(moduleFactory.moduleType, DynamicMetadataKey);
-						if (moduleMetaData) {
-							// TODO refactoring
-							const lazyComponents: any[] = [];
-							for (let component of moduleMetaData.declarations) {
-								@Component(Reflect.get(component, DynamicMetadataKey))
-								class dynamicLazyComponentClass {
+						if (moduleFactories instanceof NgModuleFactory) {
+							const moduleMetaData = Reflect.get((moduleFactory as NgModuleFactory<any>).moduleType, DynamicMetadataKey);
+							if (moduleMetaData) {
+								// TODO refactoring
+								const lazyComponents: any[] = [];
+								for (let component of moduleMetaData.declarations) {
+									@Component(Reflect.get(component, DynamicMetadataKey))
+									class dynamicLazyComponentClass {
+									}
+									lazyComponents.push(dynamicLazyComponentClass);
 								}
-								lazyComponents.push(dynamicLazyComponentClass);
+								@NgModule({
+									imports: moduleMetaData.modules,
+									declarations: lazyComponents,
+									exports: lazyComponents
+								})
+								class dynamicLazyModule {
+								}
+								this.lazyExtraModules.push(
+									this.compiler.compileModuleSync<any>(dynamicLazyModule).moduleType
+								);
+							} else {
+								this.lazyExtraModules.push((moduleFactory as NgModuleFactory<any>).moduleType);
 							}
-							@NgModule({
-								imports: moduleMetaData.modules,
-								declarations: lazyComponents,
-								exports: lazyComponents
-							})
-							class dynamicLazyModule {
-							}
-							this.lazyExtraModules.push(
-								this.compiler.compileModuleSync<any>(dynamicLazyModule).moduleType
-							);
 						} else {
-							this.lazyExtraModules.push(moduleFactory.moduleType);
+							this.lazyExtraModules.push(moduleFactory as Function);
 						}
 					}
+
+
+
 
 					if (Utils.isPresent(this.template)) {
 						resolve(this.makeComponentModule({template: this.template}));
