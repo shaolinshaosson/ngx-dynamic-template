@@ -4,8 +4,9 @@ import { NgxDynamicTemplateModule } from 'ngx-dynamic-template';
 
 import { DynamicHolderComponent } from './dynamic-holder.component';
 import { DynamicHolderRouteModule } from './dynamic-holder.route';
+import { ROUTES } from '../app.routes';
 
-const DynamicTemplateModule = NgxDynamicTemplateModule.forRoot();
+const DynamicTemplateModule = NgxDynamicTemplateModule.forRoot({ routes: ROUTES });
 
 @NgModule({
   imports: [
