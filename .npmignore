@@ -3,6 +3,7 @@
 .npmignore
 
 demo
+demo2
 node_modules
 
 *.log
