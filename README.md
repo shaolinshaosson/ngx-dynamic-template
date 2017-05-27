@@ -25,8 +25,18 @@ import { NgxDynamicTemplateModule } from 'ngx-dynamic-template';
 ## Demo
 
 [Live demo](https://apoterenko.github.io/ngx-dynamic-template)  
-[Local demo, based on angular-cli](https://github.com/apoterenko/ngx-dynamic-template/tree/master/demo)  
-[Local demo #2, based on Angular 2 Webpack Starter, npm run build:prod](https://github.com/apoterenko/ngx-dynamic-template/tree/master/demo2)  
+1. Based on angular-cli  
+2. npm run build -- -prod  
+3. aot flag is disabled - [aot: false, see angular/cli/models/webpack-config.ts](https://github.com/angular/angular-cli/blob/0d3d9ef21798e77856b06656f11741d07bc062d6/packages/%40angular/cli/models/webpack-config.ts#L89)  
+
+[Local demo](https://github.com/apoterenko/ngx-dynamic-template/tree/master/demo)  
+1. Based on angular-cli  
+2. npm run build -- -prod  
+3. aot flag is disabled - [aot: false, see angular/cli/models/webpack-config.ts](https://github.com/angular/angular-cli/blob/0d3d9ef21798e77856b06656f11741d07bc062d6/packages/%40angular/cli/models/webpack-config.ts#L89)  
+
+[Local demo #2](https://github.com/apoterenko/ngx-dynamic-template/tree/master/demo2)   
+1. Based on Angular 2 Webpack Starter  
+2. npm run build:prod  
 
 ## Features
 
