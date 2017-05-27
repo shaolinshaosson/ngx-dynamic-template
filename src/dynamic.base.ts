@@ -150,7 +150,15 @@ export class DynamicBase implements OnChanges, OnDestroy {
 		for (let lazyModule of lazyModules) {
 			const lazyRoute: ILazyRoute = Utils.findLazyRouteLoader(lazyModule, this.routes);
 			if (lazyRoute) {
-				lazyModulesLoaders.push(Observable.of((lazyRoute.loadChildren as Function)()).toPromise());
+				if (Utils.isFunction(lazyRoute.loadChildren)) {
+					// angular2-class starter
+					lazyModulesLoaders.push(
+						Observable.of((lazyRoute.loadChildren as Function)()).toPromise()
+					);
+				} else {
+					// angular-cli
+					lazyModulesLoaders.push(this.moduleFactoryLoader.load(lazyRoute.loadChildren as string));
+				}
 			} else {
 				lazyModulesLoaders.push(this.moduleFactoryLoader.load(lazyModule));
 			}
@@ -158,37 +166,15 @@ export class DynamicBase implements OnChanges, OnDestroy {
 		return new Promise((resolve: (value: AnyT) => void) => {
 			Promise.all(lazyModulesLoaders)
 				.then((moduleFactories: (NgModuleFactory<any>|Function)[]) => {
-
 					for (let moduleFactory of moduleFactories) {
-						if (moduleFactories instanceof NgModuleFactory) {
-							const moduleMetaData = Reflect.get((moduleFactory as NgModuleFactory<any>).moduleType, DynamicMetadataKey);
-							if (moduleMetaData) {
-								// TODO refactoring
-								const lazyComponents: any[] = [];
-								for (let component of moduleMetaData.declarations) {
-									@Component(Reflect.get(component, DynamicMetadataKey))
-									class dynamicLazyComponentClass {
-									}
-									lazyComponents.push(dynamicLazyComponentClass);
-								}
-								@NgModule({
-									imports: moduleMetaData.modules,
-									declarations: lazyComponents,
-									exports: lazyComponents
-								})
-								class dynamicLazyModule {
-								}
-								this.lazyExtraModules.push(
-									this.compiler.compileModuleSync<any>(dynamicLazyModule).moduleType
-								);
-							} else {
-								this.lazyExtraModules.push((moduleFactory as NgModuleFactory<any>).moduleType);
-							}
+						if (moduleFactory instanceof NgModuleFactory) {
+							// angular-cli
+							this.lazyExtraModules.push(moduleFactory.moduleType);
 						} else {
-							this.lazyExtraModules.push(moduleFactory as Function);
+							// angular2-class starter
+							this.lazyExtraModules.push(moduleFactory);
 						}
 					}
-
 					if (Utils.isPresent(this.template)) {
 						resolve(this.makeComponentModule({template: this.template}));
 					} else if (Utils.isPresent(this.componentTemplatePath)) {
