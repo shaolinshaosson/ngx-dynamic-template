@@ -15,8 +15,7 @@ import {
 	SimpleChanges,
 	NgModuleRef,
 	NgModuleFactoryLoader,
-	NgModuleFactory,
-	InjectionToken
+	NgModuleFactory
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
@@ -190,9 +189,6 @@ export class DynamicBase implements OnChanges, OnDestroy {
 							this.lazyExtraModules.push(moduleFactory as Function);
 						}
 					}
-
-
-
 
 					if (Utils.isPresent(this.template)) {
 						resolve(this.makeComponentModule({template: this.template}));

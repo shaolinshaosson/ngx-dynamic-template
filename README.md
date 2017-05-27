@@ -42,47 +42,25 @@ import { NgxDynamicTemplateModule } from 'ngx-dynamic-template';
 ```html
 <ng-template dynamic-template
              [template]="'<lazy-component></lazy-component>'"
-             [lazyModules]="['app/lazy/lazy.module#LazyModule']">
+             [lazyModules]="['lazy']">
 </ng-template>
 ```
 
 ```typescript
-import { DynamicLazyMetadata } from 'ngx-dynamic-template';
-
-import { LazyComponent } from './lazy.component';
-import { LazyRouteModule } from './lazy.route';
-
-const moduleMetaData = {
-  imports: [
-    CommonModule,
-    LazyRouteModule,
-  ],
-  declarations: [
-    LazyComponent,
-  ],
-  exports: [
-    LazyComponent
-  ]
-};
-
-@DynamicLazyMetadata(moduleMetaData)
-@NgModule(moduleMetaData)
-export class LazyModule {
-}
+export const ROUTES: Routes = [
+  { path: '',      component: HomeComponent },
+  ...
+  { path: 'lazy', loadChildren: './lazy/lazy.module#LazyModule' }
+];
 
 ...
 
-import { DynamicLazyMetadata } from 'ngx-dynamic-template';
-
-const moduleMetaData = {
-  selector: 'lazy-component',
-  template: '<span style="color: red;">This is a lazy loaded component LazyComponent!</span>'
-};
-
-@DynamicLazyMetadata(moduleMetaData)
-@Component(moduleMetaData)
-export class LazyComponent {
-}
+@NgModule({
+  imports: [
+    ...
+    NgxDynamicTemplateModule.forRoot({ routes: ROUTES }),
+    RouterModule.forRoot(ROUTES)
+  ],
 ```
 
 ##### **3** Support of **httpUrl** attribute. This attribute allows getting resource via Angular2 HTTP/Ajax (demo scenario #3).

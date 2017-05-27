@@ -5,7 +5,7 @@ import { Http } from '@angular/http';
 
 import { DynamicBase } from './dynamic.base';
 import { DynamicCache } from './dynamic.cache';
-import {Compiler2, DynamicTypes, ROUTES_TOKEN, ILazyRoute} from './dynamic.interface';
+import { Compiler2, DynamicTypes, ROUTES_TOKEN, ILazyRoute } from './dynamic.interface';
 
 @Directive({
   selector: '[dynamic-template]'
@@ -31,7 +31,5 @@ export class DynamicDirective extends DynamicBase {
       routes,
       '[dynamic-template-{id}]'
     );
-
-
   }
 }

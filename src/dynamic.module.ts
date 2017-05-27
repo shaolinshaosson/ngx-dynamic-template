@@ -1,4 +1,4 @@
-import { NgModule, Compiler, ModuleWithProviders, SystemJsNgModuleLoader, NgModuleFactoryLoader } from '@angular/core';
+import { NgModule, ModuleWithProviders, SystemJsNgModuleLoader, NgModuleFactoryLoader } from '@angular/core';
 import { JitCompilerFactory } from '@angular/compiler';
 
 import { DynamicDirective } from './dynamic.directive';
