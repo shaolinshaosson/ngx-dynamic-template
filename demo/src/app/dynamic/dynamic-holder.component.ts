@@ -49,7 +49,7 @@ export class DynamicHolderComponent implements OnInit {
                         [template]='internalTemplate4_1'
                         [context]='internalContext4_1' 
                         [extraModules]='internalExtraModules4_1'
-                        [lazyModules]="['app/lazy2/lazy2.module#Lazy2Module']">         
+                        [lazyModules]="['lazy2']">         
              </ng-template>
              Scope value: {{ internalContext4_1.value4_1 }}
         </div>
