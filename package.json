@@ -27,16 +27,14 @@
   "peerDependencies": {
     "@angular/core": ">=5.0.0",
     "@angular/common": ">=5.0.0",
-    "@angular/http": ">=5.0.0",
     "rxjs": ">=5.0.0"
   },
   "devDependencies": {
-    "@angular/compiler-cli": "5.0.0-rc.8",
-    "@angular/core": "5.0.0-rc.8",
-    "@angular/common": "5.0.0-rc.8",
-    "@angular/compiler": "5.0.0-rc.8",
-    "@angular/platform-browser": "5.0.0-rc.8",
-    "@angular/http": "5.0.0-rc.8",
+    "@angular/compiler-cli": "5.0.0",
+    "@angular/core": "5.0.0",
+    "@angular/common": "5.0.0",
+    "@angular/compiler": "5.0.0",
+    "@angular/platform-browser": "5.0.0",
     "@types/core-js": "~0.9.28",
     "@types/node": "~6.0.38",
     "typescript": ">=2.4.2 <2.5",

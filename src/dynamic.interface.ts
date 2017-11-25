@@ -1,4 +1,3 @@
-import { Response, RequestOptionsArgs } from '@angular/http';
 import { Type, InjectionToken } from '@angular/core';
 
 export const DynamicTypes = {
@@ -7,7 +6,7 @@ export const DynamicTypes = {
 };
 
 export interface IDynamicRemoteTemplateFactory {
-  buildRequestOptions?: () => RequestOptionsArgs;
+  buildRequestOptions?: () => { [index: string]: any; };
   parseResponse?: (response: Response) => string;
 }
 

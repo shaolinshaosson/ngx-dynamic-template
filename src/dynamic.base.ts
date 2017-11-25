@@ -1,26 +1,26 @@
 import {
-	Component,
-	Input,
-	Output,
-	OnChanges,
-	OnDestroy,
-	EventEmitter,
-	NgModule,
-	ViewContainerRef,
-	ComponentRef,
-	ModuleWithComponentFactories,
-	ComponentFactory,
-	Type,
-	ReflectiveInjector,
-	SimpleChanges,
-	NgModuleRef,
-	NgModuleFactoryLoader,
-	NgModuleFactory,
-	Compiler
+  Component,
+  Input,
+  Output,
+  OnChanges,
+  OnDestroy,
+  EventEmitter,
+  NgModule,
+  ViewContainerRef,
+  ComponentRef,
+  ModuleWithComponentFactories,
+  ComponentFactory,
+  Type,
+  SimpleChanges,
+  NgModuleRef,
+  NgModuleFactoryLoader,
+  NgModuleFactory,
+  Compiler,
+	Injector,
 } from '@angular/core';
 
+import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { Http, Response, RequestOptionsArgs } from '@angular/http';
 import { Observable } from 'rxjs';
 
 import { Utils } from './dynamic.utils';
@@ -50,7 +50,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	@Input() defaultTemplate: string;
 
 	private lazyExtraModules: (AnyT|Function)[] = [];
-	private injector:ReflectiveInjector;
+	private injector: Injector;
 	private dynamicSelector:string;
 	private cachedDynamicModule:AnyT;
 	private cachedTemplatePlaceholder:Type<IDynamicTemplatePlaceholder>;
@@ -61,7 +61,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	            protected dynamicResponseRedirectStatuses: number[],
 	            protected viewContainer: ViewContainerRef,
 	            protected compiler: Compiler,
-	            protected http: Http,
+	            protected http: HttpClient,
 	            protected dynamicCache: DynamicCache,
 	            protected moduleFactoryLoader: NgModuleFactoryLoader,
 	            protected routes: ILazyRoute[],
@@ -69,7 +69,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 		this.templateReady = new EventEmitter<IDynamicTemplatePlaceholder>();
 		this.dynamicSelector = Utils.buildByNextId(dynamicSelector);
 
-		this.injector = ReflectiveInjector.fromResolvedProviders([], this.viewContainer.parentInjector);
+		this.injector = Injector.create([], this.viewContainer.parentInjector);
 	}
 
 	/**
@@ -181,7 +181,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 	}
 
 	private loadRemoteTemplate(httpUrl: string, resolve: (value: AnyT) => void) {
-		let requestArgs: RequestOptionsArgs = {withCredentials: true};
+		let requestArgs: { [index: string]: any; } = {withCredentials: true};
 		if (Utils.isPresent(this.remoteTemplateFactory)
 			&& Utils.isFunction(this.remoteTemplateFactory.buildRequestOptions)) {
 			requestArgs = this.remoteTemplateFactory.buildRequestOptions();
@@ -195,12 +195,12 @@ export class DynamicBase implements OnChanges, OnDestroy {
 						this.loadRemoteTemplate(chainedUrl, resolve);
 					}
 				} else {
-					const loadedTemplate: string = Utils.isPresent(this.remoteTemplateFactory)
+					const loadedTemplate = Utils.isPresent(this.remoteTemplateFactory)
 					&& Utils.isFunction(this.remoteTemplateFactory.parseResponse)
 						? this.remoteTemplateFactory.parseResponse(response)
 						: response.text();
 
-					resolve(this.makeComponentModule({template: loadedTemplate}));
+					resolve(this.makeComponentModule({template: loadedTemplate as string}));
 				}
 			}, () => {
 				const template: string = this.defaultTemplate || '';

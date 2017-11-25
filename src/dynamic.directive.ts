@@ -1,7 +1,7 @@
 import {
   Directive, Inject, ViewContainerRef, NgModuleFactoryLoader, Compiler
 } from '@angular/core';
-import { Http } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 
 import { DynamicBase } from './dynamic.base';
 import { DynamicCache } from './dynamic.cache';
@@ -16,7 +16,7 @@ export class DynamicDirective extends DynamicBase {
               @Inject(DynamicTypes.DynamicResponseRedirectStatuses) dynamicResponseRedirectStatuses: number[],
               @Inject(ViewContainerRef) viewContainer: ViewContainerRef,
               @Inject(Compiler) compiler: Compiler,
-              @Inject(Http) http: Http,
+              @Inject(HttpClient) http: HttpClient,
               @Inject(NgModuleFactoryLoader) moduleFactoryLoader: NgModuleFactoryLoader,
               @Inject(DynamicCache) dynamicCache: DynamicCache,
               @Inject(ROUTES_TOKEN) routes: ILazyRoute[]) {
