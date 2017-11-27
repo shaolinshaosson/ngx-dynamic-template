@@ -16,7 +16,7 @@ import {
   NgModuleFactoryLoader,
   NgModuleFactory,
   Compiler,
-	Injector,
+  Injector,
 } from '@angular/core';
 
 import { HttpClient } from '@angular/common/http';
@@ -139,7 +139,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 
 	private buildModule(): Promise<AnyT> {
 		const lazyModules: string[] = [].concat(this.lazyModules || []);
-		const lazyModulesLoaders: Promise<NgModuleFactory<any>|Function>[] = [];
+		const lazyModulesLoaders: Array<Promise<NgModuleFactory<any>|Function>> = [];
 
 		for (let lazyModule of lazyModules) {
 			const lazyRoute: ILazyRoute = Utils.findLazyRouteLoader(lazyModule, this.routes);
