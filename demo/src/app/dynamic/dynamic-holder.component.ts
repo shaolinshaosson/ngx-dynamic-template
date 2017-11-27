@@ -1,7 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { Response, Headers, RequestOptionsArgs } from '@angular/http';
 import { IDynamicRemoteTemplateFactory } from 'ngx-dynamic-template';
 
 @Component({
@@ -22,7 +21,7 @@ export class DynamicHolderComponent implements OnInit {
   // *******************************************
   remoteTemplateFactory: IDynamicRemoteTemplateFactory = {
     // This is an optional method
-    buildRequestOptions (): RequestOptionsArgs {
+    buildRequestOptions (): any {
       const headers = new Headers();
       headers.append('Token', '100500');
 
@@ -32,10 +31,10 @@ export class DynamicHolderComponent implements OnInit {
       };
     },
     // This is an optional method
-    parseResponse (response: Response): string {
-      return response.json().headers['User-Agent'];
+    parseResponse (response: {headers: {[index: string]: any}}): string {
+      return response.headers['User-Agent'];
     }
-  };
+  } as { [index: string]: any; };
 
   // *******************************************
   //
@@ -53,7 +52,7 @@ export class DynamicHolderComponent implements OnInit {
              </ng-template>
              Scope value: {{ internalContext4_1.value4_1 }}
         </div>
-  `;
+`;
 
   public context4 = {
     internalTemplate4_1: `
