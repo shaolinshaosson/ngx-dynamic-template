@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { IDynamicRemoteTemplateFactory } from 'ngx-dynamic-template';
 
 @Component({
-  selector: 'dynamic-holder',
+  selector: 'app-dynamic-holder',
   templateUrl: './dynamic-holder.component.html',
 })
 export class DynamicHolderComponent implements OnInit {
@@ -55,9 +55,10 @@ export class DynamicHolderComponent implements OnInit {
   public context4 = {
     internalTemplate4_1: `
         <div style="background-color: #90cdbb; font-weight: bold;">
-          <lazy2-component></lazy2-component>
+          <app-lazy2-component></app-lazy2-component>
           <div style="color: #ff49ca">
-              First input field [dynamic inside dynamic, level 2]: <input type=\"text\" [(ngModel)]=\"value4_1\" (ngModelChange)=\"value4_1 = $event\">
+              First input field [dynamic inside dynamic, level 2]:
+              <input type=\"text\" [(ngModel)]=\"value4_1\" (ngModelChange)=\"value4_1 = $event\">
           </div>
           <ng-template dynamic-template
                        [context]='dynamicHolder'
@@ -87,7 +88,7 @@ export class DynamicHolderComponent implements OnInit {
   //               Scenario #5
   //
   // *******************************************
-  longArray = new Array(500);
+  longArray = new Array(2500);
   template5 = `{{ dynamicHolderTestObject.dynamicHolderTestObjectValue }}`;
   context5 = this;
 
