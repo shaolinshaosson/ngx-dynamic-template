@@ -26,28 +26,28 @@ import { Observable } from 'rxjs';
 import { Utils } from './dynamic.utils';
 import { DynamicCache } from './dynamic.cache';
 import {
-	IDynamicRemoteTemplateFactory,
-	IDynamicTemplateMetadata,
-	IDynamicTemplatePlaceholder,
-	IDynamicTemplateContext,
-	AnyT,
-	ILazyRoute,
-	HASH_FIELD,
-	IDynamicComponentConfig
+  IDynamicRemoteTemplateFactory,
+  IDynamicTemplateMetadata,
+  IDynamicTemplatePlaceholder,
+  IDynamicTemplateContext,
+  AnyT,
+  ILazyRoute,
+  HASH_FIELD,
+  IDynamicComponentConfig,
 } from './dynamic.interface';
 
 export class DynamicBase implements OnChanges, OnDestroy {
 
-	@Output() templateReady: EventEmitter<IDynamicTemplatePlaceholder>;
+  @Output() templateReady: EventEmitter<IDynamicTemplatePlaceholder>;
 
-	@Input() template: string;
-	@Input() lazyModules: string[];
-	@Input() httpUrl: string;
-	@Input() context: IDynamicTemplateContext;
-	@Input() remoteTemplateFactory: IDynamicRemoteTemplateFactory;
-	@Input() extraModules: any[];
-	@Input() styles: string[];
-	@Input() defaultTemplate: string;
+  @Input() template: string;
+  @Input() lazyModules: string[];
+  @Input() httpUrl: string;
+  @Input() context: IDynamicTemplateContext;
+  @Input() remoteTemplateFactory: IDynamicRemoteTemplateFactory;
+  @Input() extraModules: any[];
+  @Input() styles: string[];
+  @Input() defaultTemplate: string;
 
 	private lazyExtraModules: (AnyT|Function)[] = [];
 	private injector: Injector;
@@ -249,8 +249,9 @@ export class DynamicBase implements OnChanges, OnDestroy {
 		class dynamicComponentClass {
 		}
 
-		if (Utils.isPresent(Reflect.get(dynamicComponentMetaData, 'template'))) {
-			Reflect.set(dynamicComponentClass, HASH_FIELD, Utils.hashFnv32a(Reflect.get(dynamicComponentMetaData, 'template'), true));
+		const templateMetaData = Reflect.get(dynamicComponentMetaData, 'template');
+		if (Utils.isPresent(templateMetaData)) {
+			Reflect.set(dynamicComponentClass, HASH_FIELD, Utils.hashFnv32a(templateMetaData, true));
 		}
 		return dynamicComponentClass as Type<IDynamicTemplatePlaceholder>;
 	}
