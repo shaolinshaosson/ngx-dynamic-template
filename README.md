@@ -121,6 +121,12 @@ parseResponse (response: {headers: {[index: string]: any}}): string {
 
 ##### **6** Support of recursive injection the dynamic module instance (dynamic component inside dynamic component).
 
+##### **7** Clearing dynamic wrapper using the **removeDynamicWrapper** option.
+
+```typescript
+NgxDynamicTemplateModule.forRoot({ removeDynamicWrapper: true });
+```
+
 ## License
 
 Licensed under MIT.
