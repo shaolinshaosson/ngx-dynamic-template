@@ -18,9 +18,8 @@ import {
   Compiler,
   Injector,
 } from '@angular/core';
-
-import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 

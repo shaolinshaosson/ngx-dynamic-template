@@ -41,18 +41,16 @@ export class DynamicHolderComponent implements OnInit {
   //               Scenario #4
   //
   // *******************************************
-  public template4 = `
-        <div style="background-color: #b8c6cd; font-weight: bold;">
-            This ia a dynamic template inside dynamic template!<br>
-            <ng-template dynamic-template
-                        [template]='internalTemplate4_1'
-                        [context]='internalContext4_1' 
-                        [extraModules]='internalExtraModules4_1'
-                        [lazyModules]="['lazy2']">         
-             </ng-template>
-             Scope value: {{ internalContext4_1.value4_1 }}
-        </div>
-`;
+  public template4 = `<div style="background-color: #b8c6cd; font-weight: bold;">
+      This ia a dynamic template inside dynamic template!<br>
+      <ng-template dynamic-template
+                  [template]='internalTemplate4_1'
+                  [context]='internalContext4_1'
+                  [extraModules]='internalExtraModules4_1'
+                  [lazyModules]="['lazy2']">
+       </ng-template>
+       Scope value: {{ internalContext4_1.value4_1 }}
+  </div>`;
 
   public context4 = {
     internalTemplate4_1: `
@@ -64,16 +62,16 @@ export class DynamicHolderComponent implements OnInit {
           <ng-template dynamic-template
                        [context]='dynamicHolder'
                        [extraModules]='internalExtraModules4_1_1'
-                       [template]='internalTemplate4_1_1'>         
+                       [template]='internalTemplate4_1_1'>
           </ng-template>
-        </div>  
+        </div>
     `,
     internalContext4_1: {
       dynamicHolder: this,
       value4_1: '',
       internalTemplate4_1_1: `
          <div style="background-color: #cd9306; font-weight: bold;">
-            Second input field [dynamic inside dynamic, level 3]: 
+            Second input field [dynamic inside dynamic, level 3]:
             <input type=\"text\" [(ngModel)]=\"dynamicHolderTestObject.dynamicHolderTestObjectValue\">
          </div>
       `,
