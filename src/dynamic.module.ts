@@ -3,6 +3,7 @@ import { NgModule, ModuleWithProviders, SystemJsNgModuleLoader, NgModuleFactoryL
 import { DynamicDirective } from './dynamic.directive';
 import { DynamicCache } from './dynamic.cache';
 import { DynamicTypes, IDynamicTemplateOptions, ROUTES_TOKEN } from './dynamic.interface';
+import { DynamicTemplateModuleHolder } from './dynamic.holder';
 
 @NgModule(
   {
@@ -17,7 +18,10 @@ import { DynamicTypes, IDynamicTemplateOptions, ROUTES_TOKEN } from './dynamic.i
 export class NgxDynamicTemplateModule {
 
   public static forRoot(options?: IDynamicTemplateOptions): ModuleWithProviders {
-    return {
+    if (DynamicTemplateModuleHolder.saveAndGet()) {
+      throw new Error('You cannot create dynamic template module more one time!');
+    }
+    return DynamicTemplateModuleHolder.saveAndGet({
       ngModule: NgxDynamicTemplateModule,
       providers: [
         DynamicCache,
@@ -27,8 +31,8 @@ export class NgxDynamicTemplateModule {
         },
         { provide: DynamicTypes.DynamicResponseRedirectStatuses, useValue: [301, 302, 307, 308] },
         { provide: NgModuleFactoryLoader, useClass: SystemJsNgModuleLoader },
-        { provide: ROUTES_TOKEN, useValue: options.routes || [] }
+        { provide: ROUTES_TOKEN, useValue: options.routes || [] },
       ],
-    };
+    });
   }
 }

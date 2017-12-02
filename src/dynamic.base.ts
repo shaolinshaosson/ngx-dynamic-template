@@ -21,7 +21,8 @@ import {
 
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/of';
 
 import { Utils } from './dynamic.utils';
 import { DynamicCache } from './dynamic.cache';
@@ -35,6 +36,7 @@ import {
   HASH_FIELD,
   IDynamicComponentConfig,
 } from './dynamic.interface';
+import { DynamicTemplateModuleHolder } from './dynamic.holder';
 
 export class DynamicBase implements OnChanges, OnDestroy {
 
@@ -215,7 +217,8 @@ export class DynamicBase implements OnChanges, OnDestroy {
 
     const modules: any[] = this.dynamicExtraModules
       .concat(this.extraModules || [])
-      .concat(this.lazyExtraModules);
+      .concat(this.lazyExtraModules)
+      .concat(DynamicTemplateModuleHolder.saveAndGet());
 
     @NgModule({
       declarations: [dynamicComponentType],

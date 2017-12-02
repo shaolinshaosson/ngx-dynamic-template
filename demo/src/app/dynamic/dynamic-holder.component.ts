@@ -9,9 +9,9 @@ import { IDynamicRemoteTemplateFactory } from 'ngx-dynamic-template';
 })
 export class DynamicHolderComponent implements OnInit {
 
-  private dynamicHolderExtraModules = [FormsModule, this.dynamicModule];
+  private dynamicHolderExtraModules = [FormsModule];
 
-  constructor(@Inject('DynamicModule') public dynamicModule) {
+  constructor() {
   }
 
   // *******************************************

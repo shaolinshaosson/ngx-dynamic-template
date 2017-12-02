@@ -17,9 +17,6 @@ const DynamicTemplateModule = NgxDynamicTemplateModule.forRoot({ routes: ROUTES 
   declarations: [
     DynamicHolderComponent,
   ],
-  providers: [
-    {provide: 'DynamicModule', useValue: DynamicTemplateModule}
-  ],
 })
 export class DynamicHolderModule {
 }
