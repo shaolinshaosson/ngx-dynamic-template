@@ -1,6 +1,6 @@
 # ngx-dynamic-template
 
-An implementation of dynamic template wrapper at Angular4 [4.2.0-rc.1 compatible]. **AoT mode does not support**, sorry!
+An implementation of dynamic template wrapper at Angular4/5. **AoT mode does not support**, sorry!
 In case of dynamic component please use ngComponentOutlet.  
 
 ## Description
@@ -90,31 +90,31 @@ Also 301, 302, 307, 308 HTTP statuses are supported (recursive redirection). The
 import { Response, Headers, RequestOptionsArgs } from '@angular/http';
 import { IDynamicRemoteTemplateFactory } from 'ngx-dynamic-template';
 ...
-  remoteTemplateFactory: IDynamicRemoteTemplateFactory = {
-    // This is an optional method
-    buildRequestOptions (): RequestOptionsArgs {
-      const headers = new Headers();
-      headers.append('Token', '100500');
+remoteTemplateFactory: IDynamicRemoteTemplateFactory = {
+// This is an optional method
+buildRequestOptions (): any {
+  const headers = new Headers();
+  headers.append('Token', '100500');
 
-      return {
-        withCredentials: true,
-        headers: headers
-      };
-    },
-    // This is an optional method
-    parseResponse (response: Response): string {
-      return response.json().headers['User-Agent'];
-    }
+  return {
+	withCredentials: true,
+	headers: headers
   };
+},
+// This is an optional method
+parseResponse (response: {headers: {[index: string]: any}}): string {
+  return response.headers['User-Agent'];
+}
+} as { [index: string]: any; };
 ```
 
-##### **4** Support of modules via **extraModules** input parameter.
+##### **4** Support for injecting the extra modules via **extraModules** input parameter.
 
 ```html
 <ng-template dynamic-template
              [template]="template4"
              [context]="context4"
-             [extraModules]="[dynamicModule]"></ng-template>
+             [extraModules]="[myExtraModule]"></ng-template>
 ```
 
 ##### **5** Support of caching of compiled modules for the specific dynamic template. Therefore you can render a huge amount of dynamic templates at the same time (demo scenario #5).
