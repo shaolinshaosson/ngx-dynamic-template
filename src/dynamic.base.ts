@@ -79,21 +79,20 @@ export class DynamicBase implements OnChanges, OnDestroy {
   public ngOnChanges(changes: SimpleChanges) {
     this.ngOnDestroy();
 
-    // TODO investigate memory leak in the specific case
     this.buildModule().then((module) => {
-        let compiledModule: Promise<ModuleWithComponentFactories<any>>;
-        const currentModuleHash: string = Reflect.get(module, HASH_FIELD);
+        let compiledModulePromise: Promise<ModuleWithComponentFactories<any>>;
+        const currentModuleHash = Reflect.get(module, HASH_FIELD);
 
         if (Utils.isPresent(currentModuleHash)) {
-          compiledModule = this.dynamicCache.get(currentModuleHash);
-          if (!Utils.isPresent(compiledModule)) {
-            this.dynamicCache.set(currentModuleHash, compiledModule = this.compiler.compileModuleAndAllComponentsAsync<any>(module));
+          compiledModulePromise = this.dynamicCache.get(currentModuleHash);
+          if (!Utils.isPresent(compiledModulePromise)) {
+            this.dynamicCache.set(currentModuleHash, compiledModulePromise = this.compiler.compileModuleAndAllComponentsAsync<any>(module));
           }
         } else {
-          compiledModule = this.compiler.compileModuleAndAllComponentsAsync<any>(module);
+          compiledModulePromise = this.compiler.compileModuleAndAllComponentsAsync<any>(module);
         }
 
-        compiledModule
+        compiledModulePromise
           .then((compiledModule) => this.makeDynamicTemplatePlaceholder(compiledModule));
       }
     );

@@ -3,4 +3,3 @@ export * from './dynamic.base';
 export * from './dynamic.interface';
 export * from './dynamic.module';
 export * from './dynamic.cache';
-export * from './dynamic.decorator';
