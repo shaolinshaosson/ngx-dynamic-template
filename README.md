@@ -119,6 +119,8 @@ import { IDynamicRemoteTemplateFactory } from 'ngx-dynamic-template';
 
 ##### **5** Support of caching of compiled modules for the specific dynamic template. Therefore you can render a huge amount of dynamic templates at the same time (demo scenario #5).
 
+##### **6** Support of recursive injection the dynamic module instance (dynamic component inside dynamic component).
+
 ## License
 
 Licensed under MIT.
