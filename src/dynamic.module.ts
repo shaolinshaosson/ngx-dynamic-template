@@ -2,7 +2,7 @@ import { NgModule, ModuleWithProviders, SystemJsNgModuleLoader, NgModuleFactoryL
 
 import { DynamicDirective } from './dynamic.directive';
 import { DynamicCache } from './dynamic.cache';
-import { DynamicTypes, IDynamicTemplateOptions, ROUTES_TOKEN } from './dynamic.interface';
+import { DynamicTypes, IDynamicTemplateOptions, ROUTES_TOKEN, REMOVE_DYNAMIC_WRAPPER } from './dynamic.interface';
 import { DynamicTemplateModuleHolder } from './dynamic.holder';
 
 @NgModule(
@@ -32,6 +32,7 @@ export class NgxDynamicTemplateModule {
         { provide: DynamicTypes.DynamicResponseRedirectStatuses, useValue: [301, 302, 307, 308] },
         { provide: NgModuleFactoryLoader, useClass: SystemJsNgModuleLoader },
         { provide: ROUTES_TOKEN, useValue: options.routes || [] },
+        { provide: REMOVE_DYNAMIC_WRAPPER, useValue: options.removeDynamicWrapper || false },
       ],
     });
   }

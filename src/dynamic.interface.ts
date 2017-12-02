@@ -29,6 +29,7 @@ export type AnyT = Type<any>;
 export interface IDynamicTemplateOptions {
   extraModules?: any[];
   routes?: ILazyRoute[];
+  removeDynamicWrapper?: boolean;
 }
 
 export interface ILazyRoute {
@@ -42,8 +43,6 @@ export interface IDynamicComponentConfig {
   templatePath?: string;
 }
 
-export const HASH_FIELD: string = '__hashValue';
-
-export const DynamicMetadataKey = '__metadata';
-
+export const HASH_FIELD = '__hashValue';
 export const ROUTES_TOKEN = new InjectionToken('ROUTES');
+export const REMOVE_DYNAMIC_WRAPPER = new InjectionToken('REMOVE_DYNAMIC_WRAPPER');

@@ -17,6 +17,7 @@ import {
   NgModuleFactory,
   Compiler,
   Injector,
+  Renderer2,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
@@ -63,9 +64,11 @@ export class DynamicBase implements OnChanges, OnDestroy {
               protected viewContainer: ViewContainerRef,
               protected compiler: Compiler,
               protected http: HttpClient,
+              protected renderer: Renderer2,
               protected dynamicCache: DynamicCache,
               protected moduleFactoryLoader: NgModuleFactoryLoader,
               protected routes: ILazyRoute[],
+              protected removeDynamicWrapper: boolean,
               dynamicSelector: string) {
     this.templateReady = new EventEmitter<IDynamicTemplatePlaceholder>();
     this.dynamicSelector = Utils.buildByNextId(dynamicSelector);
@@ -134,6 +137,9 @@ export class DynamicBase implements OnChanges, OnDestroy {
     this.viewContainer.insert(templatePlaceholder.hostView, 0);
     this.applyPropertiesToDynamicTemplatePlaceholder(this.templatePlaceholder.instance);
 
+    if (this.removeDynamicWrapper) {
+      Utils.replaceDynamicContent(this.renderer, templatePlaceholder.location.nativeElement);
+    }
     this.templateReady.emit(this.templatePlaceholder.instance);
   }
 
@@ -209,11 +215,11 @@ export class DynamicBase implements OnChanges, OnDestroy {
   }
 
   private makeComponentModule(dynamicConfig?: IDynamicComponentConfig): AnyT {
-    const dynamicComponentType: Type<IDynamicTemplatePlaceholder>
+    const dynamicComponentType
       = this.cachedTemplatePlaceholder
       = this.makeComponent(dynamicConfig);
 
-    const modules: any[] = this.dynamicExtraModules
+    const modules = this.dynamicExtraModules
       .concat(this.extraModules || [])
       .concat(this.lazyExtraModules)
       .concat(DynamicTemplateModuleHolder.saveAndGet());
@@ -222,14 +228,14 @@ export class DynamicBase implements OnChanges, OnDestroy {
       declarations: [dynamicComponentType],
       imports: [CommonModule].concat(modules),
     })
-    class DynamicComponentModule {
+    class $DynamicComponentModule {
     }
 
     const dynamicComponentTypeHash: string = Reflect.get(dynamicComponentType, HASH_FIELD);
     if (Utils.isPresent(dynamicComponentTypeHash)) {
-      Reflect.set(DynamicComponentModule, HASH_FIELD, dynamicComponentTypeHash);
+      Reflect.set($DynamicComponentModule, HASH_FIELD, dynamicComponentTypeHash);
     }
-    return this.cachedDynamicModule = DynamicComponentModule;
+    return this.cachedDynamicModule = $DynamicComponentModule;
   }
 
   private makeComponent(componentConfig?: IDynamicComponentConfig): Type<IDynamicTemplatePlaceholder> {
@@ -247,14 +253,14 @@ export class DynamicBase implements OnChanges, OnDestroy {
     }
 
     @Component(dynamicComponentMetaData)
-    class DynamicComponentClass {
+    class $DynamicComponent {
     }
 
     const templateMetaData = Reflect.get(dynamicComponentMetaData, 'template');
     if (Utils.isPresent(templateMetaData)) {
-      Reflect.set(DynamicComponentClass, HASH_FIELD, Utils.hashFnv32a(templateMetaData, true));
+      Reflect.set($DynamicComponent, HASH_FIELD, Utils.hashFnv32a(templateMetaData, true));
     }
-    return DynamicComponentClass as Type<IDynamicTemplatePlaceholder>;
+    return $DynamicComponent as Type<IDynamicTemplatePlaceholder>;
   }
 
   private applyPropertiesToDynamicTemplatePlaceholder(instance: IDynamicTemplatePlaceholder) {
