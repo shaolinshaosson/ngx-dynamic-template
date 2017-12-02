@@ -2,7 +2,7 @@ import { Type, InjectionToken } from '@angular/core';
 
 export const DynamicTypes = {
   DynamicExtraModules: 'DynamicExtraModules',
-  DynamicResponseRedirectStatuses: 'DynamicResponseRedirectStatuses'
+  DynamicResponseRedirectStatuses: 'DynamicResponseRedirectStatuses',
 };
 
 export interface IDynamicRemoteTemplateFactory {
@@ -29,13 +29,12 @@ export type AnyT = Type<any>;
 export interface IDynamicTemplateOptions {
   extraModules?: any[];
   routes?: ILazyRoute[];
-  useJit?: boolean;
 }
 
 export interface ILazyRoute {
   path?: string;
   component?: any;
-  loadChildren?: Function|string;
+  loadChildren?: Function | string;
 }
 
 export interface IDynamicComponentConfig {
@@ -43,7 +42,7 @@ export interface IDynamicComponentConfig {
   templatePath?: string;
 }
 
-export const HASH_FIELD:string = '__hashValue';
+export const HASH_FIELD: string = '__hashValue';
 
 export const DynamicMetadataKey = '__metadata';
 
