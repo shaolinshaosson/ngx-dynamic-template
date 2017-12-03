@@ -87,25 +87,26 @@ Also 301, 302, 307, 308 HTTP statuses are supported (recursive redirection). The
 ```
 
 ```typescript
-import { Response, Headers, RequestOptionsArgs } from '@angular/http';
-import { IDynamicRemoteTemplateFactory } from 'ngx-dynamic-template';
-...
-remoteTemplateFactory: IDynamicRemoteTemplateFactory = {
-// This is an optional method
-buildRequestOptions (): any {
-  const headers = new Headers();
-  headers.append('Token', '100500');
+  import { Component, OnInit } from '@angular/core';
+  import { HttpHeaders } from '@angular/common/http';
+  import { IDynamicRemoteTemplateFactory, DynamicHttpResponseT, IDynamicHttpRequest } from 'ngx-dynamic-template';
+  ...
+  remoteTemplateFactory: IDynamicRemoteTemplateFactory = {
+    // This is an optional method
+    buildRequestOptions (): IDynamicHttpRequest {
+      const headers = new HttpHeaders();
+      headers.append('Token', '100500');
 
-  return {
-	withCredentials: true,
-	headers: headers
+      return {
+        withCredentials: true,
+        headers: headers
+      };
+    },
+    // This is an optional method
+    parseResponse (response: DynamicHttpResponseT): string {
+      return response.body.headers['User-Agent'];
+    }
   };
-},
-// This is an optional method
-parseResponse (response: {headers: {[index: string]: any}}): string {
-  return response.headers['User-Agent'];
-}
-} as { [index: string]: any; };
 ```
 
 ##### **4** Support for injecting the extra modules via **extraModules** input parameter.

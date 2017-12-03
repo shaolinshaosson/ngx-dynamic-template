@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-
-import { IDynamicRemoteTemplateFactory, DynamicHttpResponseT } from 'ngx-dynamic-template';
+import { HttpHeaders } from '@angular/common/http';
+import { IDynamicRemoteTemplateFactory, DynamicHttpResponseT, IDynamicHttpRequest } from 'ngx-dynamic-template';
 
 @Component({
   selector: 'app-dynamic-holder',
@@ -21,8 +21,8 @@ export class DynamicHolderComponent implements OnInit {
   // *******************************************
   remoteTemplateFactory: IDynamicRemoteTemplateFactory = {
     // This is an optional method
-    buildRequestOptions (): any {
-      const headers = new Headers();
+    buildRequestOptions (): IDynamicHttpRequest {
+      const headers = new HttpHeaders();
       headers.append('Token', '100500');
 
       return {
@@ -34,7 +34,7 @@ export class DynamicHolderComponent implements OnInit {
     parseResponse (response: DynamicHttpResponseT): string {
       return response.body.headers['User-Agent'];
     }
-  } as { [index: string]: any; };
+  };
 
   // *******************************************
   //
