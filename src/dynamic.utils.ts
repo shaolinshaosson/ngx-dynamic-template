@@ -6,27 +6,27 @@ let uniqueId = 0;
 
 export class Utils {
 
-  static nextId(): number {
+  public static nextId(): number {
     return uniqueId++;
   }
 
-  static buildByNextId(value: string): string {
+  public static buildByNextId(value: string): string {
     return value.replace('{id}', String(this.nextId()));
   }
 
-  static isPresent(obj) {
+  public static isPresent(obj) {
     return obj !== undefined && obj !== null;
   }
 
-  static isFunction(obj) {
+  public static isFunction(obj) {
     return typeof obj === 'function';
   }
 
-  static findLazyRouteLoader(path: string, routes: ILazyRoute[]): ILazyRoute {
+  public static findLazyRouteLoader(path: string, routes: ILazyRoute[]): ILazyRoute {
     return routes.filter((lazyRouter: ILazyRoute) => lazyRouter.path === path)[0];
   }
 
-  static applySourceAttributes(target, source) {
+  public static applySourceAttributes(target, source) {
     for (const property in source) {
       if (source.hasOwnProperty(property)) {
         const propValue = Reflect.get(source, property);
@@ -60,10 +60,11 @@ export class Utils {
    * @param {number} [seed] optionally pass the hash of the previous chunk
    * @returns {string|number}
    */
-  static hashFnv32a(str, asString?, seed?): string | number {
+  public static hashFnv32a(str, asString?, seed?): string | number {
     /*jshint bitwise:false */
-    let i, l,
-      hval = (seed === undefined) ? 0x811c9dc5 : seed;
+    let i;
+    let l;
+    let hval = (seed === undefined) ? 0x811c9dc5 : seed;
 
     for (i = 0, l = str.length; i < l; i++) {
       hval ^= str.charCodeAt(i);
@@ -71,7 +72,7 @@ export class Utils {
     }
     if (asString) {
       // Convert to 8 digit hex string
-      return ("0000000" + (hval >>> 0).toString(16)).substr(-8);
+      return ('0000000' + (hval >>> 0).toString(16)).substr(-8);
     }
     return hval >>> 0;
   }
