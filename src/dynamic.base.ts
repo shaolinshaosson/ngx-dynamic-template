@@ -52,7 +52,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
   @Input() styles: string[];
   @Input() defaultTemplate: string;
 
-  private lazyExtraModules: Array<AnyT | Function> = [];
+  private lazyExtraModules: Array<AnyT | (() => void)> = [];
   private injector: Injector;
   private dynamicSelector: string;
   private cachedDynamicModule: AnyT;
@@ -152,7 +152,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
 
   private buildModule(): Promise<AnyT> {
     const lazyModules: string[] = [].concat(this.lazyModules || []);
-    const lazyModulesLoaders: Array<Promise<NgModuleFactory<any> | Function>> = [];
+    const lazyModulesLoaders: Array<Promise<NgModuleFactory<any> | (() => void)>> = [];
 
     for (const lazyModule of lazyModules) {
       const lazyRoute: ILazyRoute = Utils.findLazyRouteLoader(lazyModule, this.routes);
@@ -160,7 +160,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
         if (Utils.isFunction(lazyRoute.loadChildren)) {
           // angular2-class starter
           lazyModulesLoaders.push(
-            Observable.of((lazyRoute.loadChildren as Function)()).toPromise()
+            Observable.of((lazyRoute.loadChildren as (() => any))()).toPromise()
           );
         } else {
           // angular-cli
@@ -172,7 +172,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
     }
     return new Promise((resolve: (value: AnyT) => void) => {
       Promise.all(lazyModulesLoaders)
-        .then((moduleFactories: Array<NgModuleFactory<any> | Function>) => {
+        .then((moduleFactories: Array<NgModuleFactory<any> | (() => void)>) => {
           for (const moduleFactory of moduleFactories) {
             if (moduleFactory instanceof NgModuleFactory) {
               // angular-cli
