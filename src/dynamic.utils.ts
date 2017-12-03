@@ -42,11 +42,17 @@ export class Utils {
     }
   }
 
-  public static replaceDynamicContent(renderer: Renderer2, dynamicWrapperEl: Element): void {
+  public static replaceDynamicContent(renderer: Renderer2, dynamicWrapperEl: Element): Element[] {
+    if (!dynamicWrapperEl.children.length) {
+      return null;
+    }
+    const els = [];
     for (const dEl of Array.from(dynamicWrapperEl.children)) {
       renderer.insertBefore(dynamicWrapperEl.parentElement, dEl, dynamicWrapperEl);
+      els.push(dEl);
     }
     renderer.removeChild(dynamicWrapperEl.parentElement, dynamicWrapperEl);
+    return els;
   }
 
   /**

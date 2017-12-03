@@ -58,6 +58,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
   private cachedTemplatePlaceholder: Type<IDynamicTemplatePlaceholder>;
   private templatePlaceholder: ComponentRef<IDynamicTemplatePlaceholder>;
   private moduleInstance: NgModuleRef<any>;
+  private replacedNodes: Element[];
 
   constructor(protected dynamicExtraModules: any[],
               protected dynamicResponseRedirectStatuses: number[],
@@ -121,6 +122,12 @@ export class DynamicBase implements OnChanges, OnDestroy {
       this.compiler.clearCacheFor(this.cachedTemplatePlaceholder);
       this.cachedTemplatePlaceholder = null;
     }
+    if (Utils.isPresent(this.replacedNodes)) {
+      for (const el of this.replacedNodes) {
+        this.renderer.removeChild(el.parentElement, el);
+      }
+      this.replacedNodes = null;
+    }
   }
 
   private makeDynamicTemplatePlaceholder(moduleWithComponentFactories: ModuleWithComponentFactories<any>) {
@@ -138,7 +145,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
     this.applyPropertiesToDynamicTemplatePlaceholder(this.templatePlaceholder.instance);
 
     if (this.removeDynamicWrapper) {
-      Utils.replaceDynamicContent(this.renderer, templatePlaceholder.location.nativeElement);
+      this.replacedNodes = Utils.replaceDynamicContent(this.renderer, templatePlaceholder.location.nativeElement);
     }
     this.templateReady.emit(this.templatePlaceholder.instance);
   }
