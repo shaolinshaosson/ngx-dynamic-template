@@ -9,7 +9,6 @@ import {
   ViewContainerRef,
   ComponentRef,
   ModuleWithComponentFactories,
-  ComponentFactory,
   Type,
   SimpleChanges,
   NgModuleRef,
@@ -35,6 +34,8 @@ import {
   ILazyRoute,
   HASH_FIELD,
   IDynamicComponentConfig,
+  DynamicHttpResponseT,
+  IDynamicHttpRequest,
 } from './dynamic.interface';
 import { DynamicTemplateModuleHolder } from './dynamic.holder';
 
@@ -84,7 +85,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
     this.ngOnDestroy();
 
     this.buildModule().then((module) => {
-        let compiledModulePromise: Promise<ModuleWithComponentFactories<any>>;
+        let compiledModulePromise;
         const currentModuleHash = Reflect.get(module, HASH_FIELD);
 
         if (Utils.isPresent(currentModuleHash)) {
@@ -133,16 +134,15 @@ export class DynamicBase implements OnChanges, OnDestroy {
   private makeDynamicTemplatePlaceholder(moduleWithComponentFactories: ModuleWithComponentFactories<any>) {
     this.moduleInstance = moduleWithComponentFactories.ngModuleFactory.create(this.injector);
 
-    const factory = moduleWithComponentFactories.componentFactories.find((componentFactory: ComponentFactory<AnyT>) => {
-        return componentFactory.selector === this.dynamicSelector
-          || (Utils.isPresent(componentFactory.componentType) && Utils.isPresent(this.template)
-            && Reflect.get(componentFactory.componentType, HASH_FIELD) === Utils.hashFnv32a(this.template, true));
-      }
-    );
+    const factory = moduleWithComponentFactories.componentFactories.find((componentFactory) => (
+      componentFactory.selector === this.dynamicSelector
+      || (Utils.isPresent(componentFactory.componentType) && Utils.isPresent(this.template)
+        && Reflect.get(componentFactory.componentType, HASH_FIELD) === Utils.toHash(this.template))
+    ));
 
     const templatePlaceholder = this.templatePlaceholder = factory.create(this.injector, null, null, this.moduleInstance);
     this.viewContainer.insert(templatePlaceholder.hostView, 0);
-    this.applyPropertiesToDynamicTemplatePlaceholder(this.templatePlaceholder.instance);
+    Utils.applySourceAttributes(this.templatePlaceholder.instance, this.context);
 
     if (this.removeDynamicWrapper) {
       this.replacedNodes = Utils.replaceDynamicContent(this.renderer, templatePlaceholder.location.nativeElement);
@@ -194,37 +194,34 @@ export class DynamicBase implements OnChanges, OnDestroy {
   }
 
   private loadRemoteTemplate(httpUrl: string, resolve: (value: AnyT) => void) {
-    let requestArgs: { [index: string]: any; } = { withCredentials: true };
+    let requestArgs: IDynamicHttpRequest;
     if (Utils.isPresent(this.remoteTemplateFactory)
       && Utils.isFunction(this.remoteTemplateFactory.buildRequestOptions)) {
       requestArgs = this.remoteTemplateFactory.buildRequestOptions();
     }
 
-    this.http.get(httpUrl, requestArgs)
-      .subscribe((response: Response) => {
-        if (this.dynamicResponseRedirectStatuses.indexOf(response.status) > -1) {
-          const chainedUrl: string = response.headers.get('Location');
+    this.http.get(httpUrl, { withCredentials: true, observe: 'response', ...requestArgs } )
+      .subscribe((response: DynamicHttpResponseT) => {
+        if (this.dynamicResponseRedirectStatuses.includes(response.status)) {
+          const chainedUrl = response.headers.get('Location');
           if (Utils.isPresent(chainedUrl)) {
             this.loadRemoteTemplate(chainedUrl, resolve);
+          } else {
+            console.warn(`The location header is empty. Stop processing. Response status is ${response.status}`);
           }
         } else {
-          const loadedTemplate = Utils.isPresent(this.remoteTemplateFactory)
-          && Utils.isFunction(this.remoteTemplateFactory.parseResponse)
-            ? this.remoteTemplateFactory.parseResponse(response)
-            : response.text();
-
-          resolve(this.makeComponentModule({ template: loadedTemplate as string }));
+          resolve(
+            this.makeComponentModule({ template: Utils.toTemplate(this.remoteTemplateFactory, response) })
+          );
         }
       }, () => {
-        const template: string = this.defaultTemplate || '';
+        const template = this.defaultTemplate || '';
         resolve(this.makeComponentModule({ template }));
       });
   }
 
   private makeComponentModule(dynamicConfig?: IDynamicComponentConfig): AnyT {
-    const dynamicComponentType
-      = this.cachedTemplatePlaceholder
-      = this.makeComponent(dynamicConfig);
+    const dynamicComponentCtor = this.cachedTemplatePlaceholder = this.makeComponent(dynamicConfig);
 
     const modules = this.dynamicExtraModules
       .concat(this.extraModules || [])
@@ -232,16 +229,13 @@ export class DynamicBase implements OnChanges, OnDestroy {
       .concat(DynamicTemplateModuleHolder.saveAndGet());
 
     @NgModule({
-      declarations: [dynamicComponentType],
+      declarations: [dynamicComponentCtor],
       imports: [CommonModule].concat(modules),
     })
     class $DynamicComponentModule {
     }
 
-    const dynamicComponentTypeHash: string = Reflect.get(dynamicComponentType, HASH_FIELD);
-    if (Utils.isPresent(dynamicComponentTypeHash)) {
-      Reflect.set($DynamicComponentModule, HASH_FIELD, dynamicComponentTypeHash);
-    }
+    Utils.applyHashField($DynamicComponentModule, dynamicComponentCtor);
     return this.cachedDynamicModule = $DynamicComponentModule;
   }
 
@@ -263,17 +257,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
     class $DynamicComponent {
     }
 
-    const templateMetaData = Reflect.get(dynamicComponentMetaData, 'template');
-    if (Utils.isPresent(templateMetaData)) {
-      Reflect.set($DynamicComponent, HASH_FIELD, Utils.hashFnv32a(templateMetaData, true));
-    }
-    return $DynamicComponent as Type<IDynamicTemplatePlaceholder>;
-  }
-
-  private applyPropertiesToDynamicTemplatePlaceholder(instance: IDynamicTemplatePlaceholder) {
-    if (!Utils.isPresent(this.context)) {
-      return;
-    }
-    Utils.applySourceAttributes(instance, this.context);
+    Utils.applyHashField($DynamicComponent, dynamicComponentMetaData.template);
+    return $DynamicComponent;
   }
 }

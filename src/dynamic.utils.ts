@@ -1,7 +1,15 @@
-import { Renderer2 } from '@angular/core';
+import { Renderer2, Type } from '@angular/core';
+import * as Hashes from 'jshashes';
 
-import { ILazyRoute } from './dynamic.interface';
+import {
+  DynamicHttpResponseT,
+  HASH_FIELD,
+  IDynamicRemoteTemplateFactory,
+  IDynamicTemplatePlaceholder,
+  ILazyRoute,
+} from './dynamic.interface';
 
+const SHA1 = new Hashes.SHA1;
 let uniqueId = 0;
 
 export class Utils {
@@ -26,7 +34,10 @@ export class Utils {
     return routes.filter((lazyRouter: ILazyRoute) => lazyRouter.path === path)[0];
   }
 
-  public static applySourceAttributes(target, source) {
+  public static applySourceAttributes(target: {}, source: {}) {
+    if (!Utils.isPresent(source)) {
+      return;
+    }
     for (const property in source) {
       if (source.hasOwnProperty(property)) {
         const propValue = Reflect.get(source, property);
@@ -39,6 +50,22 @@ export class Utils {
 
         Reflect.defineProperty(target, property, proxyObject);
       }
+    }
+  }
+
+  public static toTemplate(remoteTemplateFactory: IDynamicRemoteTemplateFactory, response: DynamicHttpResponseT): string {
+    const template = this.isPresent(remoteTemplateFactory) && this.isFunction(remoteTemplateFactory.parseResponse)
+      ? remoteTemplateFactory.parseResponse(response)
+      : null;
+
+    if (!this.isPresent(template)) {
+      try {
+        return JSON.stringify(response.body);
+      } catch (e) {
+        return response.statusText;
+      }
+    } else {
+      return template;
     }
   }
 
@@ -55,31 +82,17 @@ export class Utils {
     return els;
   }
 
-  /**
-   * Calculate a 32 bit FNV-1a hash
-   * Found here: https://gist.github.com/vaiorabbit/5657561
-   * Ref.: http://isthe.com/chongo/tech/comp/fnv/
-   *
-   * @param {string} str the input value
-   * @param {boolean} [asString=false] set to true to return the hash value as
-   *     8-digit hex string instead of an integer
-   * @param {number} [seed] optionally pass the hash of the previous chunk
-   * @returns {string|number}
-   */
-  public static hashFnv32a(str, asString?, seed?): string | number {
-    /*jshint bitwise:false */
-    let i;
-    let l;
-    let hval = (seed === undefined) ? 0x811c9dc5 : seed;
+  public static toHash(v: string): string {
+    return SHA1.hex(v);
+  }
 
-    for (i = 0, l = str.length; i < l; i++) {
-      hval ^= str.charCodeAt(i);
-      hval += (hval << 1) + (hval << 4) + (hval << 7) + (hval << 8) + (hval << 24);
+  public static applyHashField(target: {}, source: Type<IDynamicTemplatePlaceholder> | string): void {
+    if (Utils.isPresent(source)) {
+      Reflect.set(
+        target,
+        HASH_FIELD,
+        typeof source === 'string' ? Utils.toHash(source) : Reflect.get(source, HASH_FIELD)
+      );
     }
-    if (asString) {
-      // Convert to 8 digit hex string
-      return ('0000000' + (hval >>> 0).toString(16)).substr(-8);
-    }
-    return hval >>> 0;
   }
 }

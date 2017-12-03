@@ -1,7 +1,7 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { IDynamicRemoteTemplateFactory } from 'ngx-dynamic-template';
+import { IDynamicRemoteTemplateFactory, DynamicHttpResponseT } from 'ngx-dynamic-template';
 
 @Component({
   selector: 'app-dynamic-holder',
@@ -31,8 +31,8 @@ export class DynamicHolderComponent implements OnInit {
       };
     },
     // This is an optional method
-    parseResponse (response: {headers: {[index: string]: any}}): string {
-      return response.headers['User-Agent'];
+    parseResponse (response: DynamicHttpResponseT): string {
+      return response.body.headers['User-Agent'];
     }
   } as { [index: string]: any; };
 
