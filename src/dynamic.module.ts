@@ -31,8 +31,8 @@ export class NgxDynamicTemplateModule {
         },
         { provide: DynamicTypes.DynamicResponseRedirectStatuses, useValue: [301, 302, 307, 308] },
         { provide: NgModuleFactoryLoader, useClass: SystemJsNgModuleLoader },
-        { provide: ROUTES_TOKEN, useValue: options.routes || [] },
-        { provide: REMOVE_DYNAMIC_WRAPPER, useValue: options.removeDynamicWrapper || false },
+        { provide: ROUTES_TOKEN, useValue: options && options.routes || [] },
+        { provide: REMOVE_DYNAMIC_WRAPPER, useValue: options && options.removeDynamicWrapper || false },
       ],
     });
   }
