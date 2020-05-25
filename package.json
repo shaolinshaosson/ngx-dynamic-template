@@ -6,7 +6,7 @@
     "angular",
     "angular2",
     "angular4",
-    "angular6"
+    "angular6",
     "dynamic-template",
     "angular2-dynamic-template",
     "angular4-dynamic-template",
@@ -45,7 +45,7 @@
     "rollup-plugin-uglify": "~1.0.1",
     "rxjs": "^6.2.2",
     "tslint": "^5.8.0",
-    "typescript": ">=2.4.2 <2.5",
+    "typescript": "2.9.2",
     "zone.js": "^0.8.18"
   },
   "repository": {

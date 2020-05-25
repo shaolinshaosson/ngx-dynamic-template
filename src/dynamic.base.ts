@@ -160,7 +160,7 @@ export class DynamicBase implements OnChanges, OnDestroy {
         if (Utils.isFunction(lazyRoute.loadChildren)) {
           // angular2-class starter
           lazyModulesLoaders.push(
-            Observable.of((lazyRoute.loadChildren as (() => any))()).toPromise()
+            of((lazyRoute.loadChildren as (() => any))()).toPromise()
           );
         } else {
           // angular-cli

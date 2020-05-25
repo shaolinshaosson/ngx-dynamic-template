@@ -1,0 +1,1 @@
+{"version":3,"file":"dynamic.interface.js","sourceRoot":"","sources":["src/dynamic.interface.ts"],"names":[],"mappings":";;AAAA,sCAAqD;AAGxC,QAAA,YAAY,GAAG;IAC1B,mBAAmB,EAAE,qBAAqB;IAC1C,+BAA+B,EAAE,iCAAiC;CACnE,CAAC;AAuDW,QAAA,UAAU,GAAG,aAAa,CAAC;AAC3B,QAAA,YAAY,GAAG,IAAI,qBAAc,CAAC,QAAQ,CAAC,CAAC;AAC5C,QAAA,sBAAsB,GAAG,IAAI,qBAAc,CAAC,wBAAwB,CAAC,CAAC"}

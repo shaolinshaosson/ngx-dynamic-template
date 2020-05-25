@@ -1,0 +1,1 @@
+[{"__symbolic":"module","version":4,"metadata":{},"exports":[{"from":"./dynamic.directive"},{"from":"./dynamic.base"},{"from":"./dynamic.interface"},{"from":"./dynamic.module"},{"from":"./dynamic.cache"}]}]
